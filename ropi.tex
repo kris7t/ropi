@@ -1,0 +1,150 @@
+\input{preamble.tex}
+
+\begin{document}
+
+\makeatletter
+\catcode`\^^M=\active%
+\let^^M=\@nl%
+\makeatother
+
+\maketitle
+
+\section{Lineáris programozás}
+
+\tetel{Az optimális hozzárendelés problémája, Egerváry algoritmusa.}
+
+\tetel{A lineáris programozás alapfeladata, kétváltozós feladat
+  grafikus megoldása. Lineáris egyenlőtlenségrendszer megoldása
+  Fourier`--Motzkin eliminációval.}
+
+\tetel{Farkas-lemma (két alakban). A lineáris program célfüggvénye
+  felülről korlátosságának feltételei.}
+
+\tetel{A lineáris programozás dualitástétele (két alakban). A lineáris
+  programozás alapfeladatának bonyolultsága (biz.~nélkül).}
+
+\tetel{Egészértékű programozás: a feladat bonyolultsága, korlátozás és
+  szétválasztás (Branch and Bound). Totálisan unimoduláris mátrix
+  fogalma, példák. Egészértékű programozás totálisan unimoduláris
+  együtthatómátrixszal (biz.~nélkül).}
+
+\tetel{A lineáris és egészértékű programozás alkalmazása páros
+  gráfokra és intervallumrendszerekre: Egerváry tétele,
+  intervallumrendszerek egyenletes színezése.}
+
+\tetel{A lineáris és egészértékű programozás alkalmazása hálózati
+  folyamproblémákra: a maximális folyam, a minimális költségű folyam
+  és a többtermékes folyam feladatai, ezek hatékony megoldhatósága a
+  tört-, illetve egészértékű esetben.}
+
+\section{Matroidok}
+
+\tetel{Matroid definíciója, alapfogalmak (bázis, rang, kör). Példák:
+  lineáris matroid (mátrixmatroid), grafikus matroid, uniform
+  matroid. A rangfüggvény szubmodularitása.}
+
+\tetel{Mohó algoritmus matroidon. Matroid megadása rangfüggvényével,
+  bázisaival (biz.~nélkül).  Matroid duálisa, a duális matroid
+  rangfüggvénye.}
+
+\tetel{Elhagyás és összehúzás. Matroidok direkt összege,
+  összefüggősége. $T$ test felett reprezentálható matroid duálisának $T$
+  feletti reprezentálhatósága.}
+
+\tetel{Grafikus, kografikus, reguláris, bináris és lineáris matroid
+  fogalma, ezek kapcsolata (ebből bizonyítás csak a grafikus és
+  reguláris matroidok közötti kapcsolatra), példák. Fano-matroid,
+  példa nemlineáris matroidra. Bináris, reguláris és grafikus
+  matroidok jellemzése tiltott minorokkal: Tutte tételei
+  (biz.~nélkül).}
+
+\tetel{Matroidok összege. $k$-matroid-metszet probléma, ennek
+  bonyolultsága $k \ge 3$ esetén.}
+
+\tetel{A $k$-matroid partíciós probléma, ennek algoritmikus
+  megoldása. A $2$-matroid-metszet feladat visszavezetése matroid
+  partíciós problémára.}
+
+\tetel{$k$-polimatroid rangfüggvény fogalma. A
+  $2$-polimatroid-matching probléma, ennek bonyolultsága, Lovász
+  tétele (biz.~nélkül).}
+
+\section{Közelítő és ütemezési algoritmusok}
+
+\tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP,
+  co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója,
+  viszonyaik, példák problémákra valamennyi osztályból. NP-nehéz
+  feladatok polinomiális speciális esetei: algoritmus a maximális
+  független ponthalmaz problémára és az élszínezési problémára páros
+  gráfokon. Additív hibával közelítő algoritmusok speciális pont-,
+  illetve élszínezési problémákra.}
+
+\tetel{A Hamilton-kör probléma visszavezetése a leghosszabb kör
+  probléma additív közelítésére. $k$-approximációs algoritmus fogalma,
+  példák: két-két algoritmus a minimális lefogó ponthalmaz keresésére
+  és a maximális páros részgráf keresésére. Minimális levelű, illetve
+  maximális belső csúcsú feszítőfa keresése. Approximációs algoritmus
+  az utóbbi feladatra (biz.~nélkül).}
+
+\tetel{A minimális lefogó ponthalmaz probléma visszavezetése a
+  halmazfedési feladatra, a halmazfedési feladat közelítése, éles
+  példa. Közelítő algoritmus a Steiner-fa problémára, éles példa.}
+
+\tetel{A Hamilton-kör probléma visszavezetése az általános utazóügynök
+  probléma $k$-app\-ro\-xi\-má\-ci\-ós megoldására. Közelítő
+  algoritmusok a metrikus utazóügynök problémára, Christofides
+  algoritmusa.}
+
+\tetel{Teljesen polinomiális approximációs séma fogalma. A részösszeg
+  probléma, bonyolultsága. Teljesen polinomiális approximációs séma a
+  részösszeg problémára.}
+
+\tetel{Ütemezési feladatok típusai. Az
+  $1 | \textrm{prec} | C_{\textrm{max}}$ és az $1 \| \Sigma C_j$
+  feladat. Approximációs algoritmusok a $P \| C_{\textrm{max}}$
+  feladatra: listás ütemezés tetszőleges sorrendben, éles példa
+  tetszőleges számú gép esetére; listás ütemezés LPT sorrendben
+  (biz.~nélkül), éles példa tetszőleges számú gép
+  esetére. Approximációs algoritmus a
+  $P | \textrm{prec} |C_{\textrm{max}}$ feladatra (biz.~nélkül),
+  példák: az LPT sorrend, illetve a leghosszabb út szerinti ütemezés
+  sem jobb, mint $(2 - \frac{m}{1})$-approximáció. A
+  $P | \textrm{prec}, p_i = 1 | C_{\textrm{max}}$ feladat, Hu
+  algoritmusa (biz.~nélkül).}
+
+\section{Megbízható hálózatok tervezése}
+
+\tetel{Globális és lokális élösszefüggőség és élösszefüggőségi szám
+  fogalma, Menger irányítatlan gráfokra és élösszefüggőségre vonatkozó
+  két tétele (biz.~nélkül). $\lambda(G)$ meghatározása folyamok
+  segítségével négyzetes és lineáris számú folyamkereséssel.}
+
+\tetel{$\lambda(G)$ meghatározása összehúzások segítségével, Mader
+  tétele, Nagamochi és Ibaraki algorit- musa.}
+
+\tetel{Minimális méretű $2$-élösszefüggő részgráfok keresése. A probléma
+  NP-nehézsége, Khuller`--Vishkin algoritmus (biz.~nélkül).}
+
+\section{Hálózatelméleti alkalmazások}
+
+\tetel{Kirchhoff tételei a klasszikus villamos hálózatok analízisére.}
+
+\tetel{Kirchhoff eredményeinek általánosítása transzformátorokat vagy
+  girátorokat is tartalmazó hálózatokra (biz.~nélkül). Algoritmusok a
+  feltételek ellenőrzésére.}
+
+\tetel{Kirchhoff eredményeinek általánosítása: szükséges feltétel
+  tetszőleges lineáris sok-ka\-pu\-kat is tartalmazó hálózatok egyértelmű
+  megoldhatóságára. Villamos hálózatok duálisa.}
+
+\section{Statikai alkalmazások}
+
+\tetel{Rúdszerkezetek, merevségi mátrix, merevség, egyszerű rácsos
+  tartók, Cremona`--Maxwell diagramok.}
+
+\tetel{Minimális merev rúdszerkezetek általános helyzetben, Laman
+  tétele (biz.~nélkül), Lovász és Yemini tétele.}
+
+\tetel{Síkbeli négyzetrácsok és egyszintes épületek átlós merevítése.}
+
+\end{document}

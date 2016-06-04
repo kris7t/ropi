@@ -1,0 +1,104 @@
+\documentclass[a4paper,11pt,oneside]{article}
+\renewcommand*{\baselinestretch}{1.04}
+\usepackage[margin=2.5cm]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage{paralist}
+\pltopsep=0pt
+\plitemsep=0pt
+\plparsep=0pt
+
+\def\+{+}
+
+\makeatletter
+\catcode`\ =12\let\@nl@space= \catcode`\ =10
+\newcount\@nl@rlevel
+\newcount\@nl@llevel
+\@nl@llevel=-1
+
+\def\@nl{%
+  \catcode`\ =12
+  \global\@nl@rlevel=0
+  \futurelet\@nl@store\@nl@%
+}
+\def\@nl@gobble#1{\futurelet\@nl@store\@nl@}
+\def\@nl@enditemize{
+  \ifnum\the\@nl@rlevel<\the\@nl@llevel%
+    \end{compactitem}%
+    \egroup%
+    \expandafter\@nl@enditemize%
+  \else%
+    \ifnum\the\@nl@rlevel=\the\@nl@llevel\else%
+       \errmessage{Error: inconsistent identation}
+    \fi%
+  \fi%
+}
+\def\@nl@{%
+  \ifx\@nl@store\@nl@space%
+    \global\advance\@nl@rlevel by 1
+    \expandafter\@nl@gobble%
+  \else%
+    \catcode`\ =10
+    \ifx\@nl@store+%
+      \ifnum\the\@nl@rlevel>\the\@nl@llevel%
+        \bgroup%
+        \@nl@llevel=\the\@nl@rlevel
+        \begin{compactitem}%
+      \fi%
+      \@nl@enditemize%
+      \item \expandafter\expandafter\expandafter\@gobble%
+    \else%
+      \ifx\@nl@store\@nl%
+        \global\@nl@rlevel=-1\relax\@nl@enditemize\par
+      \else\space\fi%
+    \fi%
+  \fi%
+}
+\makeatother
+
+\def\magyarOptions{defaults=prettiest,labelitems=unchanged,
+  hunumbers=no,chapternumber=unchanged,partnumber=unchanged}
+\usepackage[magyar]{babel}
+
+\usepackage{amsmath,wasysym,mathtools,mleftright,relsize}
+
+\usepackage[stretch=10]{microtype}
+
+\usepackage{xspace,mdframed}
+
+\newmdenv{tetelframe}
+\setcounter{secnumdepth}{-1}
+\newcounter{tetel}
+\newcommand{\tetel}[1]{\begin{tetelframe}\noindent\refstepcounter{tetel}\textbf{\thetetel.}~#1\end{tetelframe}}
+
+\newcommand*{\ra}{\ensuremath{\rightarrow}\xspace}
+\newcommand*{\RA}{\ensuremath{\Longrightarrow}\xspace}
+\newcommand*{\app}{\ensuremath{\approx}\xspace}
+\newcommand*{\lra}{\ensuremath{\leftrightarrow}\xspace}
+\newcommand*{\sig}{\textrm}
+\newcommand*{\proc}{\textsc}
+\DeclareMathOperator{\type}{{:}{:}}
+\newcommand*{\tcc}{/\!/\xspace}
+\DeclareMathOperator*{\force}{force}
+\newcommand*{\susp}{\textbf{\$}}
+\DeclareMathOperator*{\concat}{+\!\!+}
+
+\newcounter{theorem}
+% \renewcommand*{\thetheorem}{\thesection.\arabic{theorem}}
+\newcommand*{\theoremlike}[1]{\refstepcounter{theorem}{\textbf{\thetheorem.~#1:}}\xspace}
+\newcommand*{\thm}{\theoremlike{tétel}}
+\newcommand*{\example}{\theoremlike{példa}}
+\newcommand*{\dfn}{\theoremlike{definíció}}
+\newcommand*{\proof}{\textit{bizonyítás:}\xspace}
+\newcommand*{\qed}{\hfill\ensuremath{\blacksquare}}
+
+\title{Rendszeroptimalizálás vizsgatételek (2015/2016.~második
+  félév)}
+\author{Marussy Kristóf}
+
+\makeatletter
+\usepackage[pdftitle={\@title},pdfauthor={\@author}]{hyperref}
+\makeatother
