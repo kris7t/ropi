@@ -13,6 +13,135 @@
 
 \tetel{Az optimális hozzárendelés problémája, Egerváry algoritmusa.}
 
++ \example egy cég számos megrendelést kap különboző ``egyszemélyes'',
+  egyforma idő alatt elvégezhető munkák elvégzésére
+  + kimutatást készítünk arról, hogy melyik dolgozó melyik munkát
+    tudja elvégezni
+  + cél a profit maximalizálása (lehető legtöbb munka elvégzése)
++ \alg ``magyar módszer''
+  + \DataIn $G = (F, L; E)$ páros gráf
+  + \DataOut $M \subseteq G$ egy maximális méretű párosítás
+  + induljunk ki egy tetszőleges (pl.~az üres) $M$ párosításból
+  + \emph{alternáló út} = párosítatlan $F$-beli csúcsból indul, $\forall$
+    második éle az $M$-hez tartozik
+    + \emph{javító út} = olyan alternáló út, ami párosítatlan $L$-beli
+      pontban ér véget
+  + amíg találunk $J$ javítóutat (pl.~szélességi kereséssel) \RA $M
+    \gets M - (J \cap M) \cup (J - M)$
++ \thm a ``magyar módszer'' valóban maximális párosítást talál
+  $G$-ben
+  + \proof $M \coloneqq \text{a párosítás, amit az algoritmus
+    megtalált}$
+  \begin{align*}
+    F_1 &\coloneqq F - M, \text{az $M$ által le nem fedett $F$-beli
+          pontok halmaza,}\\
+    L_2 &\coloneqq \text{az $F_1$-ből alternáló úton elérhető pontok
+          halmaza,} \\
+    F_2 &\coloneqq \text{az $L_2$-beli pontok $M$ szerinti párjai,} \\
+    L_3 &\coloneqq \text{az $F_1$-ből alternáló úton nem elérhető
+          $L$-beli pontok halmaza,} \\
+    F_3 &\coloneqq \text{az $L_3$-beli pontok $M$ szerinti párjai,} \\
+    L_1 &\coloneqq L - M, \text{az $M$ által le nem fedett $L$-beli pontok
+          halmaza}
+  \end{align*}
+  + vegyük észre, hogy $G$-ben nem vezethet $F_1 \cup F_2$ és $L_1
+    \cup L_3$ között él
+    \par
+    {\centering\begin{tabular}{c|p{6cm}|p{6cm}}
+      & \multicolumn{1}{c|}{$F_1$} & \multicolumn{1}{c}{$F_2$} \\\hline
+      $L_1$ & $1$ hosszú javító út lenne & $\ge 3$ hosszú javító út lenne \\\hline
+      $L_3$ & az $L_3$-beli csúcs $1$ hosszú alternáló úton elérhető lenne, azaz $L_2$-beli
+            & az $L_3$-beli csúcs $\ge 3$ hosszú alternáló úton elérhető lenne, azaz $L_2$-beli
+    \end{tabular}\par}
+  + $F_1 \cup F_2$ $\forall$ szomszédja $L_2$-beli, $L_2 \cup F_3$ egy lefogó ponthalmaz
+  + mivel épp $\lvert M \rvert = \lvert L_2 \cup F_3 \rvert$, $M$
+    valóban maximális méretű \qed
++ \prob optimális hozzárendelés
+  + \DataIn $G = (F, L; E)$ páros gráf, $w\colon E \to \RR$
+    súlyfüggvény
+  + \DataOut $M \subseteq G$ párosítás úgy, hogy $\sum_{e \in M} w(e)$
+    maximális
+  + az optimális hozzárendelés megoldható maximális súlyú
+    \emph{teljes} párosítás keresésével
+    + ha $\lvert F \rvert \ne \lvert L \rvert$, adjunk $G$-hez annyi
+      csúcsot, hogy egyenlőek legyenek
+    + legyen $G' = (F, L; E')$ teljes páros gráf ($E' = F
+      \times L$), $w'(e) \coloneqq \text{\footnotesize$\begin{cases}
+        w(e), &\text{ha $e \in E$,} \\
+        0, & \text{ha $e \notin E$}
+      \end{cases}$}$
+    + $G'$ egy $M'$ maximális súlyú teljes párosítasa a $G$ maximális
+      súlyú párosítása az $E' - E$ élek elhagyása után
+    + $G$ maximális súlyú $M$ párosításához megfelelő $E' - E$ éleket
+      hozzávéve $G'$ maximális súlyú teljes párosítását kapjuk
++ \dfn a $c\colon F \cup L \to \RR$ függvény \emph{címkézés} a $G =
+  (F, L; E)$ páros gráfra és a $w\colon E \to \RR$ súlyfüggvényre
+  nézve, ha $\forall e = \{ x, y \} \in E\colon c(x) + c(y) \ge w(e)$
++ \lemma a $w$ súlyfüggvénnyel súlyozott $G = (F, L; E)$ páros gráf
+  tetszőleges $M$ teljes párosítására és tetszőleges $c$
+  címkézésére igaz, hogy $\sum_{e \in M} w(e) \le \sum_{v \in F
+    \cup L} c(v)$
+  + \proof $\displaystyle \sum_{e \in M} w(e) \le \sum_{\mathclap{e = \{f, l\} \in M}}\, c(f) +
+    c(l) \overset{\substack{\text{$\forall$ csúcs legfeljebb}\\\text{$1$-szer szerepel $M$-ben}}}{\le} \sum_{f \in F} c(f) + \sum_{l \in L} c(l) = \sum_{\mathclap{v \in F
+    \cup L}}\, c(v)$ \qed
+  + \dfn a $G$ gráf $e = \{x, y\}$ éle \emph{piros}, ha $c(x) +
+    c(y) = w(e)$
+  + \corr ha az $M$ teljes párosítás $\forall$ éle piros valamely $c$
+    címkézésre nézve, akkor $M$ maximális súlyú teljes párosítás
++ \alg Egerváry algoritmusa
+  + \DataIn $G = (F, L; E)$ páros gráf, $w\colon E \to \RR$
+  súlyfüggvény
+  + \DataOut $M \subseteq G$ \emph{teljes} párosítás úgy, hogy $\sum_{e \in M} w(e)$ maximális
+  + 0.~lépés: legyen $M = \emptyset$, $c(v) = \begin{cases}
+    \max_{y \in L, \{v, y\} \in E} w({v, y}), & \text{ha $v \in F$,} \\
+    0, & \text{ha $v \in L$}
+  \end{cases}$
+  + 1.~lépés: a javító utas algoritmussal keressünk bővítsük $M$-et
+    maximális élszámú párosítássá a piros részgráfban
+    + ha $M$ most már teljes \RA STOP, $M$ a keresett párosítás, $c$ a
+    keresett címkézés, $w(M) = c(M)$
+  + 2.~lépés: $\delta \coloneqq \min \{ c(x) + c(y) - w(\{x, y\}) \mid
+    \{x, y\} \in E, x \in F_1 \cup F_2, y \in L_1 \cup L_3 \}$
+    + állítsuk elő a $c(v) \gets \text{\footnotesize$\begin{cases}
+      c(v) - \delta, & \text{ha $v \in F_1 \cup F_2$,} \\
+      c(v) + \delta, & \text{ha $v \in L_2$,} \\
+      c(v), & \text{ha $v \in F_3 \cup L_1 \cup L_3$}
+    \end{cases}$}$ új címkézést, majd GOTO 1.
++ \thm Egerváry algortimusa $O(n^2 e)$ lépésben maximális súlyú teljes
+  párosítást állít elő
+  + \proof a 0.~lépésben megadott $c$ valóban címkézés
+  + a 2.~lépésben $\delta$ kiszámításához valóban van él $F_1 \cup
+  F_2$ és $L_1 \cup L_3$ között
+    + ha nem lenne, $N(F_1 \cup F_2) = L_2$
+    + $\lvert F_1 \cup F_2 \rvert > \lvert F_2 \rvert = \lvert L_2
+    \rvert$ miatt ekkor nem teljesül a Hall-feltétel \RA $\not\exists$
+    teljes párosítás!
+  + a 2.~lépés után is címkézés marad $c$
+    + csak az $F_1 \cup F_2$ és $L_1 \cup L_3$ között vezető élekre
+    csökken $c(x) + c(y)$
+    \par
+    {\centering
+      \begin{tabular}{c|c|c|c}
+        & $F_1$ & $F_2$ & $F_3$ \\\hline
+        $L_1$ & $-\delta$ (nem lehet piros) & $-\delta$ (nem lehet piros) & $0$ \\\hline
+        $L_2$ & $-\delta + \delta$ & $-\delta + \delta$ & $+\delta$
+                                                          (piros eltűnhet) \\\hline
+        $L_3$ & $-\delta$ (nem lehet piros) & $-\delta$ (nem lehet piros) & $0$
+      \end{tabular}\par}
+    + $\delta$ definíciója garantálja, hogy továbbra is $c(x) + c(y)
+      \ge w(\{x, y\})$
+  + $M$ élei a 2.~lépés után is pirosak
+    + csak $x \in F_3$, $y \in L_2$ élek színeződhetnek vissza (itt nőtt
+      $c(x) + c(y)$)
+    + ezek nem lehetnek $M$ élei, mert $F_3$ párja $L_3$, $L_2$ párja
+    $F_2$
+    + továbbra is van $F_1$-ből piros alternáló út $L_2$ csúcsaiba
+  + egy iterációban vagy $M$, vagy $L_2$ elemszáma nő
+   + $O(n)$ lépés után $M$ elemszáma mindenképp nő, mert ekkorra már $L_2$
+     lefedné $L$-t
+   + $O(n^2)$ iterációban $M$ maximális párosítás lesz
+   + ezért $O(n^2 e)$ időben az algoritmus véget ér \qed
+
 \tetel{A lineáris programozás alapfeladata, kétváltozós feladat
   grafikus megoldása. Lineáris egyenlőtlenségrendszer megoldása
   Fourier`--Motzkin eliminációval.}
