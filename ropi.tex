@@ -225,7 +225,7 @@
       + $\exists$ $(A|b)$ sorainak olyan nemnegatív $y$ együtthatós
       lin.~kombinációja, hogy\\
         $y (A|b) = (0, 0, \ldots, 0|\beta)$ \RA $y$ kielégíti (2)-t
-    + ha van $(-1|\beta_j)$ és $(1,\beta_i)$ sor úgy, hogy $-\beta_j >
+    + ha van $(-1, \beta_j)$ és $(1,\beta_i)$ sor úgy, hogy $-\beta_j >
     \beta_i$ \RA $\beta = \beta_i + \beta_j < 0$
       + $\exists y_j \ge 0: y_j (A|b) = (0, 0, \ldots, 0, -1 | \beta_j)$
         és $\exists y_i \ge 0: y_i (A|b) = (0, 0, \ldots, 0, 1 | \beta_i)$
@@ -292,7 +292,7 @@
       $y \ge 0$, $yb < t$ \qed
 + \emph{\aref{thm:linprog:dual:dual}.~tétel bizonyítása:}
   + (1): már beláttuk a ``3 kalickás tétel''
-  (\ref{thm:linprog:farkas:3kalicka}.~tétel) (1)~$\Longleftrightarrow$~(3) eseténél
+  (\ref{thm:linprog:farkas:3kalicka}.~tétel) (1)~\LRA~(3) eseténél
     + $cx \le yb$ miatt $cx$ felülről, $yb$ alulról korlátos
   + (2), primál állítás: legyen $t = \sup \{ cx : Ax \le b \}$
     + indir.~tfh.~$\not\exists x : Ax \le b, (t \ge )\,cx \ge t$ \RA alkalmazzuk
@@ -345,6 +345,155 @@
   szétválasztás (Branch and Bound). Totálisan unimoduláris mátrix
   fogalma, példák. Egészértékű programozás totálisan unimoduláris
   együtthatómátrixszal (biz.~nélkül).}
+
++ \dfn \emph{egészértékű programozás alapfeladata:} $\max_{x} \{ cx : Ax \le b, x
+  \text{ egész} \}$ (IP)
+  + duálisa $\min_{y} \{ yb : yA = c, y \ge 0, y \text{ egész} \}$ (DIP)
+  + $\max_{\IP} \le \max_{\LP} = \min_{\DLP} \le \max_{\DIP}$ \RA állhat
+    $<$ is, nincs általános dualitástétel
++ egészértékű programozás bonyolultsága
+  + döntési probléma
+    + \DataIn $A$ mátrix, $b$ és $c$ vektorok, $t \in \RR$
+    + \DataOut van-e olyan $x$ egészértékű vektor, melyre $Ax \le b$, $cx \ge t$
+  + NP-beli \ra tanú a feltételeket kielégítő $x$
+  + dualitástétel hiányában a co-NP beliség nem látható be
+  + \thm az egészértékű lineáris programozás NP-teljes
+    + \proof azt már láttuk, hogy IP $\in$ NP
+    + adunk egy MAXFTLN $\prec$ IP Karp-redukciót (MAXFTLN NP-teljes)
+    + a $G = (V, E)$ gráf $\forall$ $v_i$ csúcsához vegyünk fel egy
+      $x_i \in \ZZ$, $-x_i \le 0$, $x_i \le 1$ változót
+      + ha $v_i \in F$ a független ponthalmaz eleme, $x_i = 1$,
+        egyébként $x_i = 0$
+    + $\forall e = \{ v_i, v_j \} \in E$ élre vegyük még fel az $x_i +
+      x_j \le 1$ feltételt
+    + a célfüggvény $\sum_{v_i \in V} x_i = \lvert F \rvert$ \RA $c =
+      (1, 1, \ldots, 1)$
+    + $x$ maximumhely \LRA $F \subseteq E$ a $G$ maximális független
+      ponthalmaza
+      + $F$ független, mert $x_i + x_j \le 1$ \RA $\{ v_i,
+        v_j \} \in E$ legfeljebb egyik vége lehet $F$-beli
+      + ha $F' \subseteq E$ független, $\lvert F' \rvert > \lvert F
+        \rvert$ \RA $x'$ megoldás, $cx' > cx$
+      + $x$ nem lehet maximumhely \RA ellentmondás \qed
+    + hasonló 3-SAT $\prec$ IP redukciót is lehet adni (0-1
+      változók, termek \ra feltételek)
++ \alg Branch and Bound $\max \{ cx : Ax \le b, f \le x \le g; f, g, x
+  \text{ egész} \}$ problémára
+  + (IP) feladat szétvágása (IP)$'$ és (IP)$''$ feladatokra
+    + választunk egy $x_j$ \emph{elágazási változót} és $f_j \le t <
+      g_j$ közbülső értéket
+    + az új problémák (IP)$'$: (IP) $\cup\;g'_j \coloneqq t$ és
+      (IP)$''$: (IP) $\cup\;f''_j \coloneqq t$
+  + részproblémák $\mathcal{L} = \{ \text{(IP$^{(i)}$)} = (f^{(i)},
+    g^{(i)}, w^{(i)}) : i = 1, 2, \ldots\}$ listáját tartjuk karban,
+    ahol $\max \text{(IP$^{(i)}$)} \le w^{(i)}$
+  + $x^*$ az eddig megtalált legjobb megoldás, $z^* = c x^*$ a hozzá
+    tartozó függvényérték
+  + 0.~lépés: $\mathcal{L} \gets \{ (f, g, \infty) \}$, $z^* \gets
+    -\infty$, $x^*$ nem definiált
+  + 1.~lépés: ha $\mathcal{L} = \emptyset$ \RA STOP, egyébként
+    válasszunk egy (IP$^{(i)}$)-t és töröljük $\mathcal{L}$-ből
+  + 2.~lépés: ha $w^{(i)} \le z^*$ \RA nem lehet jobb megoldás, mint
+    az eddigi, GOTO 1.
+  + 3.~lépés: oldjuk meg az (IP$^{(i)}$)-nek megfelelő (LP$^{(i)}$)
+    relaxált LP feladatot
+    + ha $\not\exists$ megoldás \RA GOTO 1., egyébként legyen
+      $x^{(i)}$ a megoldás és $c x^{(i)} = z^{(i)}$
+  + 4.~lépés
+    + (4\rlap{a}\phantom{b})~ha $z^{(i)} \le z^*$ \RA GOTO 1.,
+      $f^{(i)} \le x \le g^{(i)}$-ben már nincs jobb megoldás
+    + (4b)~ha $z^{(i)} > z^*$ és $x^{(i)}$ egész vektor \RA $x^* \gets
+      x^{(i)}$, $z^* \gets z^{(i)}$, GOTO 1.
+    + (4\rlap{c}\phantom{b})~ha $z^{(i)} > z^*$, de $x^{(i)}$ nem
+      egész vektor
+     + vágjuk két részre az (IP$^{(i)}$) problémát valamely $x_j$
+       elágazási változó mentén
+     + $\mathcal{L} \gets \mathcal{L} \cup \{(f^{(i)\prime},
+       g^{(i)\prime}, z^{(i)}), (f^{(i)\prime\prime},
+       g^{(i)\prime\prime}, z^{(i)})\}$, GOTO 1.
+  + \thm a B\&B véges sok lépésben leáll és megtalálja (IP) optimumát
+    + \proof $f$ és $g$ egész \RA véges sok részprobléma van \RA véges
+      sok lépés
+    + indir.~tfh.~az eljárás leállt, de $z^* < z_0$, ahol $z_0 = \max
+      \text{(IP)}$
+    + az algoritmus futása közben mindig volt olyan (IP$^{(i)}$) $\in
+      \mathcal{L}$, hogy $z_0 = \max \text{(IP$^{(i)}$)}$
+      + kezdetben ez maga (IP)
+      + $z_0 \le w^{(i)} \le z^* < z_0$ ellentmondás \RA (IP$^{(i)}$)
+        mindig eljut a 4.~lépésig
+      + (4\rlap{a}\phantom{b})~nem teljesülhet, mert $z_0 \le z^{(i)}
+        \le z^* < z_0$ ellentmondás
+      + (4b) után $z^* = z^{(i)} = z_0$ lesz \RA $z_0 = z^* < z_0$
+        ellentmondás
+      + (4\rlap{c}\phantom{b})-ben (IP$^{(i)}$) vágása után $z_0 = \max
+        \text{(IP$^{(i)}$)}{}'$ vagy $z_0 = \max \text{(IP$^{(i)}$)}{}''$
+    + $\mathcal{L}$ sosem lesz üres \RA az algoritmus nem áll le \RA
+      ellentmondás \qed
+  + \emph{branch and bound fa:} (IP) a gyökér, (IP$^{(i)}$) gyerekei
+    (IP$^{(i)}$)$'$ és (IP$^{(i)}$)$''$
+  + heurisztika (IP$^{(i)}$) választására
+    + LIFO, ha az (IP$^{(i)}$) a 3.~lépésben utoljára vizsgált probléma fia
+      + inkrementális megoldás \emph{duál szimplex módszerrel}
+    + egyébként válasszuk azt a problémát, amire $w^{(i)}$ maximális
+  + heurisztika az $x_j$ elágazási változó és $t$ választására
+    + $x_j$ az változó, aminek az $\bigl\{ x^{(i)}_j \bigr\}$ törtrésze
+      legközelebb van $\frac{1}{2}$-hez, $t \gets \bigl\lfloor
+      x^{(i)}_j \bigr\rfloor$
+  + a gyakorlatban még a heurisztikákkal sem mindig alkalmas nagy
+    problémákhoz
++ \dfn $B \in \RR^{k \times k}$ az $A$ mátrix \emph{négyzetes
+  részmátrixa}, ha $A$ tetszőleges $k$ sorának és $k$ oszlopának
+  kereszteződései határozzák meg
++ \dfn $A$ \emph{totálisan unimoduláris}, ha $\forall$ négyzetes
+  részmátrixára $\det = 0, 1 \text{ vagy } {-1}$
+  + \corr ha $A$ TU \RA $A$ minden eleme $0$, $1$ vagy $-1$ ($1 \times
+    1$-es részmátrix)
++ \lemma \label{lem:linprog:ip:tu}egy mátrix totálisan unimoduláris marad, ha
+  + (1)~egy sorát vagy oszlopát $(-1)$-gyel szorozzuk
+  + (2)~egységvektort veszünk hozzá új sorként vagy oszlopként
+  + (3)~egyik sorát (ill.~oszlopát) új sorként (ill.~oszlopként) új
+    példányban hozzávesszük
+  + (4)~transzponáljuk
+  + \proof csak azoknak a részmátrixoknak változik a $\det$-a,
+    amiket a módosítás érint
+    + (1)~sor vagy oszlop $(-1)$-gyel szorzása \RA $\det$ $(-1)$-gyel
+      szorzása \RA $0$, $1$, $-1$
+    + (2)~alkalmazzuk a kifejtési tételt az új sor/oszlop szerint
+      + csak egy nemnulla együtthatójú aldetermináns van
+      + az új részmátrix determinánsa megegyezik egy régébbiével \RA%
+        $0$, $1$ vagy $-1$
+    + (3)~két azonos sor/oszlop \RA $\det = 0$
+    + (4)~$\det B^\T = \det B$ \RA a determináns nem változik \qed
++ \example \label{ex:linprog:ip:directed}$\vec{G} = (V, \vec{E})$ irányított gráf $A \in \RR^{\lvert
+  V \rvert \times \lvert E \rvert}$ illeszkedési
+  mátrixsza TU
+  + \proof a $B \in \RR^{k \times k}$ részmátrixra $k$ szerinti teljes
+    indukcióval
+    + $k = 1$-re nyilván $\det B = 0, 1$ vagy $-1$, mert csak ez lehet
+      a mátrix eleme
+    + ha $B$-ben van csupa $0$ oszlop \RA $\det B = 0$
+    + ha $B$-ben van egyetlen $1$-est vagy $-1$-est tartalmazó oszlop
+      + fejtsük ki a determinánst eszerint az oszlop szerint
+      + az nem $0$ együtthatós $B' \in \RR^{(k - 1) \times (k
+        - 1)}$ aldet.-ra $\det B'$ jó az indukció  szerint
+      + a kifejtési tétel szerint $\det B = \pm \det B'$
+    + ha $B$ $\forall$ oszlopában van $1$ és $-1$ is \RA $(1, 1,
+      \ldots, 1) B = 0$ \RA $\det B = 0$ \qed
++ \example $G = (F, L; E)$ páros irányítatlan gráf $A$ illeszkedési
+  mátrixsza TU
+  + \proof irányítsuk $G$ éleit $F \to L$ irányba \RA $\vec{G}$
+    + a $\vec{G}$ irányított gráf $\vec{A}$ illeszkedési mátrixsza TU
+      \aref{ex:linprog:ip:directed}.~példa szerint
+    + szorozzuk meg az $\vec{A}$ mátrix $L$-hez tartozó sorait $(-1)$-gyel
+    + az így kapott mátrix épp $A$, és \aref{lem:linprog:ip:tu}.~lemma
+      miatt szintén TU \qed
++ \thm ha $A$ TU mátrix, $b$ egész vektor, $c$ valós vektor
+  + és $\max \{ cx : Ax \le b \}$ (LP) megoldható és a maximuma véges
+  + \RA $\max \{ cx : Ax \le b, x \text{ egész} \}$ (IP) megoldható és
+    a maximuma véges
+  + és $\max \{ cx : Ax \le b \} = A \max \{ cx : Ax \le b, x \text{
+    egész} \}$
+  + \noproof
 
 \tetel{A lineáris és egészértékű programozás alkalmazása páros
   gráfokra és intervallumrendszerekre: Egerváry tétele,
