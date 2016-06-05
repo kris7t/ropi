@@ -146,6 +146,67 @@
   grafikus megoldása. Lineáris egyenlőtlenségrendszer megoldása
   Fourier`--Motzkin eliminációval.}
 
++ legyen $A \in \RR^{m \times n}$, $x \in \RR^n$, $b \in \RR^m$, $c \in
+  \RR^n$ \RA \emph{lineáris program}
++ \dfn \emph{linerási programozás alapfeladata}: $\min_{x} \{ cx : Ax
+  \le b \}$
++ kétdimenziós feladat megoldása
+  + az $p_1 x_1 + p_2 x_2 \ge k$ alakú feltétel $p_1 x_1 + p_2
+  x_2 = k$ egyenese két félsíkra bontja a síkot
+    + a $\ge$ jelnek megfelelő félsíkok metszete adja megengedett
+      megoldások tartományát
+  + ha $c = (q_1, q_2)$ \RA $q_1 x_1 + q_2 x_2 = 0$-val párhuzamos
+  egyeneseket húzunk
+    + minden egyenesre kiszámítjuk a célfüggvény értékét
+    + a maximumhely a legnagyobb egyenes és a félsíkok metszetének
+    közös pontja
+  + általánosítás: \emph{hipersíkok} által határolt \emph{poliéder}
++ ekvivalens átalakítások
+  + egyenlőtlenség megszorzása \emph{pozitív} számmal
+  + két egyenlőtlenség összegének hozzávétele az egyenlőtlenségrendszerhez
+  + \emph{nem} ekvivalens: szorzás negatív számmal
++ \alg Fourier`--Motzkin elimináció
+  + $n$ változós lineáris program visszavezetése egy $n - 1$ változós
+    $A^*$, $b^*$ lineáris programra
+  + végül $1$ változós lineáris program megoldása
+  + $(A|b)$ bővített együttható mátrix
+    + szorozzuk pozitív számokkal a
+      sorokat, hogy az $1$.~oszlopban csak $-1, 0, 1$ legyen
+  + legyen $I$, $J$, $K$ rendre az $1$-gyel, $-1$-gyel és $0$-val
+    kezdődő sorok indexeinek halmaza
+  + $\RR^{\lvert K \rvert \times n} \ni (A_0|b_0) =$ $(A|b)$ $0$-val
+    kezdődő sorai az első oszlop elhagyásával
+  + $Ax \le b$ egy megoldása $x = (\lambda, \bar{x})$ alakú \RA $A_0
+    \bar{x} \le b_0$ \RA mikor van megfelelő $\lambda$?
+  + ha $J = \emptyset$ (nincs $-1$-gyel kezdődő sor)
+    + $\forall i \in I : \lambda + \bar{a}_i \bar{x} \le b_j$ \RA
+      $\lambda \le \min_{i \in I} b_i - \bar{a}_i \bar{x}$, ami mindig
+      kielégíthető
+    + $A^*, b^* =$ az $\bar{A}$-ból és $b$-ből az $i \in I$ indexű sorok
+      elhagyásával kapott rendszer
+  + ha $I = \emptyset$ (nincs $1$-gyel kezdődő sor)
+    + $\forall j \in J : -\lambda + \bar{a}_j \bar{x} \le b_j$ \RA
+      $\lambda \ge \max_{j \in J} \bar{a}_j \bar{x} - b_j$, ami mindig
+      kielégíthető
+    + $A^*, b^* =$ az $\bar{A}$-ból és $b$-ből az $j \in J$ indexű sorok
+      elhagyásával kapott rendszer
+  + ha $I \ne \emptyset$ és $J \ne \emptyset$ \RA
+    $\forall i \in I : \lambda + \bar{a}_i \bar{x} \le b_j$ és
+    $\forall j \in J : -\lambda + \bar{a}_j \bar{x} \le b_j$
+    + $\forall i \in I, j \in J: \bar{a}_j \bar{x} - b_j \le \lambda
+      \le \bar{b}_i \bar{a}_i \bar{x}$ \RA $\forall i \in I, j \in J:
+      (\bar{a}_i + \bar{a}_j) \bar{x} \le b_i + b_j$
+    + $A^*, b^* =$ az $\bar{A}$ és $b$-ből $i \in I$ és $j \in J$
+      indexű sorait az összes lehetséges módon összeadjuk, a $k \in K$
+      indexű sorokat hozzávesszük és a csupa $0$ első oszlopot
+      elhagyjuk
+  + egyváltozós rendszer megoldása
+    + ha $\exists k \in K : b_k \ne 0$ \RA a rendszer nem megoldható
+    + ha $\max_{j \in J} -b_j > \min_{i \in I} b_i$ \RA a rendszer nem
+      megoldható
+    + egyébként \RA $x_1 \in \bigl[\max_{j \in J} -b_j, \min_{i \in I}
+      b_i\bigr]$ megoldás \qed
+
 \tetel{Farkas-lemma (két alakban). A lineáris program célfüggvénye
   felülről korlátosságának feltételei.}
 
