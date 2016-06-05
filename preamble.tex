@@ -79,7 +79,7 @@
 \newcommand*{\lra}{\ensuremath{\leftrightarrow}\xspace}
 
 \newcounter{theorem}[tetel]
-% \renewcommand*{\thetheorem}{\thesection.\arabic{theorem}}
+ \renewcommand*{\thetheorem}{\thetetel.\arabic{theorem}}
 \newcommand*{\theoremlike}[1]{\refstepcounter{theorem}{\textbf{\thetheorem.~#1:}}\xspace}
 \newcommand*{\thm}{\theoremlike{tétel}}
 \newcommand*{\example}{\theoremlike{példa}}
@@ -100,6 +100,6 @@
   félév)}
 \author{Marussy Kristóf}
 
-\makeatletter
-\usepackage[pdftitle={\@title},pdfauthor={\@author}]{hyperref}
-\makeatother
+%\makeatletter
+%\usepackage[pdftitle={\@title},pdfauthor={\@author}]{hyperref}
+%\makeatother

@@ -248,8 +248,8 @@
     + ekkor $A\frac{\bar{x}}{\lambda - \mu} = b$ és $\lambda - \mu > 0$
       miatt $\frac{\bar{x}}{\lambda - \mu} \ge 0$ \RA%
       $\frac{\bar{x}}{\lambda - \mu}$ kielégíti (1)-et \qed
-+ \thm ha $Ax \le b$ megoldható, $c$ tetszőleges \RA az alábbi
-  állítások ekvivalensek
++ \thm \label{thm:linprog:farkas:3kalicka}ha $Ax \le b$ megoldható,
+  $c$ tetszőleges \RA az alábbi állítások ekvivalensek
   + (1)~az $Ax \le b$ megoldáshalmazán $cx$ felülről korlátos
   + (2)~nincs megoldása az $Az \le 0$, $cz > 0$ rendszernek
   + (3)~van megoldása az $yA = c$, $y \ge 0$ rendszernek
@@ -269,6 +269,77 @@
 
 \tetel{A lineáris programozás dualitástétele (két alakban). A lineáris
   programozás alapfeladatának bonyolultsága (biz.~nélkül).}
+
++ \thm \label{thm:linprog:dual:dual}a lineáris programozás dualitástétele
+  + ha $\max \{ cx : Ax \le b \}$ (primál) program megoldható és
+    felülről korlátos, akkor
+    + (1)~$\min \{ yb : yA = c, y \ge 0 \}$ (duális) program megoldható és
+      alulról korlátos
+    + (2)~a primál programnak $\exists$ maximuma és a duális programnak
+      $\exists$ minimuma
+    + (3)~$\max \{ cx : Ax \le b \} = \min \{ yb : yA = c, y \ge 0 \}$
++ \lemma \label{lem:linprog:dual:t}legyen $A x \le b$ megoldható, $t
+  \in \RR$, de $A x \le b$, $cx \ge t$ nem megoldható
+  + ekkor a $yA = c$, $y \ge 0$, $yb < t$ rendszer megoldható
+  + \proof alkalmazzuk a Farkas-lemmát a $(A|-c) x \le (b|-t)$-re, $y
+    \coloneqq (\bar{y}|\lambda)$
+    + $\bar{y} A - \lambda c = 0$, $\bar{y} \ge 0$, $\lambda \ge 0$,
+      $\bar{y} b - \lambda t < 0$
+    + ha $\lambda = 0$ \RA $0 = 0 x = (\bar{y} A) x = \bar{y} (Ax)
+      \overset{\bar{y} \ge 0, Ax \le b}{\le} \bar{y} b < 0$ \RA%
+      lehetetlen
+    + ezek szerint $y = \frac{\bar{y}}{\lambda}$ létezik, $y A = c$,
+      $y \ge 0$, $yb < t$ \qed
++ \emph{\aref{thm:linprog:dual:dual}.~tétel bizonyítása:}
+  + (1): már beláttuk a ``3 kalickás tétel''
+  (\ref{thm:linprog:farkas:3kalicka}.~tétel) (1)~$\Longleftrightarrow$~(3) eseténél
+    + $cx \le yb$ miatt $cx$ felülről, $yb$ alulról korlátos
+  + (2), primál állítás: legyen $t = \sup \{ cx : Ax \le b \}$
+    + indir.~tfh.~$\not\exists x : Ax \le b, (t \ge )\,cx \ge t$ \RA alkalmazzuk
+    \aref{lem:linprog:dual:t}.~lemmát
+    + $\exists y : yA = c, y \ge 0, yb < t$ \RA $y$ a duális egy
+      megoldása
+    +  $t = \sup \{ cx : Ax \le b \} \le yb < t$ \RA ellentmondás \RA $\exists$ primál
+      megoldás, hogy $cx \ge t$
+    + így a szuprémum egyben maximum kell legyen
+  + (2), duális állítás: $\min \{ yb : yA = c, y \ge 0 \} = - \max \{
+    -by : A^\T y \le c, -A^\T y \le -c, -y \le 0 \}$
+    + alkalmazzuk a primál állítást a duálisra, mint primál feladatra
+  + (3): indir.~tfh.~$\exists t : \max \{ cx : Ax \le b \} < t < \min
+    \{ yb : yA = c, y \ge 0 \}$
+    + a \aref{lem:linprog:dual:t}.~lemma szerint $\exists y : yA = c,
+      y \ge 0, yb < t$
+    + $t < \min \{ yb : yA = c, y \ge 0 \} < yb < t$ \RA ellentmondás
+    \qed
++ \thm \label{thm:linprog:dual:dual}a lineáris programozás
+  dualitástétele, ekvivalens alak
+  + ha $\max \{ cx : Ax \le b, x \ge 0 \}$ (primál) program megoldható és
+    felülről korlátos, akkor
+    + (1)~$\min \{ yb : yA \ge c, y \ge 0 \}$ (duális) program megoldható és
+      alulról korlátos
+    + (2)~a primál programnak $\exists$ maximuma és a duális programnak
+      $\exists$ minimuma
+    + (3)~$\max \{ cx : Ax \le b, x \ge 0 \} = \min \{ yb : yA \ge c,
+      y \ge 0 \}$
+  + \proof $\max \{ cx : (A | {-I}) x \le (b | 0) \}$ duálisa $\min \{ y
+    (b | 0) : y (A | {-I}) = 0, y \ge 0 \}$
+    + legyen $y = (y_1 | y_2)$ \RA $\min \{ y_1 b : y_1 A - y_2 = 0,
+      y_1 \ge 0, y_2 \ge 0\}$
+    + $y_1 A = y_2 \ge 0$ \RA a duális valóban
+      $\min \{ y_1 b : y_1 A \ge 0, y_1 \ge 0 \}$ alakú \qed
++ lineáris programozás bonyolultsága
+  + döntési probléma
+    + \DataIn $A$ mátrix, $b$ és $c$ vektorok, $t \in \RR$
+    + \DataOut van-e olyan $x$ vektor, melyre $Ax \le b$, $cx \ge t$
+  + NP-beli \ra tanú a feltételeket kielégítő $x$
+  + co-NP-beli \ra a dualitástétel szerint tanú egy $yA = c$, $y \ge
+    0$, $(cx \le )\,yb < t$ vektor
+  + 1947 (Danzig): \emph{szimplex-módszer}
+    + nem polinomiális futásidejű, de a gyakorlatban gyors
+  + 1979 (Hacsijan): \emph{ellipszoid-módszer}
+    + polinomiális futásidejű \RA bizonyítja, hogy a feladat P-ben van
+    + gyakorlatban a szimplex sokkal hatékonyabb
+  + 1984 (\emph{Karmarkar}): polinomiális és a gyakorlatban is használható módszer
 
 \tetel{Egészértékű programozás: a feladat bonyolultsága, korlátozás és
   szétválasztás (Branch and Bound). Totálisan unimoduláris mátrix
