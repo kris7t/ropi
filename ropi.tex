@@ -194,14 +194,14 @@
     $\forall i \in I : \lambda + \bar{a}_i \bar{x} \le b_j$ és
     $\forall j \in J : -\lambda + \bar{a}_j \bar{x} \le b_j$
     + $\forall i \in I, j \in J: \bar{a}_j \bar{x} - b_j \le \lambda
-      \le \bar{b}_i \bar{a}_i \bar{x}$ \RA $\forall i \in I, j \in J:
+      \le \bar{b}_i - \bar{a}_i \bar{x}$ \RA $\forall i \in I, j \in J:
       (\bar{a}_i + \bar{a}_j) \bar{x} \le b_i + b_j$
     + $A^*, b^* =$ az $\bar{A}$ és $b$-ből $i \in I$ és $j \in J$
       indexű sorait az összes lehetséges módon összeadjuk, a $k \in K$
       indexű sorokat hozzávesszük és a csupa $0$ első oszlopot
       elhagyjuk
   + egyváltozós rendszer megoldása
-    + ha $\exists k \in K : b_k \ne 0$ \RA a rendszer nem megoldható
+    + ha $\exists k \in K : b_k < 0$ \RA a rendszer nem megoldható
     + ha $\max_{j \in J} -b_j > \min_{i \in I} b_i$ \RA a rendszer nem
       megoldható
     + egyébként \RA $x_1 \in \bigl[\max_{j \in J} -b_j, \min_{i \in I}
@@ -209,6 +209,63 @@
 
 \tetel{Farkas-lemma (két alakban). A lineáris program célfüggvénye
   felülről korlátosságának feltételei.}
+
++ \lemma Farkas-lemma, 1.~alak
+  + tetszőleges $A$ és $b$ esetén az alábbi két rendszer közül
+    pontosan egynek van megoldása:\\
+    (1)~$Ax \le b$\qquad(2)~$yA = 0$, $y \ge 0$, $yb < 0$
++ \proof (1)~megoldható \RA (2)~nem megoldható
+  + $0 = 0x = (yA) x = y (Ax) \le yb < 0$, ellentmondás
++ (1)~nem megoldható \RA (2)~megoldható
+  + alkalmazzuk a Fourier`--Motzkin eliminációt az
+    (1)~egyenletrendszerre
+  + a feltevés szerint a kapott egyváltozós $(A^*|b^*)$ rendszer nem
+    megoldható
+    + ha van $(0|\beta)$, $\beta < 0$ sor
+      + $\exists$ $(A|b)$ sorainak olyan nemnegatív $y$ együtthatós
+      lin.~kombinációja, hogy\\
+        $y (A|b) = (0, 0, \ldots, 0|\beta)$ \RA $y$ kielégíti (2)-t
+    + ha van $(-1|\beta_j)$ és $(1,\beta_i)$ sor úgy, hogy $-\beta_j >
+    \beta_i$ \RA $\beta = \beta_i + \beta_j < 0$
+      + $\exists y_j \ge 0: y_j (A|b) = (0, 0, \ldots, 0, -1 | \beta_j)$
+        és $\exists y_i \ge 0: y_i (A|b) = (0, 0, \ldots, 0, 1 | \beta_i)$
+      + ekkor $y = y_i + y_j \ge 0$, $y (A|b)
+      = (0, 0, \ldots, 0 | \beta)$ \RA $y$ kielégíti (2)-t \qed
++ \lemma Farkas-lemma, 2.~alak
+  + tetszőleges $A$ és $b$ esetén az alábbi két rendszer közül
+    pontosan egynek van megoldása:\\
+    (1)~$Ax = b$, $x \ge 0$\qquad(2)~$yA \ge 0$, $yb < 0$
+  + \proof (1)~megoldható \RA (2)~nem megoldható
+    + $0 \le (yA)x = y(Ax) = yb < 0$, ellentmondás
+  + (2)~nem megoldható \RA (1)~megoldható
+    + vizsgáljuk az ekvivalens $y(-A) \le 0$, $yb = -1 < 0$  rendszert
+    + tömör alakban $(-A|b|-b)^\T y \le (0, 0, \ldots, 0, -1, 1)^\T$
+    + a lemma 1.~alakja szerint $\exists x: x (-A|b|-b)^\T = 0, x
+      \ge 0, x (0, 0, \ldots, 0, -1, 1)^\T < 0$
+    + legyen $x = (\bar{x} | \lambda, \mu)$ \RA $-A\bar{x} + (\lambda -
+      \mu)b = 0$, $\bar{x} \ge 0$, $\lambda, \mu \ge 0$, $-\lambda +
+      \mu < 0$
+    + ekkor $A\frac{\bar{x}}{\lambda - \mu} = b$ és $\lambda - \mu > 0$
+      miatt $\frac{\bar{x}}{\lambda - \mu} \ge 0$ \RA%
+      $\frac{\bar{x}}{\lambda - \mu}$ kielégíti (1)-et \qed
++ \thm ha $Ax \le b$ megoldható, $c$ tetszőleges \RA az alábbi
+  állítások ekvivalensek
+  + (1)~az $Ax \le b$ megoldáshalmazán $cx$ felülről korlátos
+  + (2)~nincs megoldása az $Az \le 0$, $cz > 0$ rendszernek
+  + (3)~van megoldása az $yA = c$, $y \ge 0$ rendszernek
+  + \proof (1) \RA (2), legyen $x_0$ (1) egy megoldása és
+    indir.~tfh.~$z$ (2) egy megoldása
+    + ekkor $A(x_0 + \lambda z) \le b$, de $\lambda > 0$ esetén
+      $c(x_0 + \lambda z) = c x_0 + \lambda c z$ tetszőlegesen nagy
+    + $cx$ nem felülről korlátos \RA ellentmondás
+  + (2) \RA (3), tekintsük a (nem megoldható) $z (-A)^\T \ge 0$, $z
+    (-c) < 0$ rendszert
+    + a Farkas-lemma 2.~alakja szerint $\exists y: (-A)^\T y = -c, y \ge 0$
+    + $(-A)^\T y = -c$ \RA $A^\T y = y A = c$ \RA ez az $y$ épp
+      kielégíti a (3)-as rendszert
+  + (3) \RA (1), legyen $y$ a (3)-as rendszer egy megoldása
+    + $cx = (yA)x = y (Ax) \overset{y \ge 0, Ax \le b}{\le} yb$ \RA%
+    $yb$ a $cx$ egy felső korlátja \qed
 
 \tetel{A lineáris programozás dualitástétele (két alakban). A lineáris
   programozás alapfeladatának bonyolultsága (biz.~nélkül).}
