@@ -499,10 +499,10 @@
   gráfokra és intervallumrendszerekre: Egerváry tétele,
   intervallumrendszerek egyenletes színezése.}
 
-+ \thm (Egerváry Jenő tétele) legyen $G = (F, L; E)$ páros gráf, $w: E
++ \thm (Egerváry Jenő tétele) legyen $G = (F, L; E)$ páros gráf, $w\colon E
   \to \RR$ súlyfüggvény \RA a maximális összsúlyú párosítás összsúlya
   $\min \sum_{v \in F \cup L} c(v)$, ahol a minimum
-  a nemnegatív $c: F \cup L \to \RR_{\ge 0}$ függvényeken értendő, melyekre
+  a nemnegatív $c\colon F \cup L \to \RR_{\ge 0}$ függvényeken értendő, melyekre
   $\forall e = \{x, y\} \in E: c(x) + c(y) \ge w(e)$
   + \proof legyen $G$ illeszkedési mátrixsza $B \in
     \RR^{\lvert F \cup L \rvert \times \lvert E \rvert}$
@@ -585,6 +585,139 @@
   folyamproblémákra: a maximális folyam, a minimális költségű folyam
   és a többtermékes folyam feladatai, ezek hatékony megoldhatósága a
   tört-, illetve egészértékű esetben.}
+
++ legyen $G = (V, E)$ irányított gráf, $s, t \in V$, $c\colon E \to
+  \RR_{+}$ \emph{kapacitásfüggvény}
+  + jelölje $x\colon E \to \RR_{\ge 0}$ $v \in V$-be belépő éleken felvett
+    összegét $\rho_x(v)$
+  + jelölje $x$ a $v$-ből kilépő éleken felvett összegét $\delta_x(v)$
+  + \dfn $x\colon E \to \RR_{\ge 0}$ \emph{folyam}, ha $\forall v \in
+    V - \{ s, t\}: \rho_x(v) = \delta_x(v)$
+  + \dfn $x$ folyam \emph{megengedett}, ha $\forall e
+    \in E : x(e) \le c(e)$
+  + \dfn az $x$ megengedett folyam \emph{értéke} $\delta_x(s) - \rho_x(s) =
+    \rho_x(t) - \delta_x(t)$
++ \dfn a $C = (S, T)$ \emph{vágás}, ha $S \cup T = V$, $S \cap T =
+  \emptyset$, $s \in S$, $t \in T$
+  + \dfn a $C = (S, T)$ vágás \emph{értéke} $m_C = \sum_{(x, y) \in E,
+    x \in S, y \in T} c(x, y)$
+  + tetszőleges $C$ vágás értéke felső becslés minden folyam nagyságára
++ \lemma \label{lem:linprog:folyam:folyam}ha $x\colon E \to \RR_{\ge
+  0}$-ra $\forall v \in V - \{s, t\}: \rho_x(v) \ge \delta_x(v)$ és
+  $\rho_x(t) \ge \delta_x(s)$ \RA $x$ folyam
+  + \proof az $S = \sum_{v \in V - \{s, t\}} \rho_x(v) - \delta_x(v)$
+    összeg $\forall$ tagja nemnegatív \RA $0 \le S$
+  + vegyük észre, hogy $S = \delta_x(s) - \rho_x(t)$
+    + ha $e = (u, v)$, $u \ne s$, $v \ne t$ \RA $x(e)$ pozitív és
+      negatív előjellel is megjelenik $S$-ben
+    + ha $u = s$, $v \ne t$ \RA $x(e)$ csak $+$ előjellel jelenik meg
+      $\rho_x(v)$-nél
+    + ha $u \ne s$, $v =e t$ \RA $x(e)$ csak $-$ előjellel jelenik meg
+      $\delta_x(u)$-nál
+    + az $e = (s, t)$ él nem jelenik meg $S$-ben, és kiesik
+      $\delta_x(s) - \rho_x(t)$-ben
+  + $0 \le S = \delta_x(s) - \rho_x(t) \le 0$ \RA $S = 0$
+    + ez csak úgy lehet, ha $\forall$ (nemnegatív) tag $= 0$ \RA%
+      $\forall v \in V - \{ s, t\}: \rho_x(v) = \delta_x(v)$ \qed
++ \prob maximális értékű folyam
+  + \DataIn $G = (V, E)$ irányított gráf, $s, t \in V$, $c\colon E \to
+    \RR^{+}$ kapacitásfüggvény
+  + \DataOut az $x$ maximális értékű folyam
+  + legyen $G$ illeszkedési mátrixsza $B$, ennek $v \in V$-hez tartozó
+    sora $b_v$
+  + legyen $G^* \coloneqq (V, E^*)$, $E^* \coloneqq E \cup \{(t,
+    s)\}$, az illeszkedési mátrixsza $B^* = (B|b^*)$
+  + ha $x^* = (x|\mu)$ és $B^* x^* \le 0$
+    + $\forall v \in V - \{s, t\} : b_v x \le0$ \RA $\delta_x(v) -
+      \rho_x(v) \le 0$ \RA $\delta_x(v) \le \rho_x(v)$
+    + $s$-re és $t$-re nézve  $\delta_x(s) - \mu \le 0$ és
+      $-\rho_x(t) + \mu \le 0$ \RA $\delta_x(s) \le \mu \le \rho_x(t)$
+    + \aref{lem:linprog:folyam:folyam}.~lemma szerint $x$ valóban
+      folyam, az értéke $\mu$
+  + max.~folyam lineáris programja: $\max \{ (0, 0, \ldots, 0, 1) x^*
+    : B^* x^* \le 0, x^* \ge 0, x \le c\}$
+    + ekvivalensen $\max \{ \mu : (B^* | \text{``$I$''}) (x, \mu | x)
+      \le (0 , 0 | c), x \ge 0, \mu \ge 0 \}$
+    + a második ``egységmátrixból'' hiányzik az $e^* = (t, s)$-hez
+      tartozó oszlop
+  + a duális feladatot a kényelmesen a dualitástétel ekvivalens
+    alakjából kapjuk
+    + $\forall v \in V$ csúcshoz $\pi(v)$ és $\forall e \in E$ élhez
+      $w(e)$ változó
+    + $\min \{ \sum_{e} w(e) c(e) : \forall v: \pi(v) \ge 0; \forall
+      e = (u, v): w(e) \ge 0, \pi(u) - \pi(v) + w(e) \ge 0; \\
+      \phantom{\min\{} \pi(t) - \pi(s) \ge 1\}$
++ \thm \label{thm:linprog:folyam:dlp}a fenti duális minimuma épp a maximális hálózati folyam értéke
+  + \proof ($\Longleftarrow$) tetszőleges $C = (S, T)$ vágáshoz $\exists \pi,
+    w: \sum_{e} w(e) c(e) = m_C$
+    + legyen $\pi(v) = \text{\footnotesize$\begin{cases}
+        0, &\text{ha $v \in S$,} \\
+        1, &\text{ha $v \in T$}
+      \end{cases}$}$, $w(u, v) = \text{\footnotesize$\begin{cases}
+        0, &\text{ha $u \in S$, $v \in T$} \\
+        1, &\text{egyébként}
+      \end{cases}$}$
+    + ez kielégíti a feltételeket, és $\sum_{e} w(e) c(e)$ tényleg a
+      vágás értéke
+  + (\RA) a duális feladdat mátrixsza TU ($G$ illeszkedési mátrixsza +
+    egységvektorok)
+    + a jobb oldal egészértékű \RA $w$ és $\pi$ is lehet
+      egészértékű az optimális megoldásban
+    + készítünk egy $0$-$1$ megoldást:
+      $\pi'(v) \coloneqq \text{\footnotesize$\begin{cases}
+        0, &\text{ha $\pi(v) \le \pi(s)$,} \\
+        1, &\text{ha $\pi(v) > \pi(s)$}
+      \end{cases}$}$, $w'(e) \coloneqq \text{\footnotesize$\begin{cases}
+        0, &\text{ha $w(e) = 0$,} \\
+        1, &\text{ha $w(e) \ge 1$}
+      \end{cases}$}$
+      + $\pi'(t) - \pi'(s) \ge 0$, mert $\pi(t) - \pi(s) \ge 0$ miatt
+        $\pi(t) > \pi(s)$ teljesült
+      + ha $\pi'(u) - \pi'(v) + w(u, v) < 0$ \RA $\pi'(u) = 0$, $\pi'(v)
+        = 1$, $w(u, v) = 0$
+      + de $\pi(u) \le \pi(s) < \pi(v)$, $w(e) = 0$ \RA%
+        $\pi(u) - \pi(v) + w(e) < 0$, ellentmondás
+    + $\forall e: w'(e) \le w(e)$ \RA $\sum_e w'(e) c(e) \le \sum_e
+      w(e) c(e)$ \RA $(\pi', w')$ tényleg optimális
+    + $S = \{v : \pi'(v) = 0\}$, $T = \{v : \pi'(v) = 1\}$ egy vágás,
+      $m_C = \sum_e w'(e) c(e)$
+    + a minimális kapacitású vágás kapacitása tényleg a duál optimuma
+      + a dualitástétel miatt ez a primál optimuma
+      + ami épp a maximális folyam nagysága \qed
+  + beláttuk, hogy a maximális folyam polinomiális időben
+    meghatározható
+    + pl.~ellipszoid módszerrel
+      + de a gyakorlatban Edmonds`--Karp algoritmusa nem használ LP-t
+    + $(B^* | \text{``$I$''})$ TU \RA ha $c$ egész, a maximális
+      egészértékű folyam is meghatározható
++ \thm (Ford`--Fulkerson) a maximális hálózati folyam nagysága
+  megegyezik a minimális kapacitású vágás kapacitásával
+  + \proof \aref{thm:linprog:folyam:dlp}.~tétel alapján triviális \qed
++ \prob minimális költségű folyam
+  + \DataIn $G = (V, E)$, $s, t \in V$, $c\colon E \to \RR^+$,
+    $k\colon E \to \RR_{\ge 0}$ \emph{költségfüggvény}, $M$
+    folyamérték
+  + \DataOut $x$ legalább $M$ értékű, minimális $\sum_{e \in E} k(e)
+    x(e)$ költségű folyam
+  + $\max \{ -kx : B^* x^* \le 0, x^* \ge 0, x \le c, \mu \ge M \}$ LP
+    feladat \RA polinomiális időben megoldható
+  + ha $c$ és $M$ egész \RA az IP verzió is polinomiális, mert a
+    mátrix megint TU
++ \prob többtermékes folyamprobléma
+  + \DataIn $G = (V, E)$, $(s_1, t_1), (s_2, t_2), \ldots, (s_k,
+    t_k)$, $c\colon E \to \RR^+$
+  + \DataOut $x_1, x_2, \ldots, x_2$ folyamok, melyekre $\forall e \in
+    E: \sum_{i = 1}^k x_i(e) \le c(e)$ és az összes folyamnagyság
+    $\sum_{i = 1}^k \delta_{x_i}(s) - \rho_{x_i}(t)$ maximális
+  + legyen $B_i^*$ a $G_i^* = (V, E \cup (t_i, s_i))$ illeszkedési
+    mátrixsza, $x_i^* = (x_i, \mu_i)$
+  + $\max \bigl\{ \sum_{i = 1}^k \mu_i : \forall_{i = 1}^k B_i^* x_i^*
+    \le 0, x_i^* \ge 0; \bigl( \sum_{i = 1}^k x_i \bigr) \le c
+    \bigr\}$ \RA polinomiális időben megoldható
+  + az egészértékű változat $k \ge 2$ esetén nem TU
+    + ha $k = 1$ \RA maximális folyam probléma, egész $c$ esetén
+      polinomiális
+    + ha $k = 2$ \RA a feladat NP-nehéz (\noproof)
 
 \section{Matroidok}
 
@@ -669,7 +802,7 @@
   segítségével négyzetes és lineáris számú folyamkereséssel.}
 
 \tetel{$\lambda(G)$ meghatározása összehúzások segítségével, Mader
-  tétele, Nagamochi és Ibaraki algorit- musa.}
+  tétele, Nagamochi és Ibaraki algoritmusa.}
 
 \tetel{Minimális méretű $2$-élösszefüggő részgráfok keresése. A probléma
   NP-nehézsége, Khuller`--Vishkin algoritmus (biz.~nélkül).}
