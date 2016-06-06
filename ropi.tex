@@ -334,7 +334,7 @@
   + NP-beli \ra tanú a feltételeket kielégítő $x$
   + co-NP-beli \ra a dualitástétel szerint tanú egy $yA = c$, $y \ge
     0$, $(cx \le )\,yb < t$ vektor
-  + 1947 (Danzig): \emph{szimplex-módszer}
+  + 1947 (Dantzig): \emph{szimplex-módszer}
     + nem polinomiális futásidejű, de a gyakorlatban gyors
   + 1979 (Hacsijan): \emph{ellipszoid-módszer}
     + polinomiális futásidejű \RA bizonyítja, hogy a feladat P-ben van
@@ -724,6 +724,58 @@
 \tetel{Matroid definíciója, alapfogalmak (bázis, rang, kör). Példák:
   lineáris matroid (mátrixmatroid), grafikus matroid, uniform
   matroid. A rangfüggvény szubmodularitása.}
+
++ \dfn az $\MM = (E, \FF)$ pár ($\FF \subseteq 2^E$) \emph{matroid},
+  ha
+  + (F1)~$\emptyset \in \FF$\qquad(F2)~ha $Y \subseteq X$ és $X \in
+    \FF$ \RA $Y \in \FF$
+  + (F2)~ha $X, Y \in \FF$ és $\lvert X \rvert > \lvert Y \rvert$ \RA
+    $\exists x \in X - Y : Y \cup \{ x \} \in \FF$
++ \dfn az $\MM = (F, \FF)$ matroidban $X \subseteq E$
+  \emph{független}, ha $X \in \FF$
+  + egyébként $X$ \emph{összefüggő}
++ \dfn az $\MM = (E, \FF)$ matroidban $X \in \FF$ független
+  halmaz \emph{bázis}, ha tartalmazásra nézve maximális (tovább már
+  nem bővíthető $E$-ben)
++ \dfn az $\MM = (E, \FF)$ matroidban $E \supseteq X \notin \FF$
+  összefüggő halmaz \emph{kör}, ha tartalmazásra nézve minimális
+  ($\forall$ valódi részhalmaza független)
++ \lemma \label{lem:matroid:def:meret}ha $\MM = (E, \FF)$ matroid; $A
+  \subseteq E$; $A \supseteq X_1, X_2 \in \FF$ tovább már nem
+  bővítehetőek \RA $\lvert X_1 \rvert = \lvert X_2 \rvert$
+  + \proof indir.~tfh.~$\lvert X_1 \rvert < \lvert X_2 \rvert$
+    $\xRightarrow{\text{(F3)}}$ $\exists e \in X_2 - X_1 : X_1
+    \subset X_1 \cup \{ e \} \in \FF$
+  + ez ellentmondás, $X_1$ mégis tovább bővíthető \qed
+  + azt kaptuk, hogy tetszőleges $X$ független halmaz kiegészíthető
+    maximálissá
++ \corr az $\MM$ matroid $\forall$ bázisa azonos elemszámú
++ \dfn $\MM = (E, \FF)$ matroidban az $X \subseteq E$ halmaz
+  \emph{rang}ja $r(X) =$ az $X$-beli maximális független halmaz mérete
+  (\aref{lem:matroid:def:meret}.~lemma szerint ez mindig egyértelmű)
++ \example  a $G = (V, E)$ gráf \emph{grafikus matroid}ja $\MM(G) =
+  (E, \FF)$, ahol $F \in \FF$ pontosan akkor, ha az $F$ élek erdőt
+  alkotnak $G$-ben
++ \example valamely $T$ test felett az $M \in T^{n \times m}$ mátrix
+  oszlopvektorai által indukált matroid \emph{mátrixmatroid}, ahol
+  a független halmazok a lineárisan független vektorhalmazok
++ $\UU_{n, k} = (E, \FF)$ \emph{uniform matroid}, ahol $\lvert E
+  \rvert = n$, $\FF = \{ X \subseteq E : \lvert X \rvert \le k \}$
+  + $\UU_{n, n}$ \emph{teljes} (\emph{szabad}) \emph{matroid},
+    $\UU_{n, 0}$ \emph{triviális matroid}
++ \thm $r(x)$ \emph{szubmoduláris}, azaz $\forall X, Y \subseteq E:
+  r(x) + r(Y) \ge r(X \cap Y) + r(X \cup Y)$
+  + \proof legyen $A$ maximális független halmaz $X \cap Y$-ban
+    \RA $r(A) = r(X \cap Y)$
+  + legyen $B \supseteq A$ maximális független halmaz $X \cup Y$-ban
+    \RA $r(B) = r(X \cup Y)$
+  + $B \cap (X \cap Y) = A$ \RA $\lvert B \cap X \rvert + \lvert B
+    \cap Y \rvert = \lvert B \rvert + \lvert A \rvert$
+  + $B \cap X, B \cap Y \subseteq B \in \FF$ függetlenek \RA%
+    $\lvert B \cap X \rvert \le r(X)$, $\lvert B \cap Y \rvert \le
+    r(Y)$
+  + $r(X) + r(Y) \ge \lvert B \rvert + \lvert A \rvert = r(X \cup Y) +
+    r(X \cap Y)$ \qed
 
 \tetel{Mohó algoritmus matroidon. Matroid megadása rangfüggvényével,
   bázisaival (biz.~nélkül).  Matroid duálisa, a duális matroid
