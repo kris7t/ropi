@@ -479,7 +479,7 @@
       + a kifejtési tétel szerint $\det B = \pm \det B'$
     + ha $B$ $\forall$ oszlopában van $1$ és $-1$ is \RA $(1, 1,
       \ldots, 1) B = 0$ \RA $\det B = 0$ \qed
-+ \example $G = (F, L; E)$ páros irányítatlan gráf $A$ illeszkedési
++ \example \label{ex:linprog:ip:bipartite}$G = (F, L; E)$ páros irányítatlan gráf $A$ illeszkedési
   mátrixsza TU
   + \proof irányítsuk $G$ éleit $F \to L$ irányba \RA $\vec{G}$
     + a $\vec{G}$ irányított gráf $\vec{A}$ illeszkedési mátrixsza TU
@@ -487,7 +487,7 @@
     + szorozzuk meg az $\vec{A}$ mátrix $L$-hez tartozó sorait $(-1)$-gyel
     + az így kapott mátrix épp $A$, és \aref{lem:linprog:ip:tu}.~lemma
       miatt szintén TU \qed
-+ \thm ha $A$ TU mátrix, $b$ egész vektor, $c$ valós vektor
++ \thm \label{ex:linprog:ip:iplp}ha $A$ TU mátrix, $b$ egész vektor, $c$ valós vektor
   + és $\max \{ cx : Ax \le b \}$ (LP) megoldható és a maximuma véges
   + \RA $\max \{ cx : Ax \le b, x \text{ egész} \}$ (IP) megoldható és
     a maximuma véges
@@ -498,6 +498,88 @@
 \tetel{A lineáris és egészértékű programozás alkalmazása páros
   gráfokra és intervallumrendszerekre: Egerváry tétele,
   intervallumrendszerek egyenletes színezése.}
+
++ \thm (Egerváry Jenő tétele) legyen $G = (F, L; E)$ páros gráf, $w: E
+  \to \RR$ súlyfüggvény \RA a maximális összsúlyú párosítás összsúlya
+  $\min \sum_{v \in F \cup L} c(v)$, ahol a minimum
+  a nemnegatív $c: F \cup L \to \RR_{\ge 0}$ függvényeken értendő, melyekre
+  $\forall e = \{x, y\} \in E: c(x) + c(y) \ge w(e)$
+  + \proof legyen $G$ illeszkedési mátrixsza $B \in
+    \RR^{\lvert F \cup L \rvert \times \lvert E \rvert}$
+  + a $B x \le (1, 1, \ldots, 1)^\T$, $x \ge 0$, $x$ egész rendszer
+    minden megoldása $0$-$1$ értékű
+    + az $1$ komponensek $G$ egy független élhalmazát (párosítását)
+      határozzák meg
+  + $\max \{ wx : Bx \le (1, 1, \ldots, 1)^\T, x \ge 0, x \text{
+    egyész} \}$ megoldása maximális súlyú párosítás
+  + $B$ TU mátrix (\ref{ex:linprog:ip:bipartite}.~példa) \RA
+    $\max_{\IP} = \max_{\LP}$ (\ref{ex:linprog:ip:iplp}.~tétel)
+  + $\max \{ wx : Bx \le (1, 1, \ldots, 1)^\T, x \ge 0 \} = \min \{ y
+    (1, 1, \ldots, 1)^\T : yB \ge w, y \ge 0 \}$
+  + az $y$ duális megoldás $\forall$ csúcshoz egy $c(v_i) = y_i$
+    címkét rendel
+    + $y B \ge w$ \RA $\forall \{x, y\} \in E: c(x) + c(y) = w(\{x,
+    y\})$ \qed
++ \dfn $G = (\mathcal{I}, E)$ \emph{intervallumgráf}, ha $\mathcal{I}
+  = \{I_1, I_2, \ldots, I_m \}$ intervallumok rendszere és $\{ I_i, I_j
+  \} \in E$ \LRA $I_i \cap I_j \ne \emptyset$
+  + ált.~megsz. nélkült feltehető, hogy $\forall I \in \mathcal{I}$ az $[1, n]$
+  egész végpontú, zárt részintervalluma
++ $A(\mathcal{I}) \in \RR^{n \times m}$, ahol $\mathcal{I}$ $[1, n]$ egész
+  végpontú intervallumrendszer, $a_{i, j} = \text{\footnotesize$\begin{cases}
+      1, &\text{ha $i \in I_j$,} \\
+      0, &\text{ha $i \notin I_j$}
+    \end{cases}$}$
+  + \lemma az így definiált $A(\mathcal{I})$ mátrix TU
+  + \proof teljes indukcióval $A$ egyeseinek száma szerint
+    + ha $A$-ban $0$ db egyes van \RA $\det A = 0$
+    + $\forall$ oszlopban egy darabig $0$-k, utána $1$-esek, majd
+      megint $0$-k vannak
+    + ha $\exists$ két oszlop, ahol ugyanott van a legfelső egyes
+      + a több egyes tartalmazóból a másikat kivonva csökken az
+        egyesek száma
+      + ez nem változtatja a $\det$-t \RA ind.~feltevés szerint
+        $\det = 0, 1$ vagy $-1$
+    + ha $\exists$ csupa $0$ oszlop \RA $\det = 0$
+    + egyébként minden oszlopban máshol van a legfelső egyes
+      + sor- és oszlopcserékkel alsó háromszögmátrixszá alakítható \RA%
+      $\det = \pm 1$ \qed
++ \thm \label{thm:liprog:app:interval}az $[1, n]$ egész végpontú, zárt
+  $I_1, I_2, \ldots, I_m$
+  részintevallumai $\forall k \in \ZZ^{+}$-re megszínezhetőek $k$
+  színnel úgy, hogy ha az $i$-t $d_i$ db intervallum tartalmazza,
+  akkor ezek között minden színből vagy $\bigl\lfloor \frac{d_i}{k}
+  \bigr\rfloor$ vagy $\bigl\lceil \frac{d_i}{k} \bigr\rceil$ van
+  + \proof válasszunk ki néhány intervallumot úgy, hogy $\forall i$-re
+    $\bigl\lfloor \frac{d_i}{k} \bigr\rfloor$ vagy $\bigl\lceil
+    \frac{d_i}{k} \bigr\rceil$ kiválasztott intervallum tartalmazza
+    $i$-t
+    + ezt az eljárást ismételhetjük $k - 1$-re, $k - 1$-re, \ldots, $1$-re
+    + így épp $k$ színnel színezhetőek az intervallumok a megadott
+      feltételnek megfelelően
+  + legyen $A = A(\mathcal{I})$,
+    $\bigl\lfloor \frac{d}{k} \bigr\rfloor$ $i$.~komponense
+    $\bigl\lfloor \frac{d_i}{k} \bigr\rfloor$, $\bigl\lceil \frac{d}{k}
+    \bigr\rceil$ hasonló
+  + $\bigl\lfloor \frac{d}{k} \bigr\rfloor \le A x \le
+    \bigl\lceil \frac{d}{k} \bigr\rceil$, $0 \le x \le (1, 1, \ldots,
+    1)^\T$ megoldható, pl.~$x = \bigl( \frac{1}{k}, \frac{1}{k},
+    \ldots, \frac{1}{k} \bigr)$ megoldás
+    + \aref{ex:linprog:ip:iplp}.~tétel miatt $\exists$ egészértékű
+      ($0$-$1$) megoldás \RA ez épp egy jó kiválasztás \qed
++ \dfn a $G$ gráf \emph{perfekt}, ha $\chi(F) = \omega(F)$ $\forall F
+  \subseteq G$ feszített részgráfjára
+  + $\chi$ a kromatikus szám, $\omega$ a klikkszám
++ \corr minden intervallumgráf perfekt
+  + \proof a $G$ intervallumgráf minden feszített részgráfja intervallumgráf
+    + elég belátni, hogy $\chi(G) = \omega(G)$
+  + alkalmazzuk \aref{thm:liprog:app:interval}.~tételt $k =
+    \omega(G)$ választással
+    + $\forall i: d_i \le \omega(G)$ \RA $\forall$ klikkben $\forall$ színt
+      legfeljebb egyszer használtuk
+    + a kapott színezés egy jó színezés \RA $\chi(G) \le k = \omega(G)$
+  + mivel minden gráfban $\chi(G) \ge \omega(G)$ \RA $\chi(G) =
+    \omega(G)$ \qed
 
 \tetel{A lineáris és egészértékű programozás alkalmazása hálózati
   folyamproblémákra: a maximális folyam, a minimális költségű folyam
