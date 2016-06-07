@@ -890,6 +890,102 @@
   összefüggősége. $T$ test felett reprezentálható matroid duálisának $T$
   feletti reprezentálhatósága.}
 
++ \dfn az $\MM = (E, \FF)$ matroidból $X$ \emph{elhagyás}ával az $\MM
+  \setminus X = (E - X, \FF')$ matroidot kapjuk, ahol $\FF' \coloneqq \{ F \in
+  \FF : F \subseteq E - X \}$
+  + grafikus matroidoknál ez nem más, mint élek elhagyása a gráfból
+  + $\MM \setminus X$ rangfüggvénye $r \lvert_{E - X}$
++ \dfn az $\MM = (E, r)$ matroidból $X$ \emph{összehúzás}ával az $\MM
+  / X = (E - X, r')$ matroidot kapjuk, ahol $r'(Y) = r(X \cup Y) -
+  r(X)$
+  + \lemma az $(E - X, r')$ pár valóban matroid
+  + \proof (R1): $r'(\emptyset) = r(X \cup \emptyset) - r(X) = 0$
+    + (R2): $r'(Y) = r(X \cup Y) - r(X) \overset{\text{$r$ (R4)}}{\le}
+      (r(X) + r(Y) - r(X \cap Y)) - r(X) \le r(Y) \le \lvert Y \rvert$
+    + (R3): $Z \subseteq Y$ \RA%
+      $r'(Z) = r(X \cup Z) - r(X) \overset{\!\!\text{$X \cup Z \subseteq
+          Z \cup Y$, $r$ (R3)}\!\!}{\le} r(X \cup Y) - r(X) = r'(Y)$
+    + (R4): $r'(Y) + r'(Z) = r(X \cup Y) + r(X \cup Z) - 2 r(Z)
+      \overset{\text{$r$ (R4)}}{\ge} \\
+      \phantom{(R4):}\ge r((X \cup Y) \cap (X \cup Z)) + r((X \cup Y)
+      \cup (X \cup Z)) - 2 r(X) =\\
+      \phantom{(R4):}= r(X \cup (Y \cap Z)) + r(X \cup (Y \cup Z)) - 2
+      r(X) = \\
+      \phantom{(R4):}= r'(Y \cap Z) + r'(Y \cup Z)$ \qed
++ \thm ha $\MM = (E, \FF)$ matroid, $X \subseteq E$ \RA $(\MM / X)^* =
+  \MM^* \setminus X$, $(\MM \setminus X)^* = \MM^* / X$
+  + \proof $\MM^* \setminus X = ((\MM^* \setminus X)^*)^* = ((\MM^*)^*
+    / X)^* = (\MM / X)^*$
+    + ezért elég az $(\MM \setminus X)^* = \MM^* / X$ egyenlőséget
+      belátni
+  + legyen $(\MM \setminus X)^* = (E - X, r_1)$, $\MM^* / X = (E - X,
+    r_2)$
+    + $r_1(Y) = \lvert Y \rvert - r(E - X) + r((E - X) - Y)$
+    + $r_2(Y) = r^*(X \cup Y) - r^*(X) = \lvert X \cup Y \rvert -
+      r(E) + r(E - (X \cup Y)) - \lvert X \rvert + r(E) - r(E - X)$
+      + $Y \subseteq E - X$ \RA $X \cap Y = \emptyset$ \RA $\lvert X
+        \cup Y \rvert - \lvert X \rvert = \lvert Y \rvert$
+      + $(E - X) - Y = E - (X \cup Y)$ \RA $r_2(Y) = \lvert Y \rvert
+        - r(E - X) + r((E - X) - Y)$
+    + $r_1 = r_2$, ezért a két matroid is megegyezik \qed
++ \dfn az $\MM$ matroidból összehúzások és törlések sorozatával $\MM$
+  \emph{minor}a áll elő
++ \lemma \label{lem:matroid:muvelet:komm}$\MM \setminus A_1 / B_1
+  \setminus A_2 / B_2 \setminus \cdots \setminus  A_k / B_k = \MM
+  \setminus \bigcup_{i = 0}^k A_i / \bigcup_{i = 0}^k B_i$
+   + \noproof
++ \thm az $\MM$ matroid $\forall$ minora előáll $\MM \setminus A / B$
+  alakban
+  + \proof a \ref{lem:matroid:muvelet:komm}.~lemma alapján triviális
+    \qed
++ \dfn az $\MM_1 = (E_1, \FF_1)$, $\MM_2 = (E_2, \FF_2)$, $E_1 \cap
+  E_2 = \emptyset$ matroidok \emph{direkt összeg}e $\NN = \MM_1 +
+  \MM_2 = (E, \FF)$, $E = E_1 \cup E_2$, $\FF = \{ X \subseteq E : X
+  \cap E_1 \in \FF_1, X \cap E_2 \in \FF_2 \}$
++ \dfn az $\MM$ matroid \emph{összefüggő}, ha nem áll elő két matroid
+  direkt összegeként
++ \dfn az $\MM$ matroid \emph{reprezentálható}
+  (\emph{kooridnátázható}) az $T$ test felett, ha izomorf egy $T$
+  feletti mátrixmatroiddal
++ \thm ha $\MM$ reprezentálható a $T$ test felett, akkor $\MM^*$ is
+  + \proof legyen $r \coloneqq r(\MM) = r(A)$, ahol $A \in \RR^{r
+    \times n}$ az $\MM$-et reprezentáló mátrix
+    + Gauss-eliminációval hozzuk $\MM$ mátrixszát $(I_r | A_0)$
+      alakúra
+  + vizsgáljuk az $A' = (-A_0 | I_{n - r})$ által reprezentált
+    $\MM(A')$ matroidot
+    + $A$ és $A'$ oszlopai természetes módon megfeleltehetőek egymásnak
+    + legyen $B$ egy bázis $\MM$-ben
+      + ált.~megsz.~tfh.~$B$ az $I_r$ utolsó $t$ oszlopából és $A_0$
+        első $r - t$ oszlopából áll
+      + ekkor $E - B$ a $-A_0^\T$ első $r - t$ és az $E_{n - r}$
+        utolsó $n - 2r - t$ oszlopából áll
+      + a $B$ elemeihez tartozó $r \times (t + (r - t))$-s részmátrix $A$-ban: $A_1 =$
+        \scalebox{0.5}{$\left(\begin{array}{@{}c*{2}{@{\,}c}|*{3}{@{\;\;}c}@{}}
+          \phantom{C} & \phantom{C} & \phantom{C} & \phantom{C} & \phantom{C} & \phantom{C} \\
+          & 0 & & & \text{\raisebox{-0.5ex}{\smash{\clap{\huge$C$}}}} & \\
+          & & & & & \\\hline
+          1 & & & & & \\[-1ex]
+          & \ddots & & & & \\[-1ex]
+          & & 1 & & &
+        \end{array}\right)$}
+      + az $E - B$ elemeihez tartozó részmátrix $A'$-ben: $A'_1 =$
+        \scalebox{0.5}{$\left(\begin{array}{@{}c*{2}{@{\;\;}c}|c|*{3}{@{\,}c}@{}}
+          \phantom{C} & \phantom{C} & \phantom{C} & \cdots & \phantom{C} & \phantom{C} & \phantom{C} \\
+          & \text{\raisebox{-0.5ex}{\smash{\clap{\huge$-C^\T$}}}} & & \cdots & & 0 & \\
+          & & & \cdots & & & \\\hline
+          & & & \cdots & 1 & & \\[-1ex]
+          & & & \cdots & & \ddots & \\[-1ex]
+          & & & \cdots & & & 1
+        \end{array}\right)$}
+    + $r = r(B)$ \LRA $0 \ne \rvert \det A_1 \lvert = \rvert \det C \lvert = \rvert
+      \det -C^T \lvert = \rvert \det A_2 \lvert$ \LRA $n - r = r(E -
+      B)$
+  + $r(\MM(A')) \le n - r = r(E - B)$ \RA $r(\MM(A')) = n - r$, $E -
+    B$ valóban bázis $\MM(A')$-ben
+    + bázis komplementere bázis (és ezt fordítva is elmondhatjuk)
+    + $\BB(A') = \{ E - B : B \in \BB(A) \}$ \RA $\MM(A') = \MM^*$ \qed
+
 \tetel{Grafikus, kografikus, reguláris, bináris és lineáris matroid
   fogalma, ezek kapcsolata (ebből bizonyítás csak a grafikus és
   reguláris matroidok közötti kapcsolatra), példák. Fano-matroid,
