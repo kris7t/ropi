@@ -114,7 +114,7 @@
   F_2$ és $L_1 \cup L_3$ között
     + ha nem lenne, $N(F_1 \cup F_2) = L_2$
     + $\lvert F_1 \cup F_2 \rvert > \lvert F_2 \rvert = \lvert L_2
-    \rvert$ miatt ekkor nem teljesül a Hall-feltétel \RA $\not\exists$
+    \rvert$ miatt ekkor nem teljesül a Hall-feltétel \RA $\nexists$
     teljes párosítás!
   + a 2.~lépés után is címkézés marad $c$
     + csak az $F_1 \cup F_2$ és $L_1 \cup L_3$ között vezető élekre
@@ -295,7 +295,7 @@
   (\ref{thm:linprog:farkas:3kalicka}.~tétel) (1)~\LRA~(3) eseténél
     + $cx \le yb$ miatt $cx$ felülről, $yb$ alulról korlátos
   + (2), primál állítás: legyen $t = \sup \{ cx : Ax \le b \}$
-    + indir.~tfh.~$\not\exists x : Ax \le b, (t \ge )\,cx \ge t$ \RA alkalmazzuk
+    + indir.~tfh.~$\nexists x : Ax \le b, (t \ge )\,cx \ge t$ \RA alkalmazzuk
     \aref{lem:linprog:dual:t}.~lemmát
     + $\exists y : yA = c, y \ge 0, yb < t$ \RA $y$ a duális egy
       megoldása
@@ -397,7 +397,7 @@
     az eddigi, GOTO 1.
   + 3.~lépés: oldjuk meg az (IP$^{(i)}$)-nek megfelelő (LP$^{(i)}$)
     relaxált LP feladatot
-    + ha $\not\exists$ megoldás \RA GOTO 1., egyébként legyen
+    + ha $\nexists$ megoldás \RA GOTO 1., egyébként legyen
       $x^{(i)}$ a megoldás és $c x^{(i)} = z^{(i)}$
   + 4.~lépés
     + (4\rlap{a}\phantom{b})~ha $z^{(i)} \le z^*$ \RA GOTO 1.,
@@ -648,7 +648,7 @@
       e = (u, v): w(e) \ge 0, \pi(u) - \pi(v) + w(e) \ge 0; \\
       \phantom{\min\{} \pi(t) - \pi(s) \ge 1\}$
 + \thm \label{thm:linprog:folyam:dlp}a fenti duális minimuma épp a maximális hálózati folyam értéke
-  + \proof ($\Longleftarrow$) tetszőleges $C = (S, T)$ vágáshoz $\exists \pi,
+  + \proof (\LA) tetszőleges $C = (S, T)$ vágáshoz $\exists \pi,
     w: \sum_{e} w(e) c(e) = m_C$
     + legyen $\pi(v) = \text{\footnotesize$\begin{cases}
         0, &\text{ha $v \in S$,} \\
@@ -763,8 +763,8 @@
   \rvert = n$, $\FF = \{ X \subseteq E : \lvert X \rvert \le k \}$
   + $\UU_{n, n}$ \emph{teljes} (\emph{szabad}) \emph{matroid},
     $\UU_{n, 0}$ \emph{triviális matroid}
-+ \thm $r(x)$ \emph{szubmoduláris}, azaz $\forall X, Y \subseteq E:
-  r(x) + r(Y) \ge r(X \cap Y) + r(X \cup Y)$
++ \thm \label{thm:matroid:def:submod}$r(x)$ \emph{szubmoduláris}, azaz
+  $\forall X, Y \subseteq E: r(X) + r(Y) \ge r(X \cap Y) + r(X \cup Y)$
   + \proof legyen $A$ maximális független halmaz $X \cap Y$-ban
     \RA $r(A) = r(X \cap Y)$
   + legyen $B \supseteq A$ maximális független halmaz $X \cup Y$-ban
@@ -780,6 +780,111 @@
 \tetel{Mohó algoritmus matroidon. Matroid megadása rangfüggvényével,
   bázisaival (biz.~nélkül).  Matroid duálisa, a duális matroid
   rangfüggvénye.}
+
++ \alg mohó algoritmus
+  + \DataIn $\FF \subseteq 2^E$ halmazrendszer, ami kielégíti az
+    (F1--2) tulajdonságokat (nem üres, ``leszálló''), $w\colon E \to
+    \RR^+$ \emph{súlyfüggvény}
+  + \DataOut olyan $X \in \FF$, melyre $\sum_{e \in X} w(e)$ maximális
+  + 0.~lépés: legyen $X \coloneqq \emptyset \in \FF$
+  + 1.~lépés: létezi-e $ e \in E - X: X \cup \{ e \} \in \FF$
+    + $\exists$ \RA $e \coloneqq \argmax \{ w(e') : e' \in E - X, X
+    \cup \{ e \} \in \FF$ \}; $\nexists$ \RA STOP
+  + 2.~lépés: $X \gets X \cup \{ e \}$, GOTO 1.
++ \thm a mohó algoritmus pontosan akkor ad helyes eredmény $\forall w$
+  súlfüggvénnyel az $(E, \FF)$ halmazrendszeren, ha az (F1--2) mellett
+  (F3)-at is kielégíti ($(E, \FF)$ matroid)
+  + \proof (\LA) matroidon működik a mohó algoritmus
+    + indir.~tfh.~$X = \{a_1, a_2, \ldots, a_n\}$ a mohó algoritmus
+      kimenete
+    + de $\exists Y = \{b_1, b_2, \ldots, b_m\} \in \FF$, $w(Y) >
+      w(X)$
+    + ált.~megsz.~nélkül tfh.~{\footnotesize$\begin{array}{@{}*{10}{c@{\;}}c@{}}
+        w(a_1) & \ge & w(a_2) & \ge\cdots\ge & w(a_{k - 1}) & \ge & w(a_k) & \ge & w(a_{k + 1})
+        & \ge\cdots\ge & w(a_n) \\
+        \vertle & & \vertle & & \vertle & & \vertgt & & & & \\
+        w(b_1) & \ge & w(b_2) & \ge\cdots\ge & w(b_{k - 1}) & \ge & w(b_k) & \ge & w(b_{k + 1})
+        & \ge\cdots\ge & w(b_m)
+      \end{array}$}
+    + $A \coloneqq \{ a_1, a_2, \ldots, a_{k - 1} \} \in \FF$, $B \coloneqq \{
+      b_1, b_2, \ldots, b_k \} \in \FF$, $\lvert A \rvert \le \lvert B \rvert$
+      + $\xRightarrow{\text{(F3)}}$ $\exists b^* \in B : A \cup \{ b^* \}
+        \in \FF$, és a megadott sorrend miatt $w(b^*) \ge w(b_k) > a_k$
+      + a mohó algoritmus a $k$. lépésben nem választhatta $a_k$-t,
+        mert $b^*$ jobb nála, ellentmondás
+  + (\RA) ha (F3) nem teljesül, $\exists$ olyan $w$, hogy a mohó
+    algoritmus rossz eredményt ad
+    + $\exists X, Y \in \FF : \lvert X \rvert > \lvert Y \rvert$, de
+      $\nexists x \in X - Y : Y \cup \{ x \} \in \FF$;
+      legyen $w(e) \coloneqq \text{\footnotesize$\begin{cases}
+        1, &\text{ha $e \in Y$,} \\
+        1 - \epsilon &\text{ha $e \in X - Y$,} \\
+        0 & \text{egyébként}
+      \end{cases}$}$
+    + a mohó algoritmus beválasztja $Y$ elemeit, majd nem tud több nem
+      $0$ súlyú elemet beválasztani \RA $w(Y) = \lvert Y \rvert$ a
+      maximum
+    + de $w(X) = \lvert X \cap Y \rvert + (1 - \epsilon) \lvert X - Y
+      \rvert = \lvert X \rvert - \epsilon \lvert X - Y \rvert
+      > w(Y) = \lvert Y \rvert$, ha $0 < \epsilon < \frac{\lvert X
+        \lvert - \rvert Y \lvert}{\lvert X - Y \rvert}$
+    + a mohó algoritmus nem adott optimális megoldást $w$-re! \qed
++ \thm ha $r$ az $\MM = (E, \FF)$ matroid rangfüggvénye, akkor
+  + (R1)~$r(\emptyset) = 0$\qquad(R2)~$\forall X \subseteq E: r(x) \le
+    \lvert X \rvert$\qquad(R3)~ha $Y \subseteq X$ \RA $r(Y) \le r(X)$
+  + (R4)~ $\forall X, Y \subseteq E: r(X) + r(Y) \ge r(X \cap Y) + r(X
+    \cup Y)$, azaz $r$ \emph{szubmoduláris}
+  + ha $r$ kielégíti az (R1--4) feltételeket \RA az
+    $\FF = \{ X \subseteq E : r(X) = \lvert X \rvert \}$
+    rangfüggvénye
+% + \proof
+%   + (R1): (F1) miatt $\emptyset \in \FF$, így $\emptyset$
+%     maximális független részhalmaza épp önmaga
+%   + (R2): $\FF \ni Y \subseteq X$ \RA $\lvert Y \rvert \le \lvert X
+%     \rvert$, így a maximális $Y$ sem lehet $X$-nél nagyobb
+%   + (R3): $\forall Z: \FF \ni Z \subseteq Y : Z \subseteq X$, így
+%     $Y$-ban nem lehet $X$ max.~független halmazánál nagyobb független
+%     halmaz
+%   + (R4): lásd \aref{thm:matroid:def:submod}.~tételt
+% + megfordítás:
+%   + (F1): $r(\emptyset) = \lvert \emptyset \rvert = 0$
+%     \RA $\emptyset \in \FF$
+%   + (F2): legyen $r(X) = \lvert X \rvert$, $Y \subseteq X$
+%     + (R4) \RA $r(Y) + r(X - Y) \ge r(Y \cap (X - Y)) + r(Y
+%       \cup (X - Y)) = r(\emptyset) + r(X) = \lvert X \rvert$
+%     + (R2) \RA $\lvert X \rvert = \lvert Y \rvert + \lvert X - Y \rvert \ge
+%       r(Y) + r(X - Y) \ge \lvert X \rvert$
+%     + $\underbrace{r(Y)}_{\le \lvert Y \rvert} + \underbrace{r(X -
+%       Y)}_{\le \lvert X - Y \rvert} = \lvert X \rvert$ csak úgy lehetséges, ha
+%       $r(Y) = \lvert Y \rvert$, $r(X - Y) = \lvert X - Y \rvert$
+%     + vagyis $Y$ és $X - Y \subseteq X$ függetlenek
+  + \noproof
++ \thm ha $\BB$ az $\MM = (E, \FF)$ matroid bázisainak halmaza, akkor
+  + (B1)~$\BB \ne \emptyset$\qquad(B2)~$\forall X_1, X_2 \in \BB:
+    \lvert X_1 \rvert = \lvert X_2 \rvert$
+  + (B3)~$X_1, X_2 \in \BB$, $e_1 \in X_1$ \RA $\exists e_2 \in X_2: X
+  - \{ e_1 \} \cup \{ e_2 \} \in \BB$
+  + ha $\BB$ kielégíti a (B1--3) feltételeket \RA az
+    $\FF = \{ X \subseteq E : X \subseteq B \in \BB \}$
+    bázisainak halmaza
+  + \noproof
++ \dfn az $\MM = (E, \BB)$ matroid \emph{duálisa} $\MM^* = (E,
+  \BB^*)$
+  + $\BB^* = \{ X \subseteq E : E - X \in \BB \}$ \LRA $\FF^* = \{ X
+  \subseteq E : E - X \text{ tartalmazza $\MM$ egy bázisát}\}$
+  + $(\MM^*)^* = \MM$
++ \thm az $\MM = (E, r)$ duálisának rangfüggvénye $r^*(X) = \lvert X
+  \rvert - r(E) + r(E - X)$
+  + \proof $r^*(X) = \text{$X$-beli max.~független halmaz mérete} =
+    \max \{ \lvert X \cap B^* \rvert : B^* \in \BB^* \}$
+  + $\lvert X \cap B^* \rvert = \lvert X \cap (E - B) \rvert = \lvert
+    X - B \rvert = \lvert X \rvert - \lvert X \cap B \rvert$, ahol $E
+    - B^* = B \in \BB$
+  + $r^*(X) = \max (\lvert X \rvert - \lvert X \cap B \rvert) = \lvert X \rvert -
+    \min \lvert X \cap B \rvert$ = $\lvert X \rvert - \lvert B \rvert +
+    \max \lvert (E - X) \cap B \rvert$
+  + $\max \lvert (E - X) \cap B \rvert = r(E - X)$ \RA $r^*(X) = \lvert X
+    \rvert - r(E) + r(E - X)$ \qed
 
 \tetel{Elhagyás és összehúzás. Matroidok direkt összege,
   összefüggősége. $T$ test felett reprezentálható matroid duálisának $T$

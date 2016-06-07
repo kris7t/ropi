@@ -75,12 +75,13 @@
 
 \newcommand*{\ra}{\ensuremath{\rightarrow}\xspace}
 \newcommand*{\RA}{\ensuremath{\Longrightarrow}\xspace}
+\newcommand*{\LA}{\ensuremath{\Longleftarrow}\xspace}
 \newcommand*{\app}{\ensuremath{\approx}\xspace}
 \newcommand*{\lra}{\ensuremath{\leftrightarrow}\xspace}
 \newcommand*{\LRA}{\ensuremath{\Longleftrightarrow}\xspace}
 
 \newcounter{theorem}[tetel]
- \renewcommand*{\thetheorem}{\thetetel.\arabic{theorem}}
+\renewcommand*{\thetheorem}{\thetetel.\arabic{theorem}}
 \newcommand*{\theoremlike}[1]{\refstepcounter{theorem}{\textbf{\thetheorem.~#1:}}\xspace}
 \newcommand*{\thm}{\theoremlike{tétel}}
 \newcommand*{\example}{\theoremlike{példa}}
@@ -107,6 +108,10 @@
 
 \newcommand*{\DataIn}{\textsc{Input}:\xspace}
 \newcommand*{\DataOut}{\textsc{Output}:\xspace}
+
+\newcommand{\vertle}{\rotatebox{90}{$\mkern-2mu\le$}}
+\newcommand{\vertgt}{\rotatebox{90}{$\mkern-2mu>$}}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \title{Rendszeroptimalizálás vizsgatételek (2015/2016.~második
   félév)}
