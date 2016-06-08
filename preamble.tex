@@ -96,6 +96,7 @@
 \newcommand*{\RR}{\mathbb{R}}
 \newcommand*{\ZZ}{\mathbb{Z}}
 \newcommand*{\Nat}{\mathbb{N}}
+\newcommand*{\GF}{\textrm{GF}_2}
 \newcommand*{\MM}{\mathcal{M}}
 \newcommand*{\NN}{\mathcal{N}}
 \newcommand*{\UU}{\mathcal{U}}
@@ -114,6 +115,15 @@
 \newcommand{\vertle}{\rotatebox{90}{$\mkern-2mu\le$}}
 \newcommand{\vertgt}{\rotatebox{90}{$\mkern-2mu>$}}
 \DeclareMathOperator*{\argmax}{arg\,max}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc,shapes.geometric,through}
+\let\tikzpictureunpatched\tikzpicture
+\def\tikzpicture{\catcode`\^^M=5\tikzpictureunpatched}
+\tikzset{
+  vertex/.style={shape=circle,fill=black,inner sep=0pt,
+    font=\nullfont,minimum width=4pt}
+}
 
 \title{Rendszeroptimalizálás vizsgatételek (2015/2016.~második
   félév)}
