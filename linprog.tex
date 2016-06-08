@@ -1,0 +1,710 @@
+
+\section{Lineáris programozás}
+
+\tetel{Az optimális hozzárendelés problémája, Egerváry algoritmusa.}
+
++ \example egy cég számos megrendelést kap különboző ``egyszemélyes'',
+  egyforma idő alatt elvégezhető munkák elvégzésére
+  + kimutatást készítünk arról, hogy melyik dolgozó melyik munkát
+    tudja elvégezni
+  + cél a profit maximalizálása (lehető legtöbb munka elvégzése)
++ \alg ``magyar módszer''
+  + \DataIn $G = (F, L; E)$ páros gráf
+  + \DataOut $M \subseteq G$ egy maximális méretű párosítás
+  + induljunk ki egy tetszőleges (pl.~az üres) $M$ párosításból
+  + \emph{alternáló út} = párosítatlan $F$-beli csúcsból indul, $\forall$
+    második éle az $M$-hez tartozik
+    + \emph{javító út} = olyan alternáló út, ami párosítatlan $L$-beli
+      pontban ér véget
+  + amíg találunk $J$ javítóutat (pl.~szélességi kereséssel) \RA $M
+    \gets M - (J \cap M) \cup (J - M)$
++ \thm a ``magyar módszer'' valóban maximális párosítást talál
+  $G$-ben
+  + \proof $M \coloneqq \text{a párosítás, amit az algoritmus
+    megtalált}$
+  \begin{align*}
+    F_1 &\coloneqq F - M, \text{az $M$ által le nem fedett $F$-beli
+          pontok halmaza,}\\
+    L_2 &\coloneqq \text{az $F_1$-ből alternáló úton elérhető pontok
+          halmaza,} \\
+    F_2 &\coloneqq \text{az $L_2$-beli pontok $M$ szerinti párjai,} \\
+    L_3 &\coloneqq \text{az $F_1$-ből alternáló úton nem elérhető
+          $L$-beli pontok halmaza,} \\
+    F_3 &\coloneqq \text{az $L_3$-beli pontok $M$ szerinti párjai,} \\
+    L_1 &\coloneqq L - M, \text{az $M$ által le nem fedett $L$-beli pontok
+          halmaza}
+  \end{align*}
+  + vegyük észre, hogy $G$-ben nem vezethet $F_1 \cup F_2$ és $L_1
+    \cup L_3$ között él
+    \par
+    {\centering\begin{tabular}{c|p{6cm}|p{6cm}}
+      & \multicolumn{1}{c|}{$F_1$} & \multicolumn{1}{c}{$F_2$} \\\hline
+      $L_1$ & $1$ hosszú javító út lenne & $\ge 3$ hosszú javító út lenne \\\hline
+      $L_3$ & az $L_3$-beli csúcs $1$ hosszú alternáló úton elérhető lenne, azaz $L_2$-beli
+            & az $L_3$-beli csúcs $\ge 3$ hosszú alternáló úton elérhető lenne, azaz $L_2$-beli
+    \end{tabular}\par}
+  + $F_1 \cup F_2$ $\forall$ szomszédja $L_2$-beli, $L_2 \cup F_3$ egy lefogó ponthalmaz
+  + mivel épp $\lvert M \rvert = \lvert L_2 \cup F_3 \rvert$, $M$
+    valóban maximális méretű \qed
++ \prob optimális hozzárendelés
+  + \DataIn $G = (F, L; E)$ páros gráf, $w\colon E \to \RR$
+    súlyfüggvény
+  + \DataOut $M \subseteq G$ párosítás úgy, hogy $\sum_{e \in M} w(e)$
+    maximális
+  + az optimális hozzárendelés megoldható maximális súlyú
+    \emph{teljes} párosítás keresésével
+    + ha $\lvert F \rvert \ne \lvert L \rvert$, adjunk $G$-hez annyi
+      csúcsot, hogy egyenlőek legyenek
+    + legyen $G' = (F, L; E')$ teljes páros gráf ($E' = F
+      \times L$), $w'(e) \coloneqq \text{\footnotesize$\begin{cases}
+        w(e), &\text{ha $e \in E$,} \\
+        0, & \text{ha $e \notin E$}
+      \end{cases}$}$
+    + $G'$ egy $M'$ maximális súlyú teljes párosítasa a $G$ maximális
+      súlyú párosítása az $E' - E$ élek elhagyása után
+    + $G$ maximális súlyú $M$ párosításához megfelelő $E' - E$ éleket
+      hozzávéve $G'$ maximális súlyú teljes párosítását kapjuk
++ \dfn a $c\colon F \cup L \to \RR$ függvény \emph{címkézés} a $G =
+  (F, L; E)$ páros gráfra és a $w\colon E \to \RR$ súlyfüggvényre
+  nézve, ha $\forall e = \{ x, y \} \in E\colon c(x) + c(y) \ge w(e)$
++ \lemma a $w$ súlyfüggvénnyel súlyozott $G = (F, L; E)$ páros gráf
+  tetszőleges $M$ teljes párosítására és tetszőleges $c$
+  címkézésére igaz, hogy $\sum_{e \in M} w(e) \le \sum_{v \in F
+    \cup L} c(v)$
+  + \proof $\displaystyle \sum_{e \in M} w(e) \le \sum_{\mathclap{e = \{f, l\} \in M}}\, c(f) +
+    c(l) \overset{\substack{\text{$\forall$ csúcs legfeljebb}\\\text{$1$-szer szerepel $M$-ben}}}{\le} \sum_{f \in F} c(f) + \sum_{l \in L} c(l) = \sum_{\mathclap{v \in F
+    \cup L}}\, c(v)$ \qed
+  + \dfn a $G$ gráf $e = \{x, y\}$ éle \emph{piros}, ha $c(x) +
+    c(y) = w(e)$
+  + \corr ha az $M$ teljes párosítás $\forall$ éle piros valamely $c$
+    címkézésre nézve, akkor $M$ maximális súlyú teljes párosítás
++ \alg Egerváry algoritmusa
+  + \DataIn $G = (F, L; E)$ páros gráf, $w\colon E \to \RR$
+  súlyfüggvény
+  + \DataOut $M \subseteq G$ \emph{teljes} párosítás úgy, hogy $\sum_{e \in M} w(e)$ maximális
+  + 0.~lépés: legyen $M = \emptyset$, $c(v) = \begin{cases}
+    \max_{y \in L, \{v, y\} \in E} w({v, y}), & \text{ha $v \in F$,} \\
+    0, & \text{ha $v \in L$}
+  \end{cases}$
+  + 1.~lépés: a javító utas algoritmussal keressünk bővítsük $M$-et
+    maximális élszámú párosítássá a piros részgráfban
+    + ha $M$ most már teljes \RA STOP, $M$ a keresett párosítás, $c$ a
+    keresett címkézés, $w(M) = c(M)$
+  + 2.~lépés: $\delta \coloneqq \min \{ c(x) + c(y) - w(\{x, y\}) \mid
+    \{x, y\} \in E, x \in F_1 \cup F_2, y \in L_1 \cup L_3 \}$
+    + állítsuk elő a $c(v) \gets \text{\footnotesize$\begin{cases}
+      c(v) - \delta, & \text{ha $v \in F_1 \cup F_2$,} \\
+      c(v) + \delta, & \text{ha $v \in L_2$,} \\
+      c(v), & \text{ha $v \in F_3 \cup L_1 \cup L_3$}
+    \end{cases}$}$ új címkézést, majd GOTO 1.
++ \thm Egerváry algortimusa $O(n^2 e)$ lépésben maximális súlyú teljes
+  párosítást állít elő
+  + \proof a 0.~lépésben megadott $c$ valóban címkézés
+  + a 2.~lépésben $\delta$ kiszámításához valóban van él $F_1 \cup
+  F_2$ és $L_1 \cup L_3$ között
+    + ha nem lenne, $N(F_1 \cup F_2) = L_2$
+    + $\lvert F_1 \cup F_2 \rvert > \lvert F_2 \rvert = \lvert L_2
+    \rvert$ miatt ekkor nem teljesül a Hall-feltétel \RA $\nexists$
+    teljes párosítás!
+  + a 2.~lépés után is címkézés marad $c$
+    + csak az $F_1 \cup F_2$ és $L_1 \cup L_3$ között vezető élekre
+    csökken $c(x) + c(y)$
+    \par
+    {\centering
+      \begin{tabular}{c|c|c|c}
+        & $F_1$ & $F_2$ & $F_3$ \\\hline
+        $L_1$ & $-\delta$ (nem lehet piros) & $-\delta$ (nem lehet piros) & $0$ \\\hline
+        $L_2$ & $-\delta + \delta$ & $-\delta + \delta$ & $+\delta$
+                                                          (piros eltűnhet) \\\hline
+        $L_3$ & $-\delta$ (nem lehet piros) & $-\delta$ (nem lehet piros) & $0$
+      \end{tabular}\par}
+    + $\delta$ definíciója garantálja, hogy továbbra is $c(x) + c(y)
+      \ge w(\{x, y\})$
+  + $M$ élei a 2.~lépés után is pirosak
+    + csak $x \in F_3$, $y \in L_2$ élek színeződhetnek vissza (itt nőtt
+      $c(x) + c(y)$)
+    + ezek nem lehetnek $M$ élei, mert $F_3$ párja $L_3$, $L_2$ párja
+    $F_2$
+    + továbbra is van $F_1$-ből piros alternáló út $L_2$ csúcsaiba
+  + egy iterációban vagy $M$, vagy $L_2$ elemszáma nő
+   + $O(n)$ lépés után $M$ elemszáma mindenképp nő, mert ekkorra már $L_2$
+     lefedné $L$-t
+   + $O(n^2)$ iterációban $M$ maximális párosítás lesz
+   + ezért $O(n^2 e)$ időben az algoritmus véget ér \qed
+
+\tetel{A lineáris programozás alapfeladata, kétváltozós feladat
+  grafikus megoldása. Lineáris egyenlőtlenségrendszer megoldása
+  Fourier`--Motzkin eliminációval.}
+
++ legyen $A \in \RR^{m \times n}$, $x \in \RR^n$, $b \in \RR^m$, $c \in
+  \RR^n$ \RA \emph{lineáris program}
++ \dfn \emph{linerási programozás alapfeladata}: $\min_{x} \{ cx : Ax
+  \le b \}$
++ kétdimenziós feladat megoldása
+  + az $p_1 x_1 + p_2 x_2 \ge k$ alakú feltétel $p_1 x_1 + p_2
+  x_2 = k$ egyenese két félsíkra bontja a síkot
+    + a $\ge$ jelnek megfelelő félsíkok metszete adja megengedett
+      megoldások tartományát
+  + ha $c = (q_1, q_2)$ \RA $q_1 x_1 + q_2 x_2 = 0$-val párhuzamos
+  egyeneseket húzunk
+    + minden egyenesre kiszámítjuk a célfüggvény értékét
+    + a maximumhely a legnagyobb egyenes és a félsíkok metszetének
+    közös pontja
+  + általánosítás: \emph{hipersíkok} által határolt \emph{poliéder}
++ ekvivalens átalakítások
+  + egyenlőtlenség megszorzása \emph{pozitív} számmal
+  + két egyenlőtlenség összegének hozzávétele az egyenlőtlenségrendszerhez
+  + \emph{nem} ekvivalens: szorzás negatív számmal
++ \alg Fourier`--Motzkin elimináció
+  + $n$ változós lineáris program visszavezetése egy $n - 1$ változós
+    $A^*$, $b^*$ lineáris programra
+  + végül $1$ változós lineáris program megoldása
+  + $(A|b)$ bővített együttható mátrix
+    + szorozzuk pozitív számokkal a
+      sorokat, hogy az $1$.~oszlopban csak $-1, 0, 1$ legyen
+  + legyen $I$, $J$, $K$ rendre az $1$-gyel, $-1$-gyel és $0$-val
+    kezdődő sorok indexeinek halmaza
+  + $\RR^{\lvert K \rvert \times n} \ni (A_0|b_0) =$ $(A|b)$ $0$-val
+    kezdődő sorai az első oszlop elhagyásával
+  + $Ax \le b$ egy megoldása $x = (\lambda, \bar{x})$ alakú \RA $A_0
+    \bar{x} \le b_0$ \RA mikor van megfelelő $\lambda$?
+  + ha $J = \emptyset$ (nincs $-1$-gyel kezdődő sor)
+    + $\forall i \in I : \lambda + \bar{a}_i \bar{x} \le b_j$ \RA
+      $\lambda \le \min_{i \in I} b_i - \bar{a}_i \bar{x}$, ami mindig
+      kielégíthető
+    + $A^*, b^* =$ az $\bar{A}$-ból és $b$-ből az $i \in I$ indexű sorok
+      elhagyásával kapott rendszer
+  + ha $I = \emptyset$ (nincs $1$-gyel kezdődő sor)
+    + $\forall j \in J : -\lambda + \bar{a}_j \bar{x} \le b_j$ \RA
+      $\lambda \ge \max_{j \in J} \bar{a}_j \bar{x} - b_j$, ami mindig
+      kielégíthető
+    + $A^*, b^* =$ az $\bar{A}$-ból és $b$-ből az $j \in J$ indexű sorok
+      elhagyásával kapott rendszer
+  + ha $I \ne \emptyset$ és $J \ne \emptyset$ \RA
+    $\forall i \in I : \lambda + \bar{a}_i \bar{x} \le b_j$ és
+    $\forall j \in J : -\lambda + \bar{a}_j \bar{x} \le b_j$
+    + $\forall i \in I, j \in J: \bar{a}_j \bar{x} - b_j \le \lambda
+      \le \bar{b}_i - \bar{a}_i \bar{x}$ \RA $\forall i \in I, j \in J:
+      (\bar{a}_i + \bar{a}_j) \bar{x} \le b_i + b_j$
+    + $A^*, b^* =$ az $\bar{A}$ és $b$-ből $i \in I$ és $j \in J$
+      indexű sorait az összes lehetséges módon összeadjuk, a $k \in K$
+      indexű sorokat hozzávesszük és a csupa $0$ első oszlopot
+      elhagyjuk
+  + egyváltozós rendszer megoldása
+    + ha $\exists k \in K : b_k < 0$ \RA a rendszer nem megoldható
+    + ha $\max_{j \in J} -b_j > \min_{i \in I} b_i$ \RA a rendszer nem
+      megoldható
+    + egyébként \RA $x_1 \in \bigl[\max_{j \in J} -b_j, \min_{i \in I}
+      b_i\bigr]$ megoldás \qed
+
+\tetel{Farkas-lemma (két alakban). A lineáris program célfüggvénye
+  felülről korlátosságának feltételei.}
+
++ \lemma Farkas-lemma, 1.~alak
+  + tetszőleges $A$ és $b$ esetén az alábbi két rendszer közül
+    pontosan egynek van megoldása:\\
+    (1)~$Ax \le b$\qquad(2)~$yA = 0$, $y \ge 0$, $yb < 0$
++ \proof (1)~megoldható \RA (2)~nem megoldható
+  + $0 = 0x = (yA) x = y (Ax) \le yb < 0$, ellentmondás
++ (1)~nem megoldható \RA (2)~megoldható
+  + alkalmazzuk a Fourier`--Motzkin eliminációt az
+    (1)~egyenletrendszerre
+  + a feltevés szerint a kapott egyváltozós $(A^*|b^*)$ rendszer nem
+    megoldható
+    + ha van $(0|\beta)$, $\beta < 0$ sor
+      + $\exists$ $(A|b)$ sorainak olyan nemnegatív $y$ együtthatós
+      lin.~kombinációja, hogy\\
+        $y (A|b) = (0, 0, \ldots, 0|\beta)$ \RA $y$ kielégíti (2)-t
+    + ha van $(-1, \beta_j)$ és $(1,\beta_i)$ sor úgy, hogy $-\beta_j >
+    \beta_i$ \RA $\beta = \beta_i + \beta_j < 0$
+      + $\exists y_j \ge 0: y_j (A|b) = (0, 0, \ldots, 0, -1 | \beta_j)$
+        és $\exists y_i \ge 0: y_i (A|b) = (0, 0, \ldots, 0, 1 | \beta_i)$
+      + ekkor $y = y_i + y_j \ge 0$, $y (A|b)
+      = (0, 0, \ldots, 0 | \beta)$ \RA $y$ kielégíti (2)-t \qed
++ \lemma Farkas-lemma, 2.~alak
+  + tetszőleges $A$ és $b$ esetén az alábbi két rendszer közül
+    pontosan egynek van megoldása:\\
+    (1)~$Ax = b$, $x \ge 0$\qquad(2)~$yA \ge 0$, $yb < 0$
+  + \proof (1)~megoldható \RA (2)~nem megoldható
+    + $0 \le (yA)x = y(Ax) = yb < 0$, ellentmondás
+  + (2)~nem megoldható \RA (1)~megoldható
+    + vizsgáljuk az ekvivalens $y(-A) \le 0$, $yb = -1 < 0$  rendszert
+    + tömör alakban $(-A|b|-b)^\T y \le (0, 0, \ldots, 0, -1, 1)^\T$
+    + a lemma 1.~alakja szerint $\exists x: x (-A|b|-b)^\T = 0, x
+      \ge 0, x (0, 0, \ldots, 0, -1, 1)^\T < 0$
+    + legyen $x = (\bar{x} | \lambda, \mu)$ \RA $-A\bar{x} + (\lambda -
+      \mu)b = 0$, $\bar{x} \ge 0$, $\lambda, \mu \ge 0$, $-\lambda +
+      \mu < 0$
+    + ekkor $A\frac{\bar{x}}{\lambda - \mu} = b$ és $\lambda - \mu > 0$
+      miatt $\frac{\bar{x}}{\lambda - \mu} \ge 0$ \RA%
+      $\frac{\bar{x}}{\lambda - \mu}$ kielégíti (1)-et \qed
++ \thm \label{thm:linprog:farkas:3kalicka}ha $Ax \le b$ megoldható,
+  $c$ tetszőleges \RA az alábbi állítások ekvivalensek
+  + (1)~az $Ax \le b$ megoldáshalmazán $cx$ felülről korlátos
+  + (2)~nincs megoldása az $Az \le 0$, $cz > 0$ rendszernek
+  + (3)~van megoldása az $yA = c$, $y \ge 0$ rendszernek
+  + \proof (1) \RA (2), legyen $x_0$ (1) egy megoldása és
+    indir.~tfh.~$z$ (2) egy megoldása
+    + ekkor $A(x_0 + \lambda z) \le b$, de $\lambda > 0$ esetén
+      $c(x_0 + \lambda z) = c x_0 + \lambda c z$ tetszőlegesen nagy
+    + $cx$ nem felülről korlátos \RA ellentmondás
+  + (2) \RA (3), tekintsük a (nem megoldható) $z (-A)^\T \ge 0$, $z
+    (-c) < 0$ rendszert
+    + a Farkas-lemma 2.~alakja szerint $\exists y: (-A)^\T y = -c, y \ge 0$
+    + $(-A)^\T y = -c$ \RA $A^\T y = y A = c$ \RA ez az $y$ épp
+      kielégíti a (3)-as rendszert
+  + (3) \RA (1), legyen $y$ a (3)-as rendszer egy megoldása
+    + $cx = (yA)x = y (Ax) \overset{y \ge 0, Ax \le b}{\le} yb$ \RA%
+    $yb$ a $cx$ egy felső korlátja \qed
+
+\tetel{A lineáris programozás dualitástétele (két alakban). A lineáris
+  programozás alapfeladatának bonyolultsága (biz.~nélkül).}
+
++ \thm \label{thm:linprog:dual:dual}a lineáris programozás dualitástétele
+  + ha $\max \{ cx : Ax \le b \}$ (primál) program megoldható és
+    felülről korlátos, akkor
+    + (1)~$\min \{ yb : yA = c, y \ge 0 \}$ (duális) program megoldható és
+      alulról korlátos
+    + (2)~a primál programnak $\exists$ maximuma és a duális programnak
+      $\exists$ minimuma
+    + (3)~$\max \{ cx : Ax \le b \} = \min \{ yb : yA = c, y \ge 0 \}$
++ \lemma \label{lem:linprog:dual:t}legyen $A x \le b$ megoldható, $t
+  \in \RR$, de $A x \le b$, $cx \ge t$ nem megoldható
+  + ekkor a $yA = c$, $y \ge 0$, $yb < t$ rendszer megoldható
+  + \proof alkalmazzuk a Farkas-lemmát a $(A|-c) x \le (b|-t)$-re, $y
+    \coloneqq (\bar{y}|\lambda)$
+    + $\bar{y} A - \lambda c = 0$, $\bar{y} \ge 0$, $\lambda \ge 0$,
+      $\bar{y} b - \lambda t < 0$
+    + ha $\lambda = 0$ \RA $0 = 0 x = (\bar{y} A) x = \bar{y} (Ax)
+      \overset{\bar{y} \ge 0, Ax \le b}{\le} \bar{y} b < 0$ \RA%
+      lehetetlen
+    + ezek szerint $y = \frac{\bar{y}}{\lambda}$ létezik, $y A = c$,
+      $y \ge 0$, $yb < t$ \qed
++ \emph{\aref{thm:linprog:dual:dual}.~tétel bizonyítása:}
+  + (1): már beláttuk a ``3 kalickás tétel''
+  (\ref{thm:linprog:farkas:3kalicka}.~tétel) (1)~\LRA~(3) eseténél
+    + $cx \le yb$ miatt $cx$ felülről, $yb$ alulról korlátos
+  + (2), primál állítás: legyen $t = \sup \{ cx : Ax \le b \}$
+    + indir.~tfh.~$\nexists x : Ax \le b, (t \ge )\,cx \ge t$ \RA alkalmazzuk
+    \aref{lem:linprog:dual:t}.~lemmát
+    + $\exists y : yA = c, y \ge 0, yb < t$ \RA $y$ a duális egy
+      megoldása
+    +  $t = \sup \{ cx : Ax \le b \} \le yb < t$ \RA ellentmondás \RA $\exists$ primál
+      megoldás, hogy $cx \ge t$
+    + így a szuprémum egyben maximum kell legyen
+  + (2), duális állítás: $\min \{ yb : yA = c, y \ge 0 \} = - \max \{
+    -by : A^\T y \le c, -A^\T y \le -c, -y \le 0 \}$
+    + alkalmazzuk a primál állítást a duálisra, mint primál feladatra
+  + (3): indir.~tfh.~$\exists t : \max \{ cx : Ax \le b \} < t < \min
+    \{ yb : yA = c, y \ge 0 \}$
+    + a \aref{lem:linprog:dual:t}.~lemma szerint $\exists y : yA = c,
+      y \ge 0, yb < t$
+    + $t < \min \{ yb : yA = c, y \ge 0 \} < yb < t$ \RA ellentmondás
+    \qed
++ \thm \label{thm:linprog:dual:dual}a lineáris programozás
+  dualitástétele, ekvivalens alak
+  + ha $\max \{ cx : Ax \le b, x \ge 0 \}$ (primál) program megoldható és
+    felülről korlátos, akkor
+    + (1)~$\min \{ yb : yA \ge c, y \ge 0 \}$ (duális) program megoldható és
+      alulról korlátos
+    + (2)~a primál programnak $\exists$ maximuma és a duális programnak
+      $\exists$ minimuma
+    + (3)~$\max \{ cx : Ax \le b, x \ge 0 \} = \min \{ yb : yA \ge c,
+      y \ge 0 \}$
+  + \proof $\max \{ cx : (A | {-I}) x \le (b | 0) \}$ duálisa $\min \{ y
+    (b | 0) : y (A | {-I}) = 0, y \ge 0 \}$
+    + legyen $y = (y_1 | y_2)$ \RA $\min \{ y_1 b : y_1 A - y_2 = 0,
+      y_1 \ge 0, y_2 \ge 0\}$
+    + $y_1 A = y_2 \ge 0$ \RA a duális valóban
+      $\min \{ y_1 b : y_1 A \ge 0, y_1 \ge 0 \}$ alakú \qed
++ lineáris programozás bonyolultsága
+  + döntési probléma
+    + \DataIn $A$ mátrix, $b$ és $c$ vektorok, $t \in \RR$
+    + \DataOut van-e olyan $x$ vektor, melyre $Ax \le b$, $cx \ge t$
+  + NP-beli \ra tanú a feltételeket kielégítő $x$
+  + co-NP-beli \ra a dualitástétel szerint tanú egy $yA = c$, $y \ge
+    0$, $(cx \le )\,yb < t$ vektor
+  + 1947 (Dantzig): \emph{szimplex-módszer}
+    + nem polinomiális futásidejű, de a gyakorlatban gyors
+  + 1979 (Hacsijan): \emph{ellipszoid-módszer}
+    + polinomiális futásidejű \RA bizonyítja, hogy a feladat P-ben van
+    + gyakorlatban a szimplex sokkal hatékonyabb
+  + 1984 (\emph{Karmarkar}): polinomiális és a gyakorlatban is használható módszer
+
+\tetel{Egészértékű programozás: a feladat bonyolultsága, korlátozás és
+  szétválasztás (Branch and Bound). Totálisan unimoduláris mátrix
+  fogalma, példák. Egészértékű programozás totálisan unimoduláris
+  együtthatómátrixszal (biz.~nélkül).}
+
++ \dfn \emph{egészértékű programozás alapfeladata:} $\max_{x} \{ cx : Ax \le b, x
+  \text{ egész} \}$ (IP)
+  + duálisa $\min_{y} \{ yb : yA = c, y \ge 0, y \text{ egész} \}$ (DIP)
+  + $\max_{\IP} \le \max_{\LP} = \min_{\DLP} \le \max_{\DIP}$ \RA állhat
+    $<$ is, nincs általános dualitástétel
++ egészértékű programozás bonyolultsága
+  + döntési probléma
+    + \DataIn $A$ mátrix, $b$ és $c$ vektorok, $t \in \RR$
+    + \DataOut van-e olyan $x$ egészértékű vektor, melyre $Ax \le b$, $cx \ge t$
+  + NP-beli \ra tanú a feltételeket kielégítő $x$
+  + dualitástétel hiányában a co-NP beliség nem látható be
+  + \thm az egészértékű lineáris programozás NP-teljes
+    + \proof azt már láttuk, hogy IP $\in$ NP
+    + adunk egy MAXFTLN $\prec$ IP Karp-redukciót (MAXFTLN NP-teljes)
+    + a $G = (V, E)$ gráf $\forall$ $v_i$ csúcsához vegyünk fel egy
+      $x_i \in \ZZ$, $-x_i \le 0$, $x_i \le 1$ változót
+      + ha $v_i \in F$ a független ponthalmaz eleme, $x_i = 1$,
+        egyébként $x_i = 0$
+    + $\forall e = \{ v_i, v_j \} \in E$ élre vegyük még fel az $x_i +
+      x_j \le 1$ feltételt
+    + a célfüggvény $\sum_{v_i \in V} x_i = \lvert F \rvert$ \RA $c =
+      (1, 1, \ldots, 1)$
+    + $x$ maximumhely \LRA $F \subseteq E$ a $G$ maximális független
+      ponthalmaza
+      + $F$ független, mert $x_i + x_j \le 1$ \RA $\{ v_i,
+        v_j \} \in E$ legfeljebb egyik vége lehet $F$-beli
+      + ha $F' \subseteq E$ független, $\lvert F' \rvert > \lvert F
+        \rvert$ \RA $x'$ megoldás, $cx' > cx$
+      + $x$ nem lehet maximumhely \RA ellentmondás \qed
+    + hasonló 3-SAT $\prec$ IP redukciót is lehet adni (0-1
+      változók, termek \ra feltételek)
++ \alg Branch and Bound $\max \{ cx : Ax \le b, f \le x \le g; f, g, x
+  \text{ egész} \}$ problémára
+  + (IP) feladat szétvágása (IP)$'$ és (IP)$''$ feladatokra
+    + választunk egy $x_j$ \emph{elágazási változót} és $f_j \le t <
+      g_j$ közbülső értéket
+    + az új problémák (IP)$'$: (IP) $\cup\;g'_j \coloneqq t$ és
+      (IP)$''$: (IP) $\cup\;f''_j \coloneqq t$
+  + részproblémák $\mathcal{L} = \{ \text{(IP$^{(i)}$)} = (f^{(i)},
+    g^{(i)}, w^{(i)}) : i = 1, 2, \ldots\}$ listáját tartjuk karban,
+    ahol $\max \text{(IP$^{(i)}$)} \le w^{(i)}$
+  + $x^*$ az eddig megtalált legjobb megoldás, $z^* = c x^*$ a hozzá
+    tartozó függvényérték
+  + 0.~lépés: $\mathcal{L} \gets \{ (f, g, \infty) \}$, $z^* \gets
+    -\infty$, $x^*$ nem definiált
+  + 1.~lépés: ha $\mathcal{L} = \emptyset$ \RA STOP, egyébként
+    válasszunk egy (IP$^{(i)}$)-t és töröljük $\mathcal{L}$-ből
+  + 2.~lépés: ha $w^{(i)} \le z^*$ \RA nem lehet jobb megoldás, mint
+    az eddigi, GOTO 1.
+  + 3.~lépés: oldjuk meg az (IP$^{(i)}$)-nek megfelelő (LP$^{(i)}$)
+    relaxált LP feladatot
+    + ha $\nexists$ megoldás \RA GOTO 1., egyébként legyen
+      $x^{(i)}$ a megoldás és $c x^{(i)} = z^{(i)}$
+  + 4.~lépés
+    + (4\rlap{a}\phantom{b})~ha $z^{(i)} \le z^*$ \RA GOTO 1.,
+      $f^{(i)} \le x \le g^{(i)}$-ben már nincs jobb megoldás
+    + (4b)~ha $z^{(i)} > z^*$ és $x^{(i)}$ egész vektor \RA $x^* \gets
+      x^{(i)}$, $z^* \gets z^{(i)}$, GOTO 1.
+    + (4\rlap{c}\phantom{b})~ha $z^{(i)} > z^*$, de $x^{(i)}$ nem
+      egész vektor
+     + vágjuk két részre az (IP$^{(i)}$) problémát valamely $x_j$
+       elágazási változó mentén
+     + $\mathcal{L} \gets \mathcal{L} \cup \{(f^{(i)\prime},
+       g^{(i)\prime}, z^{(i)}), (f^{(i)\prime\prime},
+       g^{(i)\prime\prime}, z^{(i)})\}$, GOTO 1.
+  + \thm a B\&B véges sok lépésben leáll és megtalálja (IP) optimumát
+    + \proof $f$ és $g$ egész \RA véges sok részprobléma van \RA véges
+      sok lépés
+    + indir.~tfh.~az eljárás leállt, de $z^* < z_0$, ahol $z_0 = \max
+      \text{(IP)}$
+    + az algoritmus futása közben mindig volt olyan (IP$^{(i)}$) $\in
+      \mathcal{L}$, hogy $z_0 = \max \text{(IP$^{(i)}$)}$
+      + kezdetben ez maga (IP)
+      + $z_0 \le w^{(i)} \le z^* < z_0$ ellentmondás \RA (IP$^{(i)}$)
+        mindig eljut a 4.~lépésig
+      + (4\rlap{a}\phantom{b})~nem teljesülhet, mert $z_0 \le z^{(i)}
+        \le z^* < z_0$ ellentmondás
+      + (4b) után $z^* = z^{(i)} = z_0$ lesz \RA $z_0 = z^* < z_0$
+        ellentmondás
+      + (4\rlap{c}\phantom{b})-ben (IP$^{(i)}$) vágása után $z_0 = \max
+        \text{(IP$^{(i)}$)}{}'$ vagy $z_0 = \max \text{(IP$^{(i)}$)}{}''$
+    + $\mathcal{L}$ sosem lesz üres \RA az algoritmus nem áll le \RA
+      ellentmondás \qed
+  + \emph{branch and bound fa:} (IP) a gyökér, (IP$^{(i)}$) gyerekei
+    (IP$^{(i)}$)$'$ és (IP$^{(i)}$)$''$
+  + heurisztika (IP$^{(i)}$) választására
+    + LIFO, ha az (IP$^{(i)}$) a 3.~lépésben utoljára vizsgált probléma fia
+      + inkrementális megoldás \emph{duál szimplex módszerrel}
+    + egyébként válasszuk azt a problémát, amire $w^{(i)}$ maximális
+  + heurisztika az $x_j$ elágazási változó és $t$ választására
+    + $x_j$ az változó, aminek az $\bigl\{ x^{(i)}_j \bigr\}$ törtrésze
+      legközelebb van $\frac{1}{2}$-hez, $t \gets \bigl\lfloor
+      x^{(i)}_j \bigr\rfloor$
+  + a gyakorlatban még a heurisztikákkal sem mindig alkalmas nagy
+    problémákhoz
++ \dfn $B \in \RR^{k \times k}$ az $A$ mátrix \emph{négyzetes
+  részmátrixa}, ha $A$ tetszőleges $k$ sorának és $k$ oszlopának
+  kereszteződései határozzák meg
++ \dfn $A$ \emph{totálisan unimoduláris}, ha $\forall$ négyzetes
+  részmátrixára $\det = 0, 1 \text{ vagy } {-1}$
+  + \corr ha $A$ TU \RA $A$ minden eleme $0$, $1$ vagy $-1$ ($1 \times
+    1$-es részmátrix)
++ \lemma \label{lem:linprog:ip:tu}egy mátrix totálisan unimoduláris marad, ha
+  + (1)~egy sorát vagy oszlopát $(-1)$-gyel szorozzuk
+  + (2)~egységvektort veszünk hozzá új sorként vagy oszlopként
+  + (3)~egyik sorát (ill.~oszlopát) új sorként (ill.~oszlopként) új
+    példányban hozzávesszük
+  + (4)~transzponáljuk
+  + \proof csak azoknak a részmátrixoknak változik a $\det$-a,
+    amiket a módosítás érint
+    + (1)~sor vagy oszlop $(-1)$-gyel szorzása \RA $\det$ $(-1)$-gyel
+      szorzása \RA $0$, $1$, $-1$
+    + (2)~alkalmazzuk a kifejtési tételt az új sor/oszlop szerint
+      + csak egy nemnulla együtthatójú aldetermináns van
+      + az új részmátrix determinánsa megegyezik egy régébbiével \RA%
+        $0$, $1$ vagy $-1$
+    + (3)~két azonos sor/oszlop \RA $\det = 0$
+    + (4)~$\det B^\T = \det B$ \RA a determináns nem változik \qed
++ \example \label{ex:linprog:ip:directed}$\vec{G} = (V, \vec{E})$ irányított gráf $A \in \RR^{\lvert
+  V \rvert \times \lvert E \rvert}$ illeszkedési
+  mátrixsza TU
+  + \proof a $B \in \RR^{k \times k}$ részmátrixra $k$ szerinti teljes
+    indukcióval
+    + $k = 1$-re nyilván $\det B = 0, 1$ vagy $-1$, mert csak ez lehet
+      a mátrix eleme
+    + ha $B$-ben van csupa $0$ oszlop \RA $\det B = 0$
+    + ha $B$-ben van egyetlen $1$-est vagy $-1$-est tartalmazó oszlop
+      + fejtsük ki a determinánst eszerint az oszlop szerint
+      + az nem $0$ együtthatós $B' \in \RR^{(k - 1) \times (k
+        - 1)}$ aldet.-ra $\det B'$ jó az indukció  szerint
+      + a kifejtési tétel szerint $\det B = \pm \det B'$
+    + ha $B$ $\forall$ oszlopában van $1$ és $-1$ is \RA $(1, 1,
+      \ldots, 1) B = 0$ \RA $\det B = 0$ \qed
++ \example \label{ex:linprog:ip:bipartite}$G = (F, L; E)$ páros irányítatlan gráf $A$ illeszkedési
+  mátrixsza TU
+  + \proof irányítsuk $G$ éleit $F \to L$ irányba \RA $\vec{G}$
+    + a $\vec{G}$ irányított gráf $\vec{A}$ illeszkedési mátrixsza TU
+      \aref{ex:linprog:ip:directed}.~példa szerint
+    + szorozzuk meg az $\vec{A}$ mátrix $L$-hez tartozó sorait $(-1)$-gyel
+    + az így kapott mátrix épp $A$, és \aref{lem:linprog:ip:tu}.~lemma
+      miatt szintén TU \qed
++ \thm \label{ex:linprog:ip:iplp}ha $A$ TU mátrix, $b$ egész vektor, $c$ valós vektor
+  + és $\max \{ cx : Ax \le b \}$ (LP) megoldható és a maximuma véges
+  + \RA $\max \{ cx : Ax \le b, x \text{ egész} \}$ (IP) megoldható és
+    a maximuma véges
+  + és $\max \{ cx : Ax \le b \} = A \max \{ cx : Ax \le b, x \text{
+    egész} \}$
+  + \noproof
+
+\tetel{A lineáris és egészértékű programozás alkalmazása páros
+  gráfokra és intervallumrendszerekre: Egerváry tétele,
+  intervallumrendszerek egyenletes színezése.}
+
++ \thm (Egerváry Jenő tétele) legyen $G = (F, L; E)$ páros gráf, $w\colon E
+  \to \RR$ súlyfüggvény \RA a maximális összsúlyú párosítás összsúlya
+  $\min \sum_{v \in F \cup L} c(v)$, ahol a minimum
+  a nemnegatív $c\colon F \cup L \to \RR_{\ge 0}$ függvényeken értendő, melyekre
+  $\forall e = \{x, y\} \in E: c(x) + c(y) \ge w(e)$
+  + \proof legyen $G$ illeszkedési mátrixsza $B \in
+    \RR^{\lvert F \cup L \rvert \times \lvert E \rvert}$
+  + a $B x \le (1, 1, \ldots, 1)^\T$, $x \ge 0$, $x$ egész rendszer
+    minden megoldása $0$-$1$ értékű
+    + az $1$ komponensek $G$ egy független élhalmazát (párosítását)
+      határozzák meg
+  + $\max \{ wx : Bx \le (1, 1, \ldots, 1)^\T, x \ge 0, x \text{
+    egyész} \}$ megoldása maximális súlyú párosítás
+  + $B$ TU mátrix (\ref{ex:linprog:ip:bipartite}.~példa) \RA
+    $\max_{\IP} = \max_{\LP}$ (\ref{ex:linprog:ip:iplp}.~tétel)
+  + $\max \{ wx : Bx \le (1, 1, \ldots, 1)^\T, x \ge 0 \} = \min \{ y
+    (1, 1, \ldots, 1)^\T : yB \ge w, y \ge 0 \}$
+  + az $y$ duális megoldás $\forall$ csúcshoz egy $c(v_i) = y_i$
+    címkét rendel
+    + $y B \ge w$ \RA $\forall \{x, y\} \in E: c(x) + c(y) = w(\{x,
+    y\})$ \qed
++ \dfn $G = (\mathcal{I}, E)$ \emph{intervallumgráf}, ha $\mathcal{I}
+  = \{I_1, I_2, \ldots, I_m \}$ intervallumok rendszere és $\{ I_i, I_j
+  \} \in E$ \LRA $I_i \cap I_j \ne \emptyset$
+  + ált.~megsz. nélkült feltehető, hogy $\forall I \in \mathcal{I}$ az $[1, n]$
+  egész végpontú, zárt részintervalluma
++ $A(\mathcal{I}) \in \RR^{n \times m}$, ahol $\mathcal{I}$ $[1, n]$ egész
+  végpontú intervallumrendszer, $a_{i, j} = \text{\footnotesize$\begin{cases}
+      1, &\text{ha $i \in I_j$,} \\
+      0, &\text{ha $i \notin I_j$}
+    \end{cases}$}$
+  + \lemma az így definiált $A(\mathcal{I})$ mátrix TU
+  + \proof teljes indukcióval $A$ egyeseinek száma szerint
+    + ha $A$-ban $0$ db egyes van \RA $\det A = 0$
+    + $\forall$ oszlopban egy darabig $0$-k, utána $1$-esek, majd
+      megint $0$-k vannak
+    + ha $\exists$ két oszlop, ahol ugyanott van a legfelső egyes
+      + a több egyes tartalmazóból a másikat kivonva csökken az
+        egyesek száma
+      + ez nem változtatja a $\det$-t \RA ind.~feltevés szerint
+        $\det = 0, 1$ vagy $-1$
+    + ha $\exists$ csupa $0$ oszlop \RA $\det = 0$
+    + egyébként minden oszlopban máshol van a legfelső egyes
+      + sor- és oszlopcserékkel alsó háromszögmátrixszá alakítható \RA%
+      $\det = \pm 1$ \qed
++ \thm \label{thm:liprog:app:interval}az $[1, n]$ egész végpontú, zárt
+  $I_1, I_2, \ldots, I_m$
+  részintevallumai $\forall k \in \ZZ^{+}$-re megszínezhetőek $k$
+  színnel úgy, hogy ha az $i$-t $d_i$ db intervallum tartalmazza,
+  akkor ezek között minden színből vagy $\bigl\lfloor \frac{d_i}{k}
+  \bigr\rfloor$ vagy $\bigl\lceil \frac{d_i}{k} \bigr\rceil$ van
+  + \proof válasszunk ki néhány intervallumot úgy, hogy $\forall i$-re
+    $\bigl\lfloor \frac{d_i}{k} \bigr\rfloor$ vagy $\bigl\lceil
+    \frac{d_i}{k} \bigr\rceil$ kiválasztott intervallum tartalmazza
+    $i$-t
+    + ezt az eljárást ismételhetjük $k - 1$-re, $k - 1$-re, \ldots, $1$-re
+    + így épp $k$ színnel színezhetőek az intervallumok a megadott
+      feltételnek megfelelően
+  + legyen $A = A(\mathcal{I})$,
+    $\bigl\lfloor \frac{d}{k} \bigr\rfloor$ $i$.~komponense
+    $\bigl\lfloor \frac{d_i}{k} \bigr\rfloor$, $\bigl\lceil \frac{d}{k}
+    \bigr\rceil$ hasonló
+  + $\bigl\lfloor \frac{d}{k} \bigr\rfloor \le A x \le
+    \bigl\lceil \frac{d}{k} \bigr\rceil$, $0 \le x \le (1, 1, \ldots,
+    1)^\T$ megoldható, pl.~$x = \bigl( \frac{1}{k}, \frac{1}{k},
+    \ldots, \frac{1}{k} \bigr)$ megoldás
+    + \aref{ex:linprog:ip:iplp}.~tétel miatt $\exists$ egészértékű
+      ($0$-$1$) megoldás \RA ez épp egy jó kiválasztás \qed
++ \dfn a $G$ gráf \emph{perfekt}, ha $\chi(F) = \omega(F)$ $\forall F
+  \subseteq G$ feszített részgráfjára
+  + $\chi$ a kromatikus szám, $\omega$ a klikkszám
++ \corr minden intervallumgráf perfekt
+  + \proof a $G$ intervallumgráf minden feszített részgráfja intervallumgráf
+    + elég belátni, hogy $\chi(G) = \omega(G)$
+  + alkalmazzuk \aref{thm:liprog:app:interval}.~tételt $k =
+    \omega(G)$ választással
+    + $\forall i: d_i \le \omega(G)$ \RA $\forall$ klikkben $\forall$ színt
+      legfeljebb egyszer használtuk
+    + a kapott színezés egy jó színezés \RA $\chi(G) \le k = \omega(G)$
+  + mivel minden gráfban $\chi(G) \ge \omega(G)$ \RA $\chi(G) =
+    \omega(G)$ \qed
+
+\tetel{A lineáris és egészértékű programozás alkalmazása hálózati
+  folyamproblémákra: a maximális folyam, a minimális költségű folyam
+  és a többtermékes folyam feladatai, ezek hatékony megoldhatósága a
+  tört-, illetve egészértékű esetben.}
+
++ legyen $G = (V, E)$ irányított gráf, $s, t \in V$, $c\colon E \to
+  \RR_{+}$ \emph{kapacitásfüggvény}
+  + jelölje $x\colon E \to \RR_{\ge 0}$ $v \in V$-be belépő éleken felvett
+    összegét $\rho_x(v)$
+  + jelölje $x$ a $v$-ből kilépő éleken felvett összegét $\delta_x(v)$
+  + \dfn $x\colon E \to \RR_{\ge 0}$ \emph{folyam}, ha $\forall v \in
+    V - \{ s, t\}: \rho_x(v) = \delta_x(v)$
+  + \dfn $x$ folyam \emph{megengedett}, ha $\forall e
+    \in E : x(e) \le c(e)$
+  + \dfn az $x$ megengedett folyam \emph{értéke} $\delta_x(s) - \rho_x(s) =
+    \rho_x(t) - \delta_x(t)$
++ \dfn a $C = (S, T)$ \emph{vágás}, ha $S \cup T = V$, $S \cap T =
+  \emptyset$, $s \in S$, $t \in T$
+  + \dfn a $C = (S, T)$ vágás \emph{értéke} $m_C = \sum_{(x, y) \in E,
+    x \in S, y \in T} c(x, y)$
+  + tetszőleges $C$ vágás értéke felső becslés minden folyam nagyságára
++ \lemma \label{lem:linprog:folyam:folyam}ha $x\colon E \to \RR_{\ge
+  0}$-ra $\forall v \in V - \{s, t\}: \rho_x(v) \ge \delta_x(v)$ és
+  $\rho_x(t) \ge \delta_x(s)$ \RA $x$ folyam
+  + \proof az $S = \sum_{v \in V - \{s, t\}} \rho_x(v) - \delta_x(v)$
+    összeg $\forall$ tagja nemnegatív \RA $0 \le S$
+  + vegyük észre, hogy $S = \delta_x(s) - \rho_x(t)$
+    + ha $e = (u, v)$, $u \ne s$, $v \ne t$ \RA $x(e)$ pozitív és
+      negatív előjellel is megjelenik $S$-ben
+    + ha $u = s$, $v \ne t$ \RA $x(e)$ csak $+$ előjellel jelenik meg
+      $\rho_x(v)$-nél
+    + ha $u \ne s$, $v =e t$ \RA $x(e)$ csak $-$ előjellel jelenik meg
+      $\delta_x(u)$-nál
+    + az $e = (s, t)$ él nem jelenik meg $S$-ben, és kiesik
+      $\delta_x(s) - \rho_x(t)$-ben
+  + $0 \le S = \delta_x(s) - \rho_x(t) \le 0$ \RA $S = 0$
+    + ez csak úgy lehet, ha $\forall$ (nemnegatív) tag $= 0$ \RA%
+      $\forall v \in V - \{ s, t\}: \rho_x(v) = \delta_x(v)$ \qed
++ \prob maximális értékű folyam
+  + \DataIn $G = (V, E)$ irányított gráf, $s, t \in V$, $c\colon E \to
+    \RR^{+}$ kapacitásfüggvény
+  + \DataOut az $x$ maximális értékű folyam
+  + legyen $G$ illeszkedési mátrixsza $B$, ennek $v \in V$-hez tartozó
+    sora $b_v$
+  + legyen $G^* \coloneqq (V, E^*)$, $E^* \coloneqq E \cup \{(t,
+    s)\}$, az illeszkedési mátrixsza $B^* = (B|b^*)$
+  + ha $x^* = (x|\mu)$ és $B^* x^* \le 0$
+    + $\forall v \in V - \{s, t\} : b_v x \le0$ \RA $\delta_x(v) -
+      \rho_x(v) \le 0$ \RA $\delta_x(v) \le \rho_x(v)$
+    + $s$-re és $t$-re nézve  $\delta_x(s) - \mu \le 0$ és
+      $-\rho_x(t) + \mu \le 0$ \RA $\delta_x(s) \le \mu \le \rho_x(t)$
+    + \aref{lem:linprog:folyam:folyam}.~lemma szerint $x$ valóban
+      folyam, az értéke $\mu$
+  + max.~folyam lineáris programja: $\max \{ (0, 0, \ldots, 0, 1) x^*
+    : B^* x^* \le 0, x^* \ge 0, x \le c\}$
+    + ekvivalensen $\max \{ \mu : (B^* | \text{``$I$''}) (x, \mu | x)
+      \le (0 , 0 | c), x \ge 0, \mu \ge 0 \}$
+    + a második ``egységmátrixból'' hiányzik az $e^* = (t, s)$-hez
+      tartozó oszlop
+  + a duális feladatot a kényelmesen a dualitástétel ekvivalens
+    alakjából kapjuk
+    + $\forall v \in V$ csúcshoz $\pi(v)$ és $\forall e \in E$ élhez
+      $w(e)$ változó
+    + $\min \{ \sum_{e} w(e) c(e) : \forall v: \pi(v) \ge 0; \forall
+      e = (u, v): w(e) \ge 0, \pi(u) - \pi(v) + w(e) \ge 0; \\
+      \phantom{\min\{} \pi(t) - \pi(s) \ge 1\}$
++ \thm \label{thm:linprog:folyam:dlp}a fenti duális minimuma épp a maximális hálózati folyam értéke
+  + \proof (\LA) tetszőleges $C = (S, T)$ vágáshoz $\exists \pi,
+    w: \sum_{e} w(e) c(e) = m_C$
+    + legyen $\pi(v) = \text{\footnotesize$\begin{cases}
+        0, &\text{ha $v \in S$,} \\
+        1, &\text{ha $v \in T$}
+      \end{cases}$}$, $w(u, v) = \text{\footnotesize$\begin{cases}
+        0, &\text{ha $u \in S$, $v \in T$} \\
+        1, &\text{egyébként}
+      \end{cases}$}$
+    + ez kielégíti a feltételeket, és $\sum_{e} w(e) c(e)$ tényleg a
+      vágás értéke
+  + (\RA) a duális feladdat mátrixsza TU ($G$ illeszkedési mátrixsza +
+    egységvektorok)
+    + a jobb oldal egészértékű \RA $w$ és $\pi$ is lehet
+      egészértékű az optimális megoldásban
+    + készítünk egy $0$-$1$ megoldást:
+      $\pi'(v) \coloneqq \text{\footnotesize$\begin{cases}
+        0, &\text{ha $\pi(v) \le \pi(s)$,} \\
+        1, &\text{ha $\pi(v) > \pi(s)$}
+      \end{cases}$}$, $w'(e) \coloneqq \text{\footnotesize$\begin{cases}
+        0, &\text{ha $w(e) = 0$,} \\
+        1, &\text{ha $w(e) \ge 1$}
+      \end{cases}$}$
+      + $\pi'(t) - \pi'(s) \ge 0$, mert $\pi(t) - \pi(s) \ge 0$ miatt
+        $\pi(t) > \pi(s)$ teljesült
+      + ha $\pi'(u) - \pi'(v) + w(u, v) < 0$ \RA $\pi'(u) = 0$, $\pi'(v)
+        = 1$, $w(u, v) = 0$
+      + de $\pi(u) \le \pi(s) < \pi(v)$, $w(e) = 0$ \RA%
+        $\pi(u) - \pi(v) + w(e) < 0$, ellentmondás
+    + $\forall e: w'(e) \le w(e)$ \RA $\sum_e w'(e) c(e) \le \sum_e
+      w(e) c(e)$ \RA $(\pi', w')$ tényleg optimális
+    + $S = \{v : \pi'(v) = 0\}$, $T = \{v : \pi'(v) = 1\}$ egy vágás,
+      $m_C = \sum_e w'(e) c(e)$
+    + a minimális kapacitású vágás kapacitása tényleg a duál optimuma
+      + a dualitástétel miatt ez a primál optimuma
+      + ami épp a maximális folyam nagysága \qed
+  + beláttuk, hogy a maximális folyam polinomiális időben
+    meghatározható
+    + pl.~ellipszoid módszerrel
+      + de a gyakorlatban Edmonds`--Karp algoritmusa nem használ LP-t
+    + $(B^* | \text{``$I$''})$ TU \RA ha $c$ egész, a maximális
+      egészértékű folyam is meghatározható
++ \thm (Ford`--Fulkerson) a maximális hálózati folyam nagysága
+  megegyezik a minimális kapacitású vágás kapacitásával
+  + \proof \aref{thm:linprog:folyam:dlp}.~tétel alapján triviális \qed
++ \prob minimális költségű folyam
+  + \DataIn $G = (V, E)$, $s, t \in V$, $c\colon E \to \RR^+$,
+    $k\colon E \to \RR_{\ge 0}$ \emph{költségfüggvény}, $M$
+    folyamérték
+  + \DataOut $x$ legalább $M$ értékű, minimális $\sum_{e \in E} k(e)
+    x(e)$ költségű folyam
+  + $\max \{ -kx : B^* x^* \le 0, x^* \ge 0, x \le c, \mu \ge M \}$ LP
+    feladat \RA polinomiális időben megoldható
+  + ha $c$ és $M$ egész \RA az IP verzió is polinomiális, mert a
+    mátrix megint TU
++ \prob többtermékes folyamprobléma
+  + \DataIn $G = (V, E)$, $(s_1, t_1), (s_2, t_2), \ldots, (s_k,
+    t_k)$, $c\colon E \to \RR^+$
+  + \DataOut $x_1, x_2, \ldots, x_2$ folyamok, melyekre $\forall e \in
+    E: \sum_{i = 1}^k x_i(e) \le c(e)$ és az összes folyamnagyság
+    $\sum_{i = 1}^k \delta_{x_i}(s) - \rho_{x_i}(t)$ maximális
+  + legyen $B_i^*$ a $G_i^* = (V, E \cup (t_i, s_i))$ illeszkedési
+    mátrixsza, $x_i^* = (x_i, \mu_i)$
+  + $\max \bigl\{ \sum_{i = 1}^k \mu_i : \forall_{i = 1}^k B_i^* x_i^*
+    \le 0, x_i^* \ge 0; \bigl( \sum_{i = 1}^k x_i \bigr) \le c
+    \bigr\}$ \RA polinomiális időben megoldható
+  + az egészértékű változat $k \ge 2$ esetén nem TU
+    + ha $k = 1$ \RA maximális folyam probléma, egész $c$ esetén
+      polinomiális
+    + ha $k = 2$ \RA a feladat NP-nehéz (\noproof)

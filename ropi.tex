@@ -406,6 +406,18 @@
         karakterisztikája $\ne 2$ \qed
   + \corr az $\FF_7 \oplus \FF_7^-$ matroid nem lineáris
     + $T$ karakteriszikája egyszerre kellene $2$ és nem $2$ legyen
++ \example példák matroidokra
+  \par
+  {\centering\begin{tabular}{>{\footnotesize}l|l||>{\footnotesize}l|l}
+    nem lineáris & $\FF_7 \oplus \FF_7^-$ &
+    lineáris, de nem bináris & $\UU_{4, 2}, \FF_7^-$ \\\hline
+    bináris, de nem reguláris & $\FF_7$ &
+    reguláris, de nem grafikus & $\MM(K_5) \oplus [\MM(K_5)]^*$ \\\hline
+    grafikus, de nem kografikus & $\MM(K_5)$ &
+    kografikus, de nem grafikus & $[\MM(K_5)]^*$ \\\hline
+    grafikus és kografikus & \multicolumn{3}{l}{$\MM(G)$, $G$ síkbarajzolható}
+  \end{tabular}\par}
+  + $K_5$ helyett tetszőleges nem síkbarajzolható gráf (pl.~$K_{3,3}$) állhat
 + \thm Tutte tételei
   + $\MM$ bináris \LRA nem minorja az $\UU_{4, 2}$
     + $\UU_{4, 2}$ rangja $2$, de $2$ dimenziós bináris vektorokból
@@ -421,19 +433,17 @@
     + ha $\MM(G)$ egy $G'$ gráf $[\MM(G')]^*$ vágásmatroidja, akkor
       $\MM(G)$ kografikus és $G'$ síkbarajzolható kell legyen
   + \noproof
-+ \example példák matroidokra
-  \par
-  {\centering\begin{tabular}{>{\footnotesize}l|l||>{\footnotesize}l|l}
-    nem lineáris & $\FF_7 \oplus \FF_7^-$ &
-    lineáris, de nem bináris & $\UU_{4, 2}, \FF_7^-$ \\\hline
-    bináris, de nem reguláris & $\FF_7$ &
-    reguláris, de nem grafikus & $\MM(K_5) \oplus [\MM(K_5)]^*$ \\\hline
-    grafikus, de nem kografikus & $\MM(K_5)$ &
-    kografikus, de nem grafikus & $[\MM(K_5)]^*$ \\\hline
-    grafikus és kografikus & \multicolumn{3}{l}{$\MM(G)$, $G$ síkbarajzolható}
-  \end{tabular}\par}
-  + $K_5$ helyett tetszőleges nem síkbarajzolható gráf (pl.~$K_{3,3}$) állhat
-  + $\UU_{n, k}$ pontosan akkor grafikus, ha $k = 0, 1, n - 1$ vagy $n$
++ \thm $\UU_{n, k}$ pontosan akkor grafikus, ha $k = 0, 1, n - 1$ vagy
+  $n$
+  + \proof $\UU_{n, 0}$ egy csúccsal és $n$ hurokkal reprezentálható,
+    $\UU_{n, 1}$ $n$ párhuzamos éllel
+  + $\UU_{n, n - 1}$ $n$ élű körrel reprezentálható, $\UU_{n, n}$ $n$
+    elű erdővel
+  + $\UU_{n, k} \setminus \{a\} = \UU_{n - 1, k}$, $\UU_{n, k} / \{a\}
+    = \UU_{n - 1, k - 1}$
+    + ha $2 \le k \le n - 2$ \RA $\UU_{n, k}$-nak van $\UU_{4, 2}$
+      minorja
+    + ehhez $n - k - 2$ törlés és $k - 2$ összehúzás kell \qed
 
 \tetel{Matroidok összege. $k$-matroid-metszet probléma, ennek
   bonyolultsága $k \ge 3$ esetén.}
