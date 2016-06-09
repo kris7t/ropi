@@ -453,6 +453,9 @@
   (E, \FF')$ halmazrendszer, ahol
   $\FF' = \{ X_1 \cup X_2 \cup \ldots \cup X_k :  X_i \in \FF_i \; (i = 1, 2,
   \ldots, k) \}$
+  + $\bigvee_{i = 1}^k (\MM_i \setminus X) = \bigl( \bigvee_{i = 1}^k
+    \MM_i \bigr) \setminus X$, de az $/$ és a $\oplus$ műveletekre ez
+    már nem igaz
 + \thm matroidok $\bigvee_{i = 1}^k \MM_i$ összege matroidot alkot
   + \proof $\MM_1 \vee (\MM_2 \vee \MM_3) = (\MM_1 \vee \MM_2) \vee
     \MM_3$ \RA elegendő $\MM_1 \vee \MM_2$-t vizsgálni
@@ -514,16 +517,90 @@
     + $(\MM_1, \MM_2, \MM_3) \in \text{$3$-MPP}$ \LRA $(\MM_1, \MM_2,
       \overbrace{\MM_3, \MM_3, \ldots, \MM_3}^{\text{$k - 2$ db}}) \in
       \text{$k$-MPP}$
-  + irányított HAMÚT $\prec$ $3$-MMP \RA $3$-MPP NP-teljes
+  + irányított $s$-$t$-HAMÚT $\prec$ $3$-MMP \RA $3$-MPP NP-teljes
     + $\MM_1 = \MM(G)$
     + $\FF(\MM_2) =$ azon élhalmazok, melyekben $\forall$ pont be-foka
-      $\le 1$ (partíciós matroid)
+      $\le 1$, $d_{\text{be}}(s) = 0$
+      + egy partíció-matroidból kapjuk $s$ bemenő éleinek összehúzásával
     + $\FF(\MM_3) =$ azon élhalmazok, melyekben $\forall$ pont
-      \rlap{ki-foka}\phantom{be-foka} $\le 1$ \qed
+      \rlap{ki-foka}\phantom{be-foka} $\le 1$,
+      $d_{\text{\rlap{ki}\phantom{be}}}(\mathrlap{t}\phantom{s}) = 0$
+    + $p = \lvert V \rvert - 1$ \RA $X \in \FF_1, \FF_2, \FF_3$;
+      $\lvert X \rvert \ge p$ épp $s$-$t$ Hamilton-út \qed
 
 \tetel{A $k$-matroid partíciós probléma, ennek algoritmikus
   megoldása. A $2$-matroid-metszet feladat visszavezetése matroid
   partíciós problémára.}
+
++ \prob $k$-matroid partíció ($k$-MPP)
+  + \DataIn $\MM_1 = (E, \FF_1), \MM_2 = (E, \FF_2), \ldots, \MM_k = (E,
+    \FF_k)$
+  + \DataOut $E$ független-e $\bigvee_{i = 1}^k \MM_i$-ben? \LRA
+    $\bigvee_{i = 1}^k \MM_i \overset{?}{=} (E, 2^E)$
+    + \LRA $\overset{?}{\exists} E_1 \in \FF_1, E_2 \in \FF_2, \ldots,
+      E_k \in \FF_k : E = E_1 \cup E_2 \cup \ldots \cup E_k$
++ \alg $k$-matroid partíció algoritmus\footnote{Edmonds, J.~és
+  D.~R.~Fulkerson (1965). Transversals and Matroid Partition. In:
+  \emph{J.~OF~RESEARCH of the Nat.~Bureau of Standards---B.~Math.~and
+    Math.~Phys.~Vol.~69B, No.~3}}
+  + 0.~lépés: $E_1 \gets \emptyset$, $E_2 \gets \emptyset$, \ldots,
+    $E_k \gets \emptyset$
+  + 1.~lépés ha $\bigcup_{i = 1}^k E_i = E$ \RA STOP, igaz
+  + 2.~lépés van-e $x \in E - \bigcup_{i = 1}^k E_i$, hogy
+    $\bigcup_{i = 1}^k E_i \cup \{x\}$-t partícionálható?
+    + ha igen \RA legyen $E_1, E_2, \ldots E_k$ az új partícionálás,
+      GOTO 1.
+    + ha nem \RA STOP, hamis
+  + irányított $\vec{G} = (V, \vec{E})$ segédgráf konstrukció a
+    2.~lépés elvégzéséhez
+    + $V = E \cup P = E \cup \{ p_1, p_2, \ldots, p_k\}$
+    + $(a, p_i) \in \vec{E}$ \LRA $a \notin E_i$, de $E_i \cup \{a\}
+      \in \FF_i$
+    + $(a, b) \in \vec{E}$ \LRA valamely $i$-re $b \in E_i$, $a \notin
+      E_i$, $E_i \cup \{a\} \notin \FF_i$, $E_i \cup \{a\} - \{b\} \in
+      \FF_i$
+  + szélésségi kereséssel keressük meg a legrövidebb utat $E' = E -
+    \bigcup_{i = 1}^k E_i$-ből $P$-be
+    + van \RA $(a, b)$-kre $b \in E_i$ esetén $E_i \gets
+      E_i \cup \{a\} - \{b\}$; $(a, p_i)$-re $E_i \gets E_i
+      \cup \{a\}$
+      + $\vec{G}$ definíciója miatt még $\forall E_i \in
+        \FF_i$; $E'$ mérete $1$-gyel (út első csúcsa) nőtt
+    + nincs \RA legyen $X \subset E$ az $E'$-ből irányított úton
+      elérhető csúcsok halmaza
+      + $r(X) \le \sum_{i = 1}^k r_i(X) < \lvert X \rvert$ \RA $E
+        \supset X \notin \bigcup_{i = 1}^k \FF_i$
+        $\xRightarrow{\text{(F2)}}$ $E$ nem lehet
+        független
+  + lépésszám: $O(\lvert E \rvert + \overbrace{c (n +
+    k)^2}^{\text{gráf}} + \overbrace{c (n +
+    k)^2}^{\text{szélességi}})$
++ \thm az $\MM_1 = (E, \FF_1)$ és $M_2 = (E, \FF_2)$ azonos rangú
+  ($r_1(E) = r_2(E)$) matroidoknak pontosan akkor van közös bázisa, ha
+  $\MM_1 \vee \MM_2^* = (E, 2^E)$
+  + (\RA) ha $B$ közös bázis, akkor $E - X$ bázisa $\MM_2^*$-nak
+    + $E = X \cup (E - X)$ független az összegben \RA $\MM_1 \vee
+      \MM_2^*$ teljes
+  + (\LA) legyen $E = E_1 \cup E_2$, $E_1 \in \FF_1$, $E_2 \in
+    \FF_2^*$
+    + $\lvert E \rvert \le \lvert E_1 \rvert + \lvert E_2 \rvert =
+      r_1(E_1) + r_2^* (E_2) = r_1(E_1) + (\lvert E \rvert - r_2(E) +
+      r_2(E - E_2)) \le\\\phantom{\lvert E \rvert}\le r_1(E) + (\lvert E
+      \rvert - r_2(E)) = \lvert E \rvert$
+    + mindenhol egyenlőség kell álljon, tehát $\lvert E \rvert \le
+    \lvert E_1 \rvert + \lvert E_2$ \RA $E_1 = E - E_2$
+    + $r_1(E_1) = r_1(E)$, $r_2(E) = r_2(E - E_2) = r_2(E_1)$ \RA%
+      $E_1$ közös bázis \qed
++ \corr $2$-MMP visszavezetése $2$-MPP
+  + legyen $\MM_1' = (E, \FF_1')$,  $\MM_2' = (E, \FF_2')$, ahol
+    $\FF_i' = \{ X \in \FF_i : \lvert X \rvert \le p \}$ a matroidok
+    \emph{csonkoltjai}
+  + $\forall$ $p$ méretű független halmaz bázis a megfelelő csonkolt
+    matroidban
+  + $\MM_1' \vee (\MM_2')^* = (E, 2^E)$ \LRA $\MM_1'$-nek és
+    $\MM_2'$-nek van közös bázisa
+  + ez a bázis a $2$-MMP-ben keresett $p$ méretű közös
+  független halmaz $\MM_1$-ben és $\MM_2$-ben
 
 \tetel{$k$-polimatroid rangfüggvény fogalma. A
   $2$-polimatroid-matching probléma, ennek bonyolultsága, Lovász
