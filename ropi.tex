@@ -448,6 +448,79 @@
 \tetel{Matroidok összege. $k$-matroid-metszet probléma, ennek
   bonyolultsága $k \ge 3$ esetén.}
 
++ \dfn az $\MM_1 = (E, \FF_1), \MM_2 = (E, \FF_2), \ldots, \MM_k = (E,
+  \FF_k)$ matroidok \emph{összeg}e az $\NN = \bigvee_{i = 1}^k \MM_i =
+  (E, \FF')$ halmazrendszer, ahol
+  $\FF' = \{ X_1 \cup X_2 \cup \ldots \cup X_k :  X_i \in \FF_i \; (i = 1, 2,
+  \ldots, k) \}$
++ \thm matroidok $\bigvee_{i = 1}^k \MM_i$ összege matroidot alkot
+  + \proof $\MM_1 \vee (\MM_2 \vee \MM_3) = (\MM_1 \vee \MM_2) \vee
+    \MM_3$ \RA elegendő $\MM_1 \vee \MM_2$-t vizsgálni
+  + (F1): $\emptyset = \emptyset \cup \emptyset \in \FF_1 \vee \FF_2$
+  + (F2): $X = X_1 \cup X_2$, $X_1 \in \FF_1$, $X_2 \in \FF_2$, $Y
+    \subseteq X$
+    + ekkor $X_1 \supseteq Y \cap X_2 \in \FF_1$, $X_2
+      \supseteq Y \cap X_2 \in \FF_2$, $(Y \cap X_2) \cup (Y \cap X_2) =
+      Y \in \FF'$
+  + (F3): legyen $X, Y \in \FF'$; $\lvert X \rvert > \lvert Y \rvert$;
+    $X = X_1 \cup X_2$; $Y = Y_1 \cup Y_2$; $X_1, X_2 \in \FF_1$; $Y_1,
+    Y_2 \in \FF_2$
+    + ált.~megsz.~nélkül~tfh.~$\rvert X_1 \cap Y_2 \lvert +
+      \lvert X_2 \cap Y_1 \rvert$ minimális, $X_1 \cap X_2 = Y_1 \cap
+      Y_2 = \emptyset$
+    + ált.~megsz.~nélkül~tfh.~$\lvert X_1 \rvert > \lvert Y_1 \rvert$
+      \RA $\exists e \in X_1 - Y_1 : Y_1 \cup \{ e \} \in \FF_1 \subseteq \FF_1$
+    + ha $e \notin Y_2$ \RA $e \in X - Y$, $Y \cup \{ e \} = (Y_1 \cup \{e\}) \cup
+      Y_2 \in \FF'$
+    + ha $e \in Y_2$ \RA $Y = Y_1' \cup Y_2' = (Y_1 \cup \{e \})
+      \cap (Y_2 - \{e \})$ is egy jó felbontása $Y$-nak
+      + vegyük észre, hogy $X_1 \cap X_2 = \emptyset$, $e \in X_1$ \RA $e \notin X_2$
+      + $\rvert X_1 \cap (Y_2 - \{e\}) \lvert + \lvert X_2 \cap (Y_1
+        \cup \{e\}) \rvert = \rvert X_1 \cap Y_2 \lvert - 1 + \lvert X_2
+        \cap Y_1 \rvert$
+      + a metszetek méretének összege nem lehetett minimális,
+        ellentmondás \qed
++ \dfn az $\MM_1 = (E, \FF_1), \MM_2 = (E, \FF_2), \ldots, \MM_k = (E,
+  \FF_k)$ matroidok \emph{metszet}e az $(E, \FF')$ halmazrendszer, ahol
+  $\FF' = \bigcap_{i = 1}^k \FF_i$
+  + ez nem mindig matroid, pl.~%
+  $\MM\mleft(\begin{tikzpicture}[baseline=-.5ex,font=\footnotesize]
+    \node (a) [vertex] at (0,0) {};
+    \node (b) [vertex] at (0.8,0) {};
+    \node (c) [vertex] at (1.6,0) {};
+    \draw (a) edge node [above] {1} (b);
+    \draw (b) edge [bend left] node [above] {2} (c);
+    \draw (b) edge [bend right] node [below] {3} (c);
+  \end{tikzpicture}\mright)$ és
+  $\MM\mleft(\begin{tikzpicture}[baseline=-.5ex,font=\footnotesize]
+    \node (a) [vertex] at (0,0) {};
+    \node (b) [vertex] at (0.8,0) {};
+    \node (c) [vertex] at (1.6,0) {};
+    \draw (b) edge node [above] {2} (c);
+    \draw (a) edge [bend left] node [above] {1} (b);
+    \draw (a) edge [bend right] node [below] {3} (b);
+  \end{tikzpicture}\mright)$
+  metszete nem az, mert $\FF' = \{ \emptyset, \{1\}, \{2\}, \{3\},
+    \{2, 3\}\}$ \RA (F3) nem teljesül
++ \prob (súlyozott) $k$-matroid metszet ($k$-MMP)
+  + \DataIn $\MM_1 = (E, \FF_1), \MM_2 = (E, \FF_2), \ldots, \MM_k = (E,
+    \FF_k)$, $p \in \Nat$ ($w\colon E \to \RR_{\ge 0}$, $W \in \RR_{\ge 0}$)
+  + \DataOut $\exists$-e olyan $X \in \bigcap_{i = 1}^k \FF_i$, hogy
+    $\lvert X \rvert \ge p$ (illetve $w(X) \ge W$)
++ \thm $k \ge 3$ esetén $k$-MMP NP-teljes
+  + \proof $k$-MMP NP-beli, jó tanú: egy megfelelő $X$ halmaz
+  + $3$-MPP NP-teljes \RA $k > 3$, $k$-MMP NP-teljes
+    + adunk egy $3$-MMP $\prec$ $k$-MMP Karp-redukciót ($k > 3$)
+    + $(\MM_1, \MM_2, \MM_3) \in \text{$3$-MPP}$ \LRA $(\MM_1, \MM_2,
+      \overbrace{\MM_3, \MM_3, \ldots, \MM_3}^{\text{$k - 2$ db}}) \in
+      \text{$k$-MPP}$
+  + irányított HAMÚT $\prec$ $3$-MMP \RA $3$-MPP NP-teljes
+    + $\MM_1 = \MM(G)$
+    + $\FF(\MM_2) =$ azon élhalmazok, melyekben $\forall$ pont be-foka
+      $\le 1$ (partíciós matroid)
+    + $\FF(\MM_3) =$ azon élhalmazok, melyekben $\forall$ pont
+      \rlap{ki-foka}\phantom{be-foka} $\le 1$ \qed
+
 \tetel{A $k$-matroid partíciós probléma, ennek algoritmikus
   megoldása. A $2$-matroid-metszet feladat visszavezetése matroid
   partíciós problémára.}
