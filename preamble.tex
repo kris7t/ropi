@@ -1,6 +1,6 @@
-\documentclass[a4paper,11pt,oneside]{article}
+\documentclass[a4paper,11pt,twoside]{article}
 \renewcommand*{\baselinestretch}{1.04}
-\usepackage[margin=2.5cm]{geometry}
+\usepackage[margin=2cm,head=16pt,foot=0pt,includeheadfoot,headsep=16pt]{geometry}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -68,12 +68,22 @@
 
 \usepackage{xspace,mdframed,array,needspace}
 
-\newmdenv[nobreak=true,skipabove=3ex,skipbelow=1ex]{tetelframe}
+\usepackage{fancyhdr}
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\scshape\nouppercase{\rightmark}}
+\fancyhead[RE]{\scshape\nouppercase{\leftmark}}
+\pagestyle{fancy}
+
+\newmdenv[nobreak=true,skipabove=3ex,skipbelow=1ex,%
+  backgroundcolor=black!15,hidealllines=true]{tetelframe}
 \setcounter{secnumdepth}{-1}
 \newcounter{tetel}
 \newcommand{\tetel}[1]{%
+  \refstepcounter{tetel}\markright{\thetetel.~tétel}%
   \pagebreak[3]%
-  \begin{tetelframe}\noindent\refstepcounter{tetel}%
+  \begin{tetelframe}\noindent%
     \textbf{\thetetel.}~#1\end{tetelframe}}
 \raggedbottom
 
@@ -96,7 +106,7 @@
 \newcommand*{\corr}{\theoremlike{következmény}}
 \newcommand*{\proof}{\textit{bizonyítás:}\xspace}
 \newcommand*{\noproof}{\textit{nem bizonyítjuk}}
-\newcommand*{\qed}{\hfill\ensuremath{\square}}
+\newcommand*{\qed}{\hfill\ensuremath{\blacksquare}}
 \newcommand*{\RR}{\mathbb{R}}
 \newcommand*{\ZZ}{\mathbb{Z}}
 \newcommand*{\Nat}{\mathbb{N}}
