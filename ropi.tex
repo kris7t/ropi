@@ -510,9 +510,8 @@
     \FF_k)$, $p \in \Nat$ ($w\colon E \to \RR_{\ge 0}$, $W \in \RR_{\ge 0}$)
   + \DataOut $\exists$-e olyan $X \in \bigcap_{i = 1}^k \FF_i$, hogy
     $\lvert X \rvert \ge p$ (illetve $w(X) \ge W$)
-+ \thm $k \ge 3$ esetén $k$-MMP NP-teljes
-  + \proof $k$-MMP NP-beli, jó tanú: egy megfelelő $X$ halmaz
-  + $3$-MPP NP-teljes \RA $k > 3$, $k$-MMP NP-teljes
++ \thm $k \ge 3$ esetén $k$-MMP NP-nehéz
+  + \proof $3$-MPP NP-nehéz \RA $k > 3$, $k$-MMP NP-nehéz
     + adunk egy $3$-MMP $\prec$ $k$-MMP Karp-redukciót ($k > 3$)
     + $(\MM_1, \MM_2, \MM_3) \in \text{$3$-MPP}$ \LRA $(\MM_1, \MM_2,
       \overbrace{\MM_3, \MM_3, \ldots, \MM_3}^{\text{$k - 2$ db}}) \in
@@ -606,7 +605,62 @@
   $2$-polimatroid-matching probléma, ennek bonyolultsága, Lovász
   tétele (biz.~nélkül).}
 
-\section{Közelítő és ütemezési algoritmusok}
++ \dfn $r\colon 2^E \to \Nat$ \emph{$k$-polimatroid rangfüggvény}, ha
+  + (R1)~$r(\emptyset) = 0$\qquad(R2$'$)~$\forall e \in E : r(\{e\})
+    \le k$\qquad(R3)~$Y \subseteq X \implies r(Y) \le r(X)$
+  + (R4)~$r(X) + r(Y) \ge r(X \cap Y) + r(X \cup Y)$
+  + a matroid rangfüggvények $k = 1$ választással adódnak
+    + $X = \{e_1\} \cup \{e_2\} \cup \ldots \cup \{e_m\}$
+      $\xRightarrow{\text{(R4)}}$ $m \le \sum_{i = 1}^m r(\{e_i\}) \le
+      r(X)$
+  + másik irány: $\forall X \subseteq E : r(X) \le k \lvert X \rvert$
++ \dfn $X \subseteq E$ egy $k$-matching, ha $r(X) = k \lvert X \rvert$
++ \example $G = (V, E)$ gráf, $r(X) =$ az $X \subseteq E$ élek által
+  lefedett csúcsok halmaza
+  + $r$ egy $2$-polimatroid-rangfüggvény, a $2$-matchingek $G$
+    párosításai
++ \prob $k$-polimatroid matching ($k$-PMMP)
+  + \DataIn $r\colon 2^E \to \Nat$ $k$-polimatroid rangfüggvény, $p
+    \in \Nat$
+  + \DataOut létezik-e $X \subseteq E$, hogy $r(X) = k \lvert X
+    \rvert$ és $\lvert X \rvert \ge p$
++ \thm a $k$-PMMP $k \ge 3$ esetén NP-nehéz
+  + \proof $k$-MMP $\prec$ $k$-PMMP és $k$-MMP NP-nehéz
+  + ha $\MM_1, \MM_2, \ldots, \MM_k$ matroidok \RA $r(X) = \sum_{i =
+    1}^k r_i(X)$ $k$-polimatroid rangfüggvény
+    + a $k$-matchingek pontosan a  független halmazok $\forall \MM_i$-ben
+    + $(\MM_1, \MM_2, \ldots, \MM_k; p) \in \text{$k$-MMP}$ \LRA%
+      $\bigl(\sum_{i = 1}^k r_i, p\bigr) \in \text{$k$-PMMP}$ \qed
++ \thm ha $r$ mindössze egy $O(1)$ időben kiszámolható orákulummal
+  adott \RA\\$2$-PMMP nem oldható meg polinomidőben
+  + \proof legyen $\lvert E \rvert = 2n$, $E_0 \subset E$, $\lvert E_0
+    \rvert = n$
+  + $r_1(X) \coloneqq \text{\footnotesize$\begin{cases}
+      2 \lvert X \rvert, &\text{ha $\lvert X \rvert < n$,} \\
+      2n - 1, &\text{ha $\lvert X \rvert = n$,} \\
+      2n, &\text{ha $\lvert X \rvert > n$,}
+    \end{cases}$}$ $r_2(X) \coloneqq \text{\footnotesize$\begin{cases}
+      2 \lvert X \rvert, &\text{ha $\lvert X \rvert < n$,} \\
+      2n, &\text{ha $X = E_0$,} \\
+      2n - 1, &\text{ha $X \ne E_0, \lvert X \rvert = n$,} \\
+      2n, &\text{ha $\lvert X \rvert > n$,}
+    \end{cases}$}$ $p \coloneqq n$
+  + $(r_1, p) \notin \text{$2$-PMMP}$, de $(r_2, p) \in
+    \text{$2$-PMMP}$ ($E_0$ egy $p = n$ elemű $k$-matching)
+    + ennek eldöntéséhez az összes $n$ elemű részhalmazt meg kell vizsgálni
+    + ez $\binom{2n}{n} = O(4^n / \sqrt{\pi n})$ darab $r$ hívást igényel \qed
+  + nem használtuk ki, hogy $2$-PMMP NP-nehéz, a bizonyítás P = NP
+    esetén is működik
++ \thm (Lovász László tétele)
+  + ha az $r$ $2$-polimatroid rangfüggvény
+    $r(X) = \operatorname{dim} \bigl\langle \bigcup_{i \in X} \{ a_i, b_i
+    \} \bigr\rangle$ alakban adott, ahol $E = \{1, 2, \ldots, n\}$,
+    $\{a_i, b_i\}_{i \in I} \subset \RR^k$
+    \RA $r$-en $2$-PMMP polinomidőben megoldható
+  + az ilyen $r$ mindig $2$-polimatroid rangfüggvény
+  + \noproof
+
+\section{Közelítő és ütemezési algoritmusok} 
 
 \tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP,
   co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója,
