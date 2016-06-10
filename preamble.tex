@@ -66,12 +66,16 @@
 
 \usepackage[stretch=10]{microtype}
 
-\usepackage{xspace,mdframed,array}
+\usepackage{xspace,mdframed,array,needspace}
 
-\newmdenv{tetelframe}
+\newmdenv[nobreak=true,skipabove=3ex,skipbelow=1ex]{tetelframe}
 \setcounter{secnumdepth}{-1}
 \newcounter{tetel}
-\newcommand{\tetel}[1]{\begin{tetelframe}\noindent\refstepcounter{tetel}\textbf{\thetetel.}~#1\end{tetelframe}}
+\newcommand{\tetel}[1]{%
+  \pagebreak[3]%
+  \begin{tetelframe}\noindent\refstepcounter{tetel}%
+    \textbf{\thetetel.}~#1\end{tetelframe}}
+\raggedbottom
 
 \newcommand*{\ra}{\ensuremath{\rightarrow}\xspace}
 \newcommand*{\RA}{\ensuremath{\Longrightarrow}\xspace}
