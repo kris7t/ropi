@@ -18,7 +18,7 @@
       pontban ér véget
   + amíg találunk $J$ javítóutat (pl.~szélességi kereséssel) \RA $M
     \gets M - (J \cap M) \cup (J - M)$
-+ \thm a ``magyar módszer'' valóban maximális párosítást talál
++ \thm \label{thm:linprog:egervary:magyar}a ``magyar módszer'' valóban maximális párosítást talál
   $G$-ben
   + \proof $M \coloneqq \text{a párosítás, amit az algoritmus
     megtalált}$
@@ -301,7 +301,7 @@
       y \ge 0, yb < t$
     + $t < \min \{ yb : yA = c, y \ge 0 \} < yb < t$ \RA ellentmondás
     \qed
-+ \thm \label{thm:linprog:dual:dual}a lineáris programozás
++ \thm \label{thm:linprog:dual:dual-evk}a lineáris programozás
   dualitástétele, ekvivalens alak
   + ha $\max \{ cx : Ax \le b, x \ge 0 \}$ (primál) program megoldható és
     felülről korlátos, akkor

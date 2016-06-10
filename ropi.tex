@@ -8,6 +8,22 @@
 \makeatother
 
 \maketitle
+\thispagestyle{empty}
+
+\begin{ocg}[printocg=never]{ForkMe}{1}{1}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[rotate=-45, shift={(0, -3.2cm)}] at (current page.north east) {%
+      \begin{tikzpicture}[remember picture, overlay]
+        \node at (0pt, 0pt) {\pgfuseshading{forkmeshading}};
+        \node[text=forkmefg] at (0pt, 0pt) {%
+          \large\bfseries\clear Fork me on GitHub};
+        \draw[forkmefg!70!forkmebg, dashed, line width=.08em, dash pattern=on .5em off 1.5\pgflinewidth] (-600pt,12pt) rectangle (600pt,-12pt);
+      \end{tikzpicture}%
+    };
+    \node [anchor=north east] at (current page.north east) {
+      \href{https://github.com/kris7t/ropi}{\parbox[t][5cm]{5cm}{\hfill}}};
+  \end{tikzpicture}
+\end{ocg}
 
 \input{linprog.tex}
 
@@ -22,6 +38,138 @@
   független ponthalmaz problémára és az élszínezési problémára páros
   gráfokon. Additív hibával közelítő algoritmusok speciális pont-,
   illetve élszínezési problémákra.}
+
++ algoritmuselméleti alapfogalmak
+  + \dfn \emph{kiszámítási problémá}ról akkor beszélünk, ha egy $I$
+    bemenet $f(I)$ függvényét szeretnénk kimenetként megadni
+    + \emph{eldöntési probléma}: $f(I) \in \{\textsc{Igen},
+      \textsc{Nem}\}$
+  + \dfn \emph{optimalizálási probléma} olyan kiszámítási probléma, ahol
+    + az $I$ bemenethez $X_I$ a \emph{lehetséges kimenetek} halmaza,
+      $c\colon X_I \to \RR$ valós függvény
+    + $f(I) = x^* \in X_I$, hogy $c(x^*) = \max \{ c(x) : x \in X_I \}$
+      (illetve $c(x^*) = \min \{ c(x) : x \in X_I \}$)
+    + a kimenet nemcsak az optimum értéke, hanem maga az $x^*$ optimális
+      megoldás
+  + \dfn egy $f \colon \Nat \to \Nat$ függvény \emph{polinomális}, ha
+    $\exists c_1, c_2 \in \Nat^*: \forall n \in \Nat : f(n) \le c_1
+    n^{c_2}$
+    + egy algoritmus akkor \emph{polinomiális} ha $\forall$ $n$ méretű
+      bemenetre $f(n)$ időben kiszámítja a kimenetet, ahol $f$
+      polinomiális
+    + egy probléma \emph{polinom időben megoldható}, ha $\exists$ rá
+      polinomiális algoritmus
+  + \dfn az $A$ probléma \emph{polinom időben visszavezethető} $B$-re
+    ($A \cookprec B$), ha $A$ polinom időben megoldható a
+    $B$-t megoldó algoritmus szubrutinként hívásával
+    + $B$ hivása $O(1)$ lépésnek számit
+  + \dfn döntési problémák osztályai
+    + P $\coloneqq$ a polinom időben megoldható eldöntési
+      problémák osztálya
+      + pl.~teljes párosítás páros gráfban, $k$-matroid-partíció
+    + NP $\coloneqq$ azon eldöntési problémák osztálya, ahol az
+      \textsc{Igen} válaszra létezik polinomiális méretű, polinomiális
+      időben ellenőrizhető tanú
+      + pl.~Hamilton-kör, $k$-matroid-metszet ($k \ge 2$)
+    + co-NP $\coloneqq$ azon eldöntési problémák osztálya, ahol az
+      \textsc{Nem} válaszra létezik polinomiális méretű, polinomiális
+      időben ellenőrizhető tanú
+      + pl.~teljes párosítás páros gráfban (Kőnig tétele, Hall-tétel),
+        síkbarajzolhatóság (Kuratowski-tétel), teljes párosítás
+        tetszőleges gráfban (Tutte-tétel)
+    + egy $B$ probléma \emph{NP-nehéz}, ha $\forall A \in
+      \mathrm{NP}: A \cookprec B$
+      + pl.~az általános $k$-polimatroid matching NP-nehéz, de nem
+        NP-beli
+    + egy $B$ probléma \emph{NP-teljes}, ha NP-beli és NP-nehéz
+      + pl.~SAT (Cook`--Levin tétel), 3SZÍN, HAM, LÁDAPAKOLÁS
+  + P $\subseteq$ NP $\cap$ co-NP, NP-teljes $=$ NP $\cap$ NP-nehéz, P
+    $\overset{?}{=}$ NP
++ \prob maximális független ponthalmaz páros gráfban
+  + \DataIn $G = (A, B; E)$ páros gráf\qquad\DataOut $F$ maximális
+    független ponthalmaz
+  + a probléma általános gráfra NP-nehéz, de páros gráfra polinomiális
+  + futtasuk le a gráfra a javítóutas algoritmust (polinom idejű)
+  + \stmnt ekkor $F = A_1 \cup A_2 \cup B_1 \cup B_3$ maximális
+    független ponthalmaz
+    + $A_1, B_1 =$ az $A$-, illetve $B$-beli párosítatlan pontok
+      halmaza
+    + $B_2 =$ az $A_1$-ből alternáló úton elérhető pontok (nincs
+      javító út \RA mind van párjuk)
+    + $A_1 =$ a $B_2$-beli pontok párjai
+    + $A_3 = A - A_1 - A_2$, $B_3 = B - B_1 - B_2$
+    + \proof az algoritmus által megtalált $M$ párosítás maximális \RA%
+      $\lvert M \rvert = \nu(G)$
+      + $\nu(G) =$ maximális párosítás mérete, $\tau(G) =$ min.~lefogó
+        ponthalmaz mérete
+      + nincs él $A_1 \cup A_2$ és $B_1 \cup B_2$ között
+        (\ref{thm:linprog:egervary:magyar}.~tétel) \RA $F$ független
+      + $A \cup B - F = A_3 \cup B_2$ lefogó ponthalmaz \RA $\tau(G)
+        \le \lvert A_3 \cup B_2 \rvert = \lvert F \rvert = \nu(G)$
+      + egy lefogó ponthalmaz egy párosítás $\forall$ élét le kell
+        fogja \RA $\nu(G) \le \tau(G)$
+      + így $\tau(G) \le \lvert A_3 \cup B_2 \rvert = \lvert F \rvert
+        = \nu(G) \le \tau(G)$ \RA $\nu(G) = \tau(G)$
+    + indir.~tfh.~$\exists F' \subseteq A \cup B$ független
+      ponthalmaz, $\lvert F' \rvert > \lvert F \rvert$
+      + ekkor $A \cup B - F'$ lefogó ponthalmaz, de $\lvert A \cup B -
+        F' \rvert < \lvert A \cup B - F \rvert = \tau(G)$
+      + ez ellentmondás, $F$ maximális kell legyen \qed
++ \prob élszínezés páros gráfokon
+  + \DataIn $G = (A, B; E)$ egyszerű páros gráf\qquad\DataOut $G$ élszínezése
+    $\Delta(G)$ színnel
+  + a probléma általános gráfra NP-nehéz, de páros gráfra polinomiális
+  + \thm \label{thm:kozelito:additiv:vizing}(Vizing tétele) ha $G = (V, E)$ egyszerű gráf \RA $\Delta(G)
+    \le \chi_e(G) \le \Delta(G) + 1$
+    + \noproof
+  + \thm (Kőnig tétele) ha $G = (A, B; E)$ egyszerű páros gráf \RA%
+    $\chi_e(G) = \Delta(G)$
+    + \proof meg fogunk adni egy polinomiális algoritmust a színezésre
+  + vegyük a gráf $E = \{ e_1, e_2, \ldots, e_m \}$ éleit sorban, és
+    színezzük meg őket egy-egy szabad színnel
+    + legyen $e_i = \{u, v\}$, $ u \in A$, $v \in b$ a most
+      megszínezendő él
+    + $d(u), d(v) \le \Delta(G)$, és illeszkedik rájuk színezetlen él
+      ($e_i$)
+      + \RA mindkét csúcsnak $\exists$ szabad színe \RA ha $\exists$
+      közös szabad szín, $e_i$ kapja meg azt
+  + tfh.~az $u$ szabad színe a \emph{piros}, de a $v$-é a \emph{kék}
+    + legyen $P_u$ az $u$-ból induló, felváltva kék--piros út (kör nem
+      lehet)
+    + ekkor $v \notin P_u$, mert akkor a végpontja lenne ($v$-ben a
+      kék szabad)
+      + de $u \in A$, $v \in B$ \RA $P_u$ páratlan hosszú \RA $P_u$
+        utolsó éle kék
+    + cseréljük fel $P_u$ mentén a piros és a kék színeket
+      + ez a meglevő színezést nem ronthatja el
+      + $u$-ban most már a kék szabad, $v$-ben maradt szabad \RA%
+        $e_i$ színezhető kékre \qed
++ \dfn egy maximalizálási (minimalizálási) problémát egy algoritmus
+  \emph{$C$ additív hibától eltekintve helyesen old meg}, ha $\forall I:
+  c(x^*) \ge \max_{x \in X_i} c(x) - C$ ($c(x^*) \le \min_{x \in X_i}
+  c(x) + C$)
++ \dfn egy algoritmus \emph{$C$ additív hibával közelítő algoritmus},
+  ha adott optimalizálási problémát polinom időben, $C$ additív
+  hibától eltekintve helyesen old meg
++ \prob egyszerű gráfok élszínezése
+  + \DataIn $G = (V; E)$ egyszerű gráf\qquad\DataOut $G$
+    minimális élszínezése
+  + Vizing tétele (\ref{thm:kozelito:additiv:vizing}.~tétel) szerint
+    $\chi_e(G) \le \Delta(G) + 1$
+    + a tétel bizonyítása konstruktív, ad egy $\Delta(G) + 1$ polinom
+      időben
+    + így a tételben szereplő algoritmus $1$ additív hibával közelítő
++ \prob síkgráfok csúcsszínezése
+  + \DataIn $G = (V; E)$ síkgráf\qquad\DataOut $G$
+    minimális csúcsszínezése
+  + \thm (négyszíntétel) minden síkgráf színezhető $4$ színnel,
+    \noproof
+    + létezik algoritmikus bizonyítás, ami polinomidőben előállít egy
+      $4$-színezést
+    + ez egy $2$ additív hibával közelítő algoritmus
+  + ha a $4$-színező algoritmus előtt ellenőrizzük, hogy $G$ páros-e
+    \RA $2$-színezhető
+    + ez szélességi kereséssel polinomidőben megtehető
 
 \tetel{A Hamilton-kör probléma visszavezetése a leghosszabb kör
   probléma additív közelítésére. $k$-approximációs algoritmus fogalma,
@@ -63,10 +211,10 @@
   két tétele (biz.~nélkül). $\lambda(G)$ meghatározása folyamok
   segítségével négyzetes és lineáris számú folyamkereséssel.}
 
-\tetel{$\lambda(G)$ meghatározása összehúzások segítségével, Mader
+\tetel{$\lambda(G)$ meghatározása összehúzások segítségével,\\Mader
   tétele, Nagamochi és Ibaraki algoritmusa.}
 
-\tetel{Minimális méretű $2$-élösszefüggő részgráfok keresése. A probléma
+\tetel{Minimális méretű $2$-élösszefüggő részgráfok keresése.\\A probléma
   NP-nehézsége, Khuller`--Vishkin algoritmus (biz.~nélkül).}
 
 \section{Hálózatelméleti alkalmazások}
@@ -84,7 +232,7 @@
 \section{Statikai alkalmazások}
 
 \tetel{Rúdszerkezetek, merevségi mátrix, merevség, egyszerű rácsos
-  tartók, Cremona`--Maxwell diagramok.}
+  tartók,\\Cremona`--Maxwell diagramok.}
 
 \tetel{Minimális merev rúdszerkezetek általános helyzetben, Laman
   tétele (biz.~nélkül), Lovász és Yemini tétele.}

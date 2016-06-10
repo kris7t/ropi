@@ -4,7 +4,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{lmodern}
+\usepackage{ClearSans,lmodern}
 
 \usepackage{paralist}
 \pltopsep=0pt
@@ -59,6 +59,8 @@
 }
 \makeatother
 
+\usepackage{fancyhdr}
+
 \def\magyarOptions{defaults=prettiest}
 \usepackage[magyar]{babel}
 
@@ -68,7 +70,6 @@
 
 \usepackage{xspace,mdframed,array,needspace}
 
-\usepackage{fancyhdr}
 \fancyhead{}
 \fancyfoot{}
 \fancyhead[LE,RO]{\thepage}
@@ -82,6 +83,9 @@
 \newcounter{tetel}
 \newcommand{\tetel}[1]{%
   \refstepcounter{tetel}\markright{\thetetel.~tétel}%
+  % Ugly hyperref hack
+  \stepcounter{section}\phantomsection%
+  \addcontentsline{toc}{subsection}{\thetetel.~tétel}
   \pagebreak[3]%
   \begin{tetelframe}\noindent%
     \textbf{\thetetel.}~#1\end{tetelframe}}
@@ -104,6 +108,7 @@
 \newcommand*{\dfn}{\theoremlike{definíció}}
 \newcommand*{\lemma}{\theoremlike{lemma}}
 \newcommand*{\corr}{\theoremlike{következmény}}
+\newcommand*{\stmnt}{\theoremlike{állítás}}
 \newcommand*{\proof}{\textit{bizonyítás:}\xspace}
 \newcommand*{\noproof}{\textit{nem bizonyítjuk}}
 \newcommand*{\qed}{\hfill\ensuremath{\blacksquare}}
@@ -122,6 +127,7 @@
 \newcommand*{\LP}{\textit{LP}}
 \newcommand*{\DLP}{\textit{DLP}}
 \newcommand*{\DIP}{\textit{DIP}}
+\newcommand*{\cookprec}{\mathbin{{\prec}_{\textrm{Cook}}}}
 
 \newcommand*{\DataIn}{\textsc{Input}:\xspace}
 \newcommand*{\DataOut}{\textsc{Output}:\xspace}
@@ -130,7 +136,7 @@
 \newcommand{\vertgt}{\rotatebox{90}{$\mkern-2mu>$}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-\usepackage{tikz}
+\usepackage{ocg-p,tikz}
 \usetikzlibrary{positioning,calc,shapes.geometric,through}
 \let\tikzpictureunpatched\tikzpicture
 \def\tikzpicture{\catcode`\^^M=5\tikzpictureunpatched}
@@ -139,10 +145,25 @@
     font=\nullfont,minimum width=4pt}
 }
 
+\colorlet{forkmeshadow}{black!25}
+\definecolor{forkmebg}{HTML}{CC0505}
+\definecolor{forkmebg2}{HTML}{A00000}
+\definecolor{forkmefg}{HTML}{EEEEEE}
+\pgfdeclareverticalshading{forkmeshading}{600pt}{%
+  color(0pt)=(white);
+  color(5pt)=(forkmeshadow);
+  color(5.001pt)=(forkmebg);
+  color(16pt)=(forkmebg2);
+  color(21pt)=(forkmebg2);
+  color(36.999pt)=(forkmebg);
+  color(37pt)=(forkmeshadow);
+  color(42pt)=(white)}
+
 \title{Rendszeroptimalizálás vizsgatételek (2015/2016.~második
   félév)}
 \author{Marussy Kristóf}
 
-%\makeatletter
-%\usepackage[pdftitle={\@title},pdfauthor={\@author}]{hyperref}
-%\makeatother
+\makeatletter
+\usepackage[pdftitle={\@title},pdfauthor={\@author},bookmarks,unicode,hidelinks]{hyperref}
+\makeatother
+\usepackage{bookmark}
