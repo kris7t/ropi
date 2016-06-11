@@ -460,6 +460,77 @@
   algoritmusok a metrikus utazóügynök problémára, Christofides
   algoritmusa.}
 
++ \prob általános utazóügynök probléma
+  + \DataIn $G = (V, E)$ gráf, $c\colon E \to \QQ^+$ súlyfüggvény
+  + \DataOut $G$ egy $H$ minimális súlyú Hamilton-köre
+  + \thm P $\ne$ NP \RA az általános utazóügynök problémára $\nexists$
+    $k$-approximáció
+    + \proof indir.~tfh.~létezik $k$-approximáció \RA ekkor HAM
+      $\prec$ $k$-approx.~utazóügynök
+    + keressünk $G = (V, E)$-ben Hamilton-kört
+      + $n = \lvert V \rvert$, $G' \coloneqq$ teljes gráf $V$-n, $c(e)
+        \coloneqq \text{\footnotesize$
+          \begin{cases}
+            1, & \text{ha $e \in E$,} \\
+            kn, & \text{ha $e \notin E$}
+          \end{cases}
+          $}$
+      + $G'$ mérete $G$ méretében polinomiális
+      + ha $G$ hamiltoni \RA $G'$-ben van $n$ súlyú Hamilton-kör
+      + minden más Hamilton-köre $G'$-nek $\ge kn + n - 1$ súlyú
+    + ha a $k$-approx.~talál $n$ súlyú kört \RA ez $G$ Hamilton-köre
+    + egyébként a talált kör $\ge kn + n - 1$ súlyú 
+      + $n \le \frac{kn + n - 1}{k}$ \RA az optimális kör nem lehet
+        $G$ Hamilton-köre, $G$ nem hamiltoni \qed
++ \prob metrikus utazóügynök probléma
+  + \DataIn mint az általános utazóügynöknél, de $G$ teljes gráf és
+    $c$ teljesíti a $\triangle$-egyenlőtlenséget
+  + \thm a matrikus utazóügynök probléma NP-nehéz (\noproof)
++ \alg $2$-approximáció a metrikus utazóügynök problémára
+  + legyen $G$ min.~feszítőfája $F$, $F' =$ kettőzzük meg $F$
+    éleit, $S =$ $F'$ Euler-köre
+    + az Euler-kör pl. zárt élsorozatok eltávolításával $F'$-ből és
+      $S$-hez vételével polinom időben meghatározható
+  + ``vágjuk le'' $S$-t egy $H$ Hamilton-körré \RA ez lesz az
+    utazóügynök Hamilton-köre
+    + $\forall v \in V$-nek csak az első előfordulását tartjuk meg
+    + az egymást követő $v_{i_j}, v_{i_{j + 1}}$ csúcsokhoz bevesszük
+      a $\{v_{i_j}, v_{i_{j + 1}}\}$ élt
+  + \thm $H$ valóban $2$-approximáció
+    + \proof az algoritmus polinomiális
+    + legyen $H^*$ az optimális Hamilton-kör
+      + $H^{*\prime} = $ $H^*$ egyik élének elhagyásával kapott
+        Hamilton-út \RA $H^*$ feszítőfa
+      + $c(H) \overset{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}{\le}
+        c(F') = 2 c(F) \overset{\text{$F$ min.~feszítőfa}}{\le} 2
+        c(H^{*\prime}) \le 2 c(H^*)$ \qed
++ \alg Christofides algoritmusa
+  + $F'$ előállításánál feleslgesen sok élt adtuk $F$-hez
+    + elég csak a (páros sok) páratlan fokú csúcs fokszámát $1$-gyel
+      megnövelni
+  + legyen $V_p$ az $F$-ben páratlan fokú csúcsok halmaza
+    + $\lvert V_p \rvert$ páros, mert egy gráfban a fokszámok összege
+      mindig páros
+  + $M = $ $G[V_p]$ egy minimális költségű teljes párosítása, $F'
+    \gets F \uplus M$
+    + ez Edmonds algoritmusával polinom időben meghatározható
+  + az algoritmus többi része ugyanaz, mint a $2$-approximáció
+  + \thm Christofides algoritmusa $\frac{3}{2}$-approximáció
+    + \proof elég belátni, hogy $c(M) \le
+      \frac{1}{2} c(H^*)$
+      + \RA $c(F') = c(F) + c(M) \le c(H^{*\prime}) + \frac{1}{2} c(H^*)
+        \le \frac{3}{2} c(H^*)$
+    + legyen $V_p = \{ a_1, a_2, \ldots, a_{2k} \}$ a csúcsok $H^*$
+      menti sorrendje szerint
+    + legyen $\widehat{H^*} = ((a_1, a_2), (a_2, a_3), \ldots,
+      (a_{2k}, a_1))$ Hamilton-kör $G[V_p]$-ben \RA $c(\widehat{H^*})
+      \le c(H^*)$
+    + $\widehat{H^*} = P_1 \cup P_2$, ahol $P_1$ $H$ páratlan, $P_2$
+      $H$ páros indexű éleiből áll
+    + $P_{1,2}$ párosítás $G[V_p]$-ben \RA $c(M) \le \min \{ c(P_1),
+      c(P_2) \} \le \frac{1}{2} c(\widehat{H^*}) \le \frac{1}{2}
+      c(H^*)$ \qed
+
 \tetel{Teljesen polinomiális approximációs séma fogalma. A részösszeg
   probléma, bonyolultsága. Teljesen polinomiális approximációs séma a
   részösszeg problémára.}
