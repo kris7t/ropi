@@ -322,6 +322,139 @@
   halmazfedési feladatra, a halmazfedési feladat közelítése, éles
   példa. Közelítő algoritmus a Steiner-fa problémára, éles példa.}
 
++ \prob súlyozott halmazfedés (SHF)
+  + \DataIn $n$ elemű $U$ alaphalmaz, $\CR \subseteq 2^U : \bigcup_{S
+    \in \CR} S = U$, $c\colon \CR \to \QQ^+$ költségfüggvény
+  + \DataOut $\CR' \subseteq \CR$, ahol $\bigcup_{S \in \CR'} S = U$
+    és $\sum_{S \in \CR'} c(S)$ minimális
+  + \thm a súlyozott halmazfedés probléma NP-nehéz
+    + \proof megmutatjuk, hogy MLP $\prec$ SHF
+    + keressük a $G = (V, E)$ gráf minimális lefogó ponthalmazát
+    + $U \coloneqq E$, $\CR \coloneqq \{E_v = \{e : u \in V, e = \{v,
+      u\} \in E\} : v \in V\}$, $c(E_v) \coloneqq 1$
+    + $\CR'$ minimális fedés \LRA $F \subseteq V$ min.~lefogó
+      ponthalmaz, ahol $\CR' = \{ E_v : v \in \CR'\}$ \qed
+  + \thm ha P $\ne$ NP \RA $\nexists$ konstants $k$-faktorú
+    approximáció SHF-re (\noproof)
+  + \alg Chvátal mohó algoritmusa
+    + 0.~lépés: $\CR' \coloneqq \emptyset$, $C \coloneqq \emptyset$ a már
+      lefedett elemek halmaza
+    + 1.~lépés: ha $C = U$ \RA STOP, egyébként $S = \argmin_{S \in
+      \CR} \frac{c(S)}{\lvert S - C \rvert}$
+    + 2.~lépés: $\CR' \gets \CR' \cup \{S\}$, $C \gets C \cup S$, GOTO
+      1.
+  + \thm Chavátal mohó algoritmusa $H_k$-approximáció, ahol $k =
+    \max_{S \in \RR} \lvert S \rvert$
+    + $\ln n \le H_n = 1 + \frac{1}{2} + \frac{1}{3} + \ldots +
+      \frac{1}{n} \le \ln n + 1$
+    + \proof az algoritmus polinomiális
+    + az $x$ elem $p(x)$ \emph{ára} az őt elsőkét fedő $S \in \CR'$
+      halmazra jutó $\frac{c(S)}{\lvert S - C \rvert}$ költség
+      + $c(S) = \sum_{x \in S - C} \frac{c(S)}{\lvert S - C \rvert} =
+        \sum_{x \in S - C} p(x)$ \RA $c(\CR') = \sum_{S \in \CR'} c(S)
+         = \sum_{x \in U} p(x)$
+    + legyen $\CR^*$ egy min.~összsúlyú fedés, $S = \{x_1, x_2,
+      \ldots, x_r\} \in \CR^*$ ($r \le k$)
+      + ált.~megsz.~tfh.~az algoritmus $S$ elemeit $x_r, x_{r - 1},
+        \ldots, x_1$ sorrendben fedte le
+      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i - 1}
+        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \ge
+        \frac{c(S)}{i}$
+      + $\forall x_i \in S$-t fedő $S_i'$-re $\frac{c(S_i')}{\lvert
+        S_i' - C \rvert} \le \frac{c(S)}{i}$ \RA $\sum_{x_i \in S}
+        p(x_i) \le \sum_{x_i \in S} \frac{c(S)}{i} = H_r c(S)$
+      + $c(\CR') = \sum_{x \in U} p(x) \le \sum_{S^* \in \CR^*}
+        \sum_{x_i \in S^*} p(x_i) \le \sum_{S^* \in \CR^*} H_{\lvert
+          S^* \rvert} c(S^*) \le\\
+        \phantom{c(\CR')}\le \sum_{S^* \in \CR^*} H_k c(S^*) = H_k
+          \sum_{S^* \in \CR^*} c(S^*) = H_k  c(\CR^*)$ \qed
+  + éles példa: $U \coloneqq \{1, 2, \ldots, n \}$, $\CR \coloneqq \{\{1\},
+    \{2\}, \ldots, \{n\}, U\}$, $c(\{i\}) \coloneqq \frac{1}{i}$, $c(U)
+    \coloneqq 1 + \epsilon$ ($\epsilon > 0$)
+    + $\CR' = \{\{n\}, \{n - 1\}, \ldots, \{1\}\}$ ebben a sorrendben
+      + a $j$. halmaz bevétele után $\{n - j\}$ költsége $= \frac{c(\{n
+        - j\})}{1} = \frac{1}{n - 1} <$ $U$ költsége $= \frac{c(U)}{n
+        - j} = \frac{1 + \epsilon}{n - j}$
+    + $\CR^* = \{U\}$, $c(\CR^*) = 1 + \epsilon$, de $c(\CR') =
+      \sum_{i = 1}^n \frac{1}{i} = H_n$ \RA $\frac{c(\CR')}{c(\CR^*)}
+      = \frac{H_k}{1 + \epsilon} \xrightarrow{\epsilon \to 0} H_n = H_k$
++ \prob Steiner-fa
+  + \DataIn $G = (V, E)$ egyszerű, összefüggő gráf; $S \subset V$
+    Steiner-pontok; $T = V - S$ terminálok; $c\coloneqq E \to \QQ^*$
+    költségfűggvény
+  + \DataOut $F \subseteq G$ a $T$ minden csúcsát tartalmazó
+    \emph{Steiner-fa}, ahol $\sum_{e \in F} c(e)$ minimális
+  + \thm a Steiner-fa probléma NP-nehéz (\noproof)
+  + \prob metrikus Steiner-fa
+    + \DataIn mint a Steiner-fa problémánál, de $G$ teljes gráf és
+      $c$ teljesíti a háromszög-egyenlőtlenséget
+    + \alg $2$-approximáció a metrikus Steiner-fa problémára
+      + legyen az $X \subseteq V$ által feszített részgráf $G$-ben
+        $G[X]$
+      + (pl.~Kruskal algoritmusával) keressük $G[T]$
+        min.~feszítőfáját \RA ez a Steiner-fa
+    + \lemma \label{lem:kozelito:steiner:metrikus}ha $c$ a $G$ teljes
+      gráf metrikus élsúlyozása és $R = x
+      \leadsto y$ élsorozat \RA $c(x, y) \le c(R)$
+      + \proof teljes indukcióval $R$ éleinek $r$ száma szerint
+      + ha $r = 1$, az állítás triviális
+      + legyen $R = ((x, z), R')$ \RA az ind.~feltevés szerint $c(z,
+        y) \le c(R')$
+      + $c(R) = c(x, z) + c(R') \ge c(x, z) + c(z, y)
+        \overset{\text{$\triangle$-egyenlőtlenség}}{\ge} c(x, y)$ \qed
+    + \thm $F = G[T]$ min.~feszítőfája $2$-approximáció a metrikus
+      Steiner-fa problémára
+      + \proof az eljárás polinomiális, $F$ tényleg Steiner-fa
+      + legyen $D$ az optimális Steiner-fa
+      + $D' \coloneqq$ duplázzuk meg $D$ éleit \RA $D'$-ben minden
+        fokszám páros
+      + $D'$ euleri \RA legyen $D'$ Euler-körsétája $U = (u_0, f_1,
+        u_1, f_2, u_2, \ldots, f_m, u_m = u_0)$
+      + legyenek $u_{i_1}, u_{i_2}, \ldots, u_{i_{\lvert R \rvert}}$
+        $G[T]$ csúcsai az $U$ szerinti sorrendben
+      + ekkor $H = ((u_{i_1}, u_{i_2}), (u_{i_2}, u_{i_3}), \ldots,
+        (u_{i_{\lvert T \rvert}}, u_{i_1}))$ a $G[T]$ Hamilon-köre
+        (``levágás'')
+      + $H' = H - \{\text{tetszőleges $H$-beli él}\}$ Hamilton-út \RA%
+        $H'$ egy feszítőfa $G[T]$-ben 
+      + $2 c(D) = c(D')
+        \overset{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}{\ge}
+        c(H) \ge c(H') \overset{\text{$F$ minimális}}{\ge} c(F)$ \qed
+  + \alg $2$-approximáció a Steiner-fa problémára
+    + legyen $G' \coloneqq$ teljes gráf $V(G)$-n, $c'(x, y) \coloneqq$ a
+      legrövidebb $x \leadsto y$ út súlya $G$-ben
+      + $c'$ metrikus, mert $c'(x, z) = c_{\min}(x \leadsto z) \le c_{\min}(x
+        \leadsto y \leadsto z) = c'(x, y) + c'(y, z)$
+    + legyen $F'$ az $(G', S, T, c')$ metrikus Steiner-fa
+      approximációja
+    + legyen $K = \bigcup_{e = \{x, y\} \in F'} \{\text{a legrövidebb
+        $x \leadsto y$ út élei}\}$
+    + $F'' =$ egy min.~feszítőfa $K$-ban lesz a Steiner-fa
+  + \thm $F''$ $2$-aproximáció a Steiner-fa problémára
+    + \proof az eljárás polinomiális, és
+      $F''$ tényleg Steiner-fa, mert $K$ lefedi $T$-t
+    + legyen $D$ az optimális $(G', S, T, c')$ metrikus Steiner-fa,
+      $F^*$ az optimális Steiner-fa
+    + $F^*$ Steiner-fa $G'$-ben \RA $c'(D) \le c'(F^*)$
+    + $e = \{x, y\}$ $1$ hosszú $x \leadsto y$ út \RA $\forall e \in E
+      : c'(e) \le c(e)$ \RA $c'(F^*) \le c(F^*)$
+    + $c(F'') \le c(K) \le c'(F') \le 2 c'(D) \le 2 c'(F^*) \le 2
+      c(F^*)$ \qed
+  + éles példa: legyen $G = (V, E)$ teljes gráf, $V \coloneqq \{1, 2,
+    \ldots, n\}$, $S = \{1\}$, $c(\{i, j\}) = \text{\footnotesize$
+      \begin{cases}
+        1, &\text{ha $i = 1$,} \\
+        2, &\text{ha $i, j \ne 1$}
+      \end{cases}
+      $}$
+    + ez metrikus \RA nincs szükség metrizálásra, $F'' = F' = G[T]$
+      feszítőfája
+    + $c(F'') = 2(n - 2)$, de az optimális Steiner-fa $F^* =$ $1$
+      középpontú csillag, $c(F^*) = n - 1$
+    + $\frac{c(F'')}{c(F^*)} = \frac{2 (n - 2)}{n - 1} \xrightarrow{n
+      \to \infty} 2$ \RA $\forall k < 2$ approximációs faktorra $\exists$
+      ellenpélda elég nagy $n$-nel
+
 \tetel{A Hamilton-kör probléma visszavezetése az általános utazóügynök
   probléma $k$-app\-ro\-xi\-má\-ci\-ós megoldására. Közelítő
   algoritmusok a metrikus utazóügynök problémára, Christofides
