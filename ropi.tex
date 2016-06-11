@@ -523,8 +523,11 @@
     + legyen $V_p = \{ a_1, a_2, \ldots, a_{2k} \}$ a csúcsok $H^*$
       menti sorrendje szerint
     + legyen $\widehat{H^*} = ((a_1, a_2), (a_2, a_3), \ldots,
-      (a_{2k}, a_1))$ Hamilton-kör $G[V_p]$-ben \RA $c(\widehat{H^*})
-      \le c(H^*)$
+      (a_{2k}, a_1))$ Hamilton-kör $G[V_p]$-ben
+      + $H^*$ $a_i \leadsto a_{i + 1}$ szakaszát $(a_i, a_{i + 1})$-re
+        cseréltük
+        $\xRightarrow{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}$
+        $c(\widehat{H^*}) \le c(H^*)$
     + $\widehat{H^*} = P_1 \cup P_2$, ahol $P_1$ $H$ páratlan, $P_2$
       $H$ páros indexű éleiből áll
     + $P_{1,2}$ párosítás $G[V_p]$-ben \RA $c(M) \le \min \{ c(P_1),
@@ -535,6 +538,84 @@
   probléma, bonyolultsága. Teljesen polinomiális approximációs séma a
   részösszeg problémára.}
 
++ \dfn \emph{approximációs séma} az az algoritmust, aminek adott
+  maximalizálási (minimalizálási) problémára a bemenete $I$ és
+  $\epsilon > 0$, kimenete $x^* \in X_i : c(x^*) \ge \frac{1}{1 +
+    \epsilon} \max_{x \in X_I} c(x)$ ($c(x^*) \le (1 +
+    \epsilon) \min_{x \in X_I} c(x)$)
++ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma
+  rögzített $\epsilon$ esetén $I$ méretében polinomiális
++ \dfn egy approximációs séma \emph{teljesen polinomiális} (FPTAS), ha a
+  lépésszáma $I$ méretében és $\bigl\lfloor \frac{1}{\epsilon}
+  \bigr\rfloor$-ban is polinomiális
+  + elég valamely rögzített $\delta > \epsilon$-ra megadni a sémát
++ \prob részösszeg
+  + \DataIn $a_1, a_1, \ldots, a_n, t \in \ZZ^+$\qquad
+    \DataOut $I \subseteq \{1, 2, \ldots, n\} : \sum_{i \in I} a_i \le
+    t$, $\sum_{i \in I} a_i$ maximális
+    + döntési változat: elérhető-e összegként pontosan $t$?
+  + \thm a részösszeg probléma döntési verziója NP-teljes,
+    optimalizálási verziója NP-nehéz (\noproof)
++ \alg \label{alg:koztelito:fptas:nempol}nem polinomiális algoritmus a részösszeg problémára
+  + az $L_i$ lista (növekvő sorrendben) tartalmazza az $a_1, a_2,
+    \ldots a_i$-ből előállítható réssöszegeket
+    + $L_0 \coloneqq \{0\}$, $L_i \gets L_{i - 1}$ és $L_{i - 1}' = \{l +
+      a \le t : l \in L_{i - 1}\}$ összefésülése (egy elem akár
+      többször)
+    + jegyezzük fel minden $l$ részösszeghez, hogy mely számok
+      összegeként kaptuk
+    + az optimum az $L_n$ lista maximális eleméhez tartozó feljegyzés
++ \alg \label{alg:koztelito:fptas:fptas}FPTAS a részösszeg problémára
+  + \aref{alg:koztelito:fptas:nempol}.~algoritmus $L_i$ listáit
+    ``ritkítjuk''
+  + \dfn adott $0 < \delta < 1$ esetén $x > 0$ \emph{képviseli} $0 < y <
+    x$-et, ha $(1 + \delta) x \ge y$
+  + módosítás: az $L_i$ ($1 \le i \le n - 1$) növekvő lista ritkítása
+    \RA végigmegyünk $L$ elemein
+    + ha $y \in L$-t $\delta = \dfrac{\epsilon}{2n}$ képviseli a
+      közvetlenül alatta levő $x$ eleme, akkor töröljük $L$-ből
+    + a törölt elemeket figyelmen kívül hagyjuk a képvéselők
+      vizsgálatánál
++ \lemma \label{lem:koztelito:fptas:epszilon1}$\displaystyle \mleft(
+  1 + \frac{\epsilon}{2n} \mright)^n \le 1 + \epsilon$
+  + \proof $\displaystyle \mleft(1 + \frac{\epsilon}{2n} \mright)^n = \sum_{i = 0}^n
+    \mleft(\frac{\epsilon}{2}\mright)^i \binom{n}{i} \le \sum_{i = 0}^n
+    \frac{\epsilon^i}{2^i n^i} n^i = \sum_{i = 0}^n
+    \frac{\epsilon^i}{2^i} \le 1 + \epsilon \sum_{i = 1}^n
+    \frac{1}{2^i} \le 1 + \epsilon$ \qed
++ \lemma \label{lem:koztelito:fptas:epszilon2}ha $x \ge 0$ \RA $\ln (1 + x) \ge \dfrac{x}{1 + x}$
+  + ha $x = 0$ \RA $\ln (1 + x) - \dfrac{x}{1 + x} = 0$\qquad
+    ha $x > 0$ \RA $\mleft[\ln (1 + x) - \dfrac{x}{1 + x} \mright]' =
+    \frac{1}{1 + x} - \frac{1}{(1 + x)^2} > 0$
+  + a különbség kezdetben $0$ és monoton nö \RA a bal oldal $\ge$ \qed
++ \thm \aref{alg:koztelito:fptas:fptas}.~algoritmus FPTAS a részösszeg
+  problémára
+  + \proof előlállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
+    \in L_n : s' \ge \dfrac{s}{\bigl(1 + \frac{\epsilon}{2n}\bigr)^n}
+    \overset{\text{\ref{lem:koztelito:fptas:epszilon1}.~lemma}}{\ge}
+    \dfrac{s}{1 + \epsilon}$
+    + az $L_i$ ritkítása legfeljebb $\delta = 1 + \frac{\epsilon}{2n}$
+      hibát hoz be
+    + az $s = s^*$ optimális részösszeget választva látszik, hogy
+      ez egy approximációs séma
+  + polinomiális futásiő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
+    bemenet méretében polinomiális
+    + $\min L_j = 0$, $\max L_j = m \le t$, $L_j = \{ l_1 = 0, l_2, l_3,
+      \ldots, m \}$
+    + két szomszédos elem aránya $\ge 1 + \dfrac{\epsilon}{2n}$ \RA az
+      $i$. elem $\ge l_2 \mleft(1 + \dfrac{\epsilon}{2n}\mright)^{i - 2}
+      \underset{l_2 \in \ZZ^+}{\ge} \mleft(1 +
+      \dfrac{\epsilon}{2n}\mright)^{i - 2}$
+    + $\mleft(1 + \dfrac{\epsilon}{2n}\mright)^{i - 2} \le m \le t$
+      \RA $i \le \dfrac{\ln t}{1 + \frac{\epsilon}{2n}} + 2 \le
+      \dfrac{\ln t}{\dfrac{\frac{\epsilon}{2n}}{1 +
+          \frac{\epsilon}{2n}}} + 2 = \mleft(1 +
+      \dfrac{2n}{\epsilon}\mright) \ln t + 2$
+      + $\ln t$ épp arányos $t$ bináris kódolásának hosszával ($\log_2
+        t$)
+      + $L_j$ legnagyobb indexét ($= L_j$ hosszát) felülről becsültük
+        $n$, $\frac{1}{\epsilon}$ és $\ln t$ polinomjával \qed
+
 \tetel{Ütemezési feladatok típusai. Az
   $1 | \textrm{prec} | C_{\textrm{max}}$ és az $1 \| \Sigma C_j$
   feladat. Approximációs algoritmusok a $P \| C_{\textrm{max}}$
@@ -544,7 +625,7 @@
   esetére. Approximációs algoritmus a
   $P | \textrm{prec} |C_{\textrm{max}}$ feladatra (biz.~nélkül),
   példák: az LPT sorrend, illetve a leghosszabb út szerinti ütemezés
-  sem jobb, mint $(2 - \frac{m}{1})$-approximáció. A
+  sem jobb, mint $(2 - \frac{1}{m})$-approximáció. A
   $P | \textrm{prec}, p_i = 1 | C_{\textrm{max}}$ feladat, Hu
   algoritmusa (biz.~nélkül).}
 
