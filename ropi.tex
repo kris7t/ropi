@@ -207,12 +207,13 @@
     MFP $\prec$ MFP
     + $X$ minimális független ponthalmaz \LRA $V - X$ maximális lefogó
       ponthalmaz
+    + az MFP nem $k$-approximálható (\noproof)
   + \alg $2$-közelítő algoritmus maximális párosítással
     + 1.~lépés: keressük meg $G$ egy $M$ maximális párosítását
       + páros gráfban: magyar modszer, általános gráfban: Edmonds
         algoritmusa
     + 2.~lépés $X \coloneqq$ az $M$-beli élek végpontjai
-    + \thm \label{thm:kozelitö:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
+    + \thm \label{thm:kozelito:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
       + \proof egy lefogó ponthalmaz $M$ $\forall$ élét le kell fogja
         \RA $\lvert M \rvert = \nu(G) \le \tau(G)$
       + $\lvert F \rvert = 2 \lvert M \rvert = 2 \nu(G) \le 2 \tau(G)$
@@ -224,15 +225,19 @@
       + egyébként $M$ egy tovább nem bővíthető párosítás
     + 2.~lépés: $X \coloneqq$ az $M$-beli élek végpontjai
     + \thm az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
-      + \proof \aref{thm:kozelitö:multi:lefogo1}.~tételben nem
+      + \proof \aref{thm:kozelito:multi:lefogo1}.~tételben nem
         használtuk ki, hogy $M$ maximális
       + így továbbra is $\lvert F \rvert = 2 \lvert M \rvert \le 2
         \nu(G) \le 2 \tau(G)$ \qed
-+ \prob \label{thm:kozelitö:multi:paros1}maximális páros részgráf (MPR) \RA NP-nehéz (\noproof)
+  + éles példa: $m$ darab diszjunkt $1$ hosszú út
+    + optimális megoldás: mindegyik élnek csak az egyik végét vesszük
+      bele \RA $m$ csúcs
+    + közelítő megoldás: mindegyik él mindkét vége \RA $2m$ csúcs
++ \prob maximális páros részgráf (MPR) \RA NP-nehéz (\noproof)
     + \DataIn $G = (V, E)$ gráf
     + $A, B: A \cup B = G, A \cap B = \emptyset$, az $A$ és $B$ között
       menő élek száma maximális
-    + \alg $2$-approximációs algoritmus 1.
+    + \alg \label{alg:kozelito:multi:paros1}$2$-approximációs algoritmus 1.
       + 1.~lépés: osszuk ketté a csúcshalmazat $A$-ra és $B$-re
         tetszőlegesen
       + $d_{\mathrlap{s}\phantom{m}}(v) \coloneqq$ $v$-ből a saját
@@ -242,7 +247,7 @@
         d_m(v)$
         + ha van ilyen $v$, helyezzük át a másik csoportba; GOTO 2.
       + 3.~lépés: $(A, B)$ egy $2$-approximáció az MPR problémára
-      + \thm az így meghatározott $(A, B)$ valóban $2$-approximáció
+      + \thm \label{thm:kozelito:multi:paros1}az így meghatározott $(A, B)$ valóban $2$-approximáció
         + \proof $\forall$ lépésben az $A$ és $B$ között haladó élek
           száma nő \RA $\le \lvert E \rvert$ lépés
         + $\forall v \in V : d_m(v) \ge d_s(v)$ \RA $\frac{1}{2}
@@ -255,13 +260,63 @@
           \frac{1}{2} \lvert E_{\max} \rvert$,
           ahol $E_{\max} \subseteq E$ a maximális páros részgráf
           éleinek halmaza \qed
-    + \alg $2$-approximációs algoritmus 1.
+    + \alg $2$-approximációs algoritmus 2.
       + 1.~lépés $A \coloneqq \emptyset$, $B \coloneqq \emptyset$
       + 2.~lépés $G$ pontjait valamilyen sorrendben véve helyezzük el
         azoka a halmazokba, ahol \emph{kevesebb} szomszédjuk van
       + \thm az így meghatározott $(A, B)$ valóban $2$-approximáció
         + továbbra is igaz az, hogy $\forall v \in V : d_m(v) \ge
-        d_s(v)$ \RA lásd \aref{thm:kozelitö:multi:paros1}.~tételt \qed
+        d_s(v)$ \RA lásd \aref{thm:kozelito:multi:paros1}.~tételt \qed
+      + jobb közelítéshez (ha szerencsénk van) még futtathatjuk
+        \aref{alg:kozelito:multi:paros1}.~algoritmust
++ \prob minimális levelű feszítőfa (MLF)
+  + \DataIn $G = (V, E)$ összefüggő gráf
+  + \DataOut $F$ minimális számú $1$ fokú csúcsot tartalmazó feszítőfa
+    $G$-ben
+  + \thm MLF NP-nehéz
+    + \proof HAMÚT $\prec$ MLF
+      + a Hamilton-út $2$ levelű feszítőfa, ennél kevesebb levelű
+        pedig nem létezhet \qed
+    + MLF-re nem létezik $k$-approximációs algoritmus (\noproof)
++ \prob maximális belső csúcsú feszítőfa (MBF)
+  + \DataIn $G = (V, E)$ összefüggő gráf
+  + \DataOut $F$ maximális számú \emph{nem} $1$ fokú csúcsot
+    tartalmazó feszítőfa $G$-ben
+  + MBF ekvivalens MLF-fel, ezért szintén NP-nehéz, de már
+    $k$-approximálható
+  + \alg $2$-appriximációs algorimus MBF-re
+    + ILST = Independent Leaves Spanning Tree
+    + 0.~lépés: legyen $F$ egy tetszőleges feszítőfa $G$-ben
+    + 1.~lépés: ha $F$ Hamilton-út, vagy a levelei független halmazt
+      alkotnak \RA STOP
+    + 2.~lépés: legyen $a$ és $b$ $F$ két levele, ahol $\{a, b\} \in E$
+      (szomszédosak $G$-ben)
+      + keressük meg a $P = a \leadsto b$ (egyértelmű) utat $F$-ben
+      + $F$ nem Hamilton-út \RA $P$-nek van $F$-ben $\ge 3$.~fokú
+        csúcsa \RA az egyik legyen $v$
+    + 3.~lépés: legyen $w : \{v, w\} \in B$, $F \gets F - \{\{v, w\}\}
+      \cup \{\{a, b\}\}$, GOTO 1.
+      + az így kapott $F$ továbbra is feszítőfa, a levelek száma
+      csökkent
+    + \thm a fenti algoritmus polinomiális, $F$ egy $2$-approximáció
+      MBF-re
+      + \noproof
+  + \alg $2$-appriximációs algorimus MBF-re mélységi kereséssel
+    + 1.~lépés: legyen $F$ a $G$ mélységi feszítőfája $r \in E$-ből
+      indítva
+    + 2.~lépés: ha $F$ Hamilton-út, vagy $d(r) > 1$ \RA STOP
+      + ha $d(r) = 1$, de $r$ nem szomszédos $F$ másik levelével \RA
+      STOP
+    + 3.~lépés: legyen $a$ olyan levele $F$-nek, mellyel $r$
+    szomszédos
+      + keressük meg a $P = r \leadsto a$ utat $F$-ben (egyértelmű)
+      + $v$ az $a$-hoz legközelebbi $\ge 3$.~fokú csúcs $P$-ben
+      + $w$ a $v$-vel szomszédos csúcs a $v \leadsto a$ úton $P$-ben
+        (lehet, hogy $w = a$)
+    + 4.~lépés: $F \gets F - \{\{v, w\}\} \cup \{\{r, a\}\}$
+    + \thm a fenti algoritmus $O(\lvert E \rvert)$ idejű, $F$ egy $2$-approximáció
+      MBF-re
+      + \noproof   
 
 \tetel{A minimális lefogó ponthalmaz probléma visszavezetése a
   halmazfedési feladatra, a halmazfedési feladat közelítése, éles
