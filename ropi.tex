@@ -178,6 +178,91 @@
   maximális belső csúcsú feszítőfa keresése. Approximációs algoritmus
   az utóbbi feladatra (biz.~nélkül).}
 
++ \prob leghosszabb kör (LHK)
+  + \DataIn $G = (V, E)$ gráf\qquad\DataOut $G$ egy leghosszabb köre
+  + \thm ha P $\ne$ NP \RA LHK-re nincs $C$ additív hibával
+    közelítő algoritmus
+    + \proof megmutatjuk, hogy HAM $\prec$ LHK $C$-additív közelítése
+    + indir.~tfh.~$\exists$ $C$-additív hibájú közelítés LHK-ra
+    + $G' \coloneqq$ osszuk fel a $G$ gráf $\forall$ élét $C$ új
+      ponttal \RA egy él helyett $C + 1$ új él
+    + $G'$ $k (C + 1)$ hosszú körei $G$ $k$ hosszú köreinek felelnek meg
+    + $G'$-ben van $n (C + 1)$ hosszú kör \LRA $G$-ben van $n$ hosszú
+      kör \LRA $G$ hamiltoni
+    + $G$ hamiltoni \RA a közelítő algoritmus $\ge n (C + 1) - C$
+      hosszú $x^*$ kört talál $G'$-ben
+      + de $G'$ köreinek hossza osztható $(C + 1)$-gyel \RA $x^*$
+        csak a Hamilton-kör lehet \qed
++ \dfn egy maximalizálás (minimalizálási) problémát egy algoritmus
+  \emph{$k$ multiplikatív hibától eltekintve helyesen old meg}, ha
+  $\forall I : c(x^*) \ge \frac{1}{k} \max_{x \in X_I} c(x)$
+  ($c(x^*) \le k \min_{x \in X_I} c(x)$)
++ \dfn egy algoritmus \emph{$k$-approximációs algoritmus}, ha
+  polinomiális és $k$ multiplikatív hibától eltekintve helyesen oldja
+  meg az adott problémát
++ \prob minimális lefogó ponthalmaz (MLP)
+  + \DataIn $G = (V, E)$\qquad\DataOut egy $X$ minimális lefogó ponthalmaz
+    $G$-ben
+  + MLP NP-nehéz, mert a maximális független halmaz (MFP) is az, és
+    MFP $\prec$ MFP
+    + $X$ minimális független ponthalmaz \LRA $V - X$ maximális lefogó
+      ponthalmaz
+  + \alg $2$-közelítő algoritmus maximális párosítással
+    + 1.~lépés: keressük meg $G$ egy $M$ maximális párosítását
+      + páros gráfban: magyar modszer, általános gráfban: Edmonds
+        algoritmusa
+    + 2.~lépés $X \coloneqq$ az $M$-beli élek végpontjai
+    + \thm \label{thm:kozelitö:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
+      + \proof egy lefogó ponthalmaz $M$ $\forall$ élét le kell fogja
+        \RA $\lvert M \rvert = \nu(G) \le \tau(G)$
+      + $\lvert F \rvert = 2 \lvert M \rvert = 2 \nu(G) \le 2 \tau(G)$
+        \qed
+  + \alg $2$-közelítő algoritmus tovább nem bővíthető párosítással
+    + 0.~lépés: $M \coloneqq \emptyset$
+    + 1.~lépés: ha van olyan $e \in E$, hogy $M \cup \{e\}$ párosítás
+      \RA $M \gets M \cup \{e\}$, GOTO 1.
+      + egyébként $M$ egy tovább nem bővíthető párosítás
+    + 2.~lépés: $X \coloneqq$ az $M$-beli élek végpontjai
+    + \thm az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
+      + \proof \aref{thm:kozelitö:multi:lefogo1}.~tételben nem
+        használtuk ki, hogy $M$ maximális
+      + így továbbra is $\lvert F \rvert = 2 \lvert M \rvert \le 2
+        \nu(G) \le 2 \tau(G)$ \qed
++ \prob \label{thm:kozelitö:multi:paros1}maximális páros részgráf (MPR) \RA NP-nehéz (\noproof)
+    + \DataIn $G = (V, E)$ gráf
+    + $A, B: A \cup B = G, A \cap B = \emptyset$, az $A$ és $B$ között
+      menő élek száma maximális
+    + \alg $2$-approximációs algoritmus 1.
+      + 1.~lépés: osszuk ketté a csúcshalmazat $A$-ra és $B$-re
+        tetszőlegesen
+      + $d_{\mathrlap{s}\phantom{m}}(v) \coloneqq$ $v$-ből a saját
+        csoportjába menő élek száma
+      + $d_m(v) \coloneqq$ $v$-ből a másik csoportba menő élek száma
+      + 2.~lépés: keressünk egy olyan $v$ csúcsot, amire $d_s(v) >
+        d_m(v)$
+        + ha van ilyen $v$, helyezzük át a másik csoportba; GOTO 2.
+      + 3.~lépés: $(A, B)$ egy $2$-approximáció az MPR problémára
+      + \thm az így meghatározott $(A, B)$ valóban $2$-approximáció
+        + \proof $\forall$ lépésben az $A$ és $B$ között haladó élek
+          száma nő \RA $\le \lvert E \rvert$ lépés
+        + $\forall v \in V : d_m(v) \ge d_s(v)$ \RA $\frac{1}{2}
+          \sum_{v \in V} d_m(v) \ge \frac{1}{2} \sum_{v \in V} d_s(v)$
+        + $\frac{1}{2} \sum_{v \in V} d_m(v)$ az $A$ és $B$ között
+          menő élek száma
+        + $\frac{1}{2} \sum_{v \in V} d_m(v) = \frac{1}{4} \sum_{v
+          \in V} d_m(v) + d_m(v) \ge \frac{1}{4} \sum_{v \in V}
+          d_m(v) + d_s(v) = \frac{1}{2} \lvert E \rvert \ge
+          \frac{1}{2} \lvert E_{\max} \rvert$,
+          ahol $E_{\max} \subseteq E$ a maximális páros részgráf
+          éleinek halmaza \qed
+    + \alg $2$-approximációs algoritmus 1.
+      + 1.~lépés $A \coloneqq \emptyset$, $B \coloneqq \emptyset$
+      + 2.~lépés $G$ pontjait valamilyen sorrendben véve helyezzük el
+        azoka a halmazokba, ahol \emph{kevesebb} szomszédjuk van
+      + \thm az így meghatározott $(A, B)$ valóban $2$-approximáció
+        + továbbra is igaz az, hogy $\forall v \in V : d_m(v) \ge
+        d_s(v)$ \RA lásd \aref{thm:kozelitö:multi:paros1}.~tételt \qed
+
 \tetel{A minimális lefogó ponthalmaz probléma visszavezetése a
   halmazfedési feladatra, a halmazfedési feladat közelítése, éles
   példa. Közelítő algoritmus a Steiner-fa problémára, éles példa.}
