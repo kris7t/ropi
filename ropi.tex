@@ -607,7 +607,8 @@
       \underset{l_2 \in \ZZ^+}{\ge} \mleft(1 +
       \dfrac{\epsilon}{2n}\mright)^{i - 2}$
     + $\mleft(1 + \dfrac{\epsilon}{2n}\mright)^{i - 2} \le m \le t$
-      \RA $i \le \dfrac{\ln t}{1 + \frac{\epsilon}{2n}} + 2 \le
+      \RA $i \le \dfrac{\ln t}{1 + \frac{\epsilon}{2n}} + 2
+      \overset{\text{\ref{lem:koztelito:fptas:epszilon2}.~lemma}}{\le}
       \dfrac{\ln t}{\dfrac{\frac{\epsilon}{2n}}{1 +
           \frac{\epsilon}{2n}}} + 2 = \mleft(1 +
       \dfrac{2n}{\epsilon}\mright) \ln t + 2$
@@ -625,9 +626,153 @@
   esetére. Approximációs algoritmus a
   $P | \textrm{prec} |C_{\textrm{max}}$ feladatra (biz.~nélkül),
   példák: az LPT sorrend, illetve a leghosszabb út szerinti ütemezés
-  sem jobb, mint $(2 - \frac{1}{m})$-approximáció. A
+  sem jobb, mint $\bigl(2 - \frac{1}{m}\bigr)$-approximáció. A
   $P | \textrm{prec}, p_i = 1 | C_{\textrm{max}}$ feladat, Hu
   algoritmusa (biz.~nélkül).}
+
++ ütemezési feladatok bemenetei
+  + $\JJ = \{J_1, J_2, \ldots, J_n\}$ munkák
+  + minden munkához $p_i =$ megmunkálási idő
+  + esetleg $w_i =$ súly (célfüggvényhez), $d_i =$ határidő, $r_i =$
+    rendelkezés reállási idő (release time, előbb nem lehet kezdeni)
+  + több gép esetén a gépek teljesen egyformák (parallel machines)
++ ütemezési feladat kimenete: munkák egy ütemezése (valamilyen
+  célfüggvény szerint optimálisan)
+  + ahol adott időben egy gépen $\le 1$ munka, egy munka $\le 1$ gépen
+  + munka nem szakítható meg
+  + $C_i^S =$ a $J_i$ munka befejezési ideje az $S$ ütemezésben
++ ütemezési algoritmusok elnevezése: $\alpha | \beta | \gamma$
+  + $\alpha =$ rendelkezése álló gépek ($1$, $P$ = több gép, $P_m$ =
+    rögzített $m$ db gép)
+  + $\beta =$ betartandó korlátok
+    + prec = a $\vec{D} = (\JJ, \vec{A})$ irányított aciklikus gráf
+      (DAG) adja meg a munkák függőségeit
+      + $(J_i, J_k) \in \vec{A}$ \RA $J_i$ meg kell előzze $J_k$-t
+      + in-tree = a $\vec{D}$ dependencia gráf egy fenyő (gyökér felé
+        irányított fa)
+    + $p_j = 1$ \RA $\forall$ átfutási idő $1$\qquad$r_j$ \RA eltérő
+      rendelkezésre állási idők
+  + $\gamma =$ célfüggvény ($C_{\max} = \max C_i$ teljes átfutási idő,
+    $\Sigma C_i$ \ra $\sum_{i} \frac{C_i}{n}$ átlagos átfutási idő)
++ \prob $1\|C_{\max}$
+  + triviális, tetszőleges folyamatos ütemezésre $C_{\max} = \sum_{i}
+    p_i$ optimális
++ \prob $1|\textrm{prec}|C_{\max}$
+  + olyan folyamatos ütemezést keresünk, ami kielégíti a megelőzési
+    feltételeket
+  + ez épp $\vec{D}$ bármely topologikus sorrendje \RA mélységi
+    kereséssel meghatározható
++ \prob $1\|\Sigma C_j$
+  + SPT (shortest processing time): a munkák $p_j$ szerint nemcsökkenő
+    sorrendben
+  + \thm az SPT sorrend optimális ütemezés a $1\|\Sigma C_j$
+    problémára
+    + \proof indir.~tfh.~$\exists$ $S$ optimális, de nem SPT ütemezés
+    + ekkor $\exists J_i, J_k \in \JJ :$ $J_i$ után közvetlenül $J_k$
+      van ütemezve, de $p_i > p_k$
+    + cseréljük fel $J_i$-t és $J_k$-t \RA $S'$
+      + $\sum_{j = 1}^n C_j - \sum_{j = 1}^n C_j' = [(t + p_i) + (t +
+        p_i + p_k)] - [(t + p_k) + (t + p_k + p_i)] = p_i - p_k > 0$
+      + $S$ nem lehet optimális, mert $S'$-nél nagyobb a hozzá tartozó
+        célfüggvény érték \qed
++ \prob $P\|C_{\max}$
+  + \thm a $P_2\|C_{\max}$ feladat NP-nehéz
+    + \proof adunk egy PARTÍCIÓ $\prec$ $P_2\|C_{\max}$ Karp-redukciót
+    + PARTÍCIÓ: két részre lehet-e osztani az $a_1, a_2, \ldots, a_n
+      \in \ZZ^+$ számokat úgy, hogy mindkét részben az elemek összege $b
+      = \frac{1}{2} \sum_{i = 1}^n a_i$, NP-teljes
+    + legyen a $J_j$ munka végrehatjási ideje $p_j = a_j$ \RA%
+      ütemezzük $\JJ$-t $2$ gépen
+      + az optimális ütemezésre $C_{max}^* \le b$ \LRA $(a_j)_{j = 1}^n$
+        partícionálható \qed
+  + kézenfekvő alsó korlátok: ($*$) $C_{\max}^* \ge \frac{1}{n} \sum_{n =
+    1}^n p_j$, ($**$) $C_{\max}^* \ge \max_{j} p_j$
+  + \alg listás ütemezés (LS)
+    + 1.~lépés: rögzítsük a munkák egy sorrendjét
+    + 2.~lépés: amit egy gép felszabadul, az rögtön kezdje meg a
+      listában legelső még nem ütemezett feladatot
+      + ha több gép szabadul fel, akkor az indexük szerinti sorrendben
+        vizsgáljuk őket
+    + nincs olyan pillanat, hogy van még munka a listában, de valamelyik gép
+      nem dolgozik
+  + \thm $m$ gép esetén LS $2 - \frac{1}{m}$-approximáció
+    $P\|C_{\max}$-ra
+    + \proof a listás ütemezés polinomidőben előállítható
+    + legyen $J_k$ az utolsó munka, $C_{\max} = C_k = t + p_k$ \RA%
+      legalább $t$ ideig még $\forall$ gép dolgozik
+    + $\displaystyle C_{\max} = t + p_k \le \frac{1}{m} \sum_{j \ne k}
+      p_j + p_k = \frac{1}{m} \sum_{i = 1}^n p_j + \mleft(1 -
+      \frac{1}{m}\mright) p_k \overset{(*), (**)}{\le} C^*_{\max} +
+      \mleft(1 - \frac{1}{m}\mright) C^*_{\max}$ \qed
+  + éles példa: $m$ gép, $m (m - 1)$ db munkára $p_i = 1$, $1$
+    munkára $p_i = m$ ebben a sorrendben
+    + LS ütemezés: a gépek először egyenként $(m - 1) \cdot 1$ egység
+      munkát végeznek, majd az 1.~gép az $m$ hosszút \RA $C_{max} = 2m
+      - 1$
+    + OPT ütemezés: az 1.~gép az $m$ hosszú munkát, a többi egyenként
+      $m \cdot 1$-et \RA $C_{\max}^* = m$
+  + LPT (longest processing time) sorrend: munkák $p_j$ szerint
+    nemnövekvő sorrendben
+  + \thm az LPT sorrend szerinti LS $\frac{4}{3}$ approximációs
+    alg.~$P\|C_{\max}$-ra (\noproof)
+  + éles példa: $m$ gép; $2$ db $p_i = 2m - 1$ munka, $2$ db $2m - 2$,
+    \ldots, $2$ db $m + 1$, $3$ db $m$ munka
+    + LPT ütemezés: $\forall$ gép végrehajt egy összesen $3m - 1$
+      hosszú párt ($2m - 1 - u$, $m + u$), majd az 1.~gép az utolsó $m$
+      hosszú feladatot \RA $C_{\max} = 4m - 1$
+    + OPT ütemezés: az első $m - 1$ gép végrehajt egy összesen $3m$
+      hosszú párt ($2m - 1 - u$, $m + 1 + u$), az $m$. gép a 3 $m$
+      hosszút \RA $C_{\max}^* = 3m$, $\frac{C_{\max}}{C_{\max}^*}
+      \xrightarrow{m \to \infty} \frac{4}{3}$
++ \prob $P|\textrm{prec}|C_{\max}$
+  + \alg LS ütemezés megelőzési kényszerekkel
+    + módosítás: nem az összes, hanem csak a már elkezdhető munkák
+      közül választunk a szabad gépnek feladatot
+  + \thm $m$ gép esetén LS $2 - \frac{1}{m}$-approximáció
+    $P|\textrm{prec}|C_{\max}$-ra (\noproof)
+  + éles példa: $m (m - 1)$ db $p_i = 1$, $1$ db $p_i = \frac{1}{2}$,
+    $1$ db $p_i = m - \frac{1}{2}$, amit az $\frac{1}{2}$-es után
+    kell végrehajtani
+    + LS / LPT sorrend: $m$ gépen egyenként $m - 1$ db $1$-es, majd az
+      $1$. gépen az $\frac{1}{2}$ és az $m - \frac{1}{2}$ egymás után \RA%
+      $C_{\max} = 2m - 1$
+    + OPT sorrend: $1$. gépen az $\frac{1}{2}$ és az $m -
+      \frac{1}{2}$, a többin egyenként $m$ db $1$-es \RA $C_{\max}^* =
+      m$
+    + az LPT sorrend nem javítja az ütemezést
+  + \dfn a $J_i$ munka $\ell_i$ \emph{szint}je a $\vec{D}$-beli
+    leghosszabb, $J_i$-ből induló út hossza
+    + $C_{\max}^* \ge \max_i \ell_i$ \RA ötlet: ütemezzük korábban a
+      nagyobb szinű feladatokat
+    + $\ell_i$ meghatározható polinom időben $J_i$ fordított
+      topologikus sorrendjében
+  + leghosszabb út szerinti sorrend: munkák $\ell_j$ szerint
+    nemnövekvő sorrendben
+  + éles példa: $1$ db $p_i = \epsilon$ ``forrás''; $m$ db $p_i = 1$,
+    csak $\epsilon$ után kezdhető; $1$ db $p_i = m - 1$ ``nyelő'', csak
+    az összes $1$ után kezdhető; $m - 1$ db $p_i = m - 1$ izolált pont
+    + leghosszabb út sorrend: 1.~gépen $\epsilon$, majd $m - 1$ db
+      $1$-es; 2.~gépen $m - 1$, $1$, $m - 1$; többi gépen csak $m - 1$
+      \RA $C_{\max} = 2m - 1$
+    + OPT sorrend: 1.~gépen $\epsilon$, $1$, $m - 1$, többi gépen:
+      $1$, $m - 1$ \RA $C_{\max}^* = m + \epsilon$
+    + $\frac{C_{\max}}{C_{\max}^*} = \frac{2m - 1}{m + \epsilon}
+      \xrightarrow{\epsilon \to 0} 2 - \frac{1}{m}$ \RA a leghosszabb
+      út szerinti sorrend sem segít
++ \prob $P|\textrm{prec}, p_i = 1|C_{\max}$
+  ($P|\textrm{prec}|C_{\max}$ speciális esete)
+  + \thm $P|\textrm{prec}, p_i = 1|C_{\max}$ NP-nehéz, ha $m$ része a
+    bemenetnek (\noproof)
+  + rögzített $m$ esetén a feladat bonyolultsága nem ismert
++ \prob $P|\textrm{in-tree}, p_i = 1|C_{\max}$
+  ($P|\textrm{prec}, p_i|C_{\max}$ speciális esete)
+  + a feladatok egy gyökere felé irányított fát alkotnak \RA a gyökér
+    minden más feladattól függ
+  + \alg Hu algoritmus
+    + LS a leghosszabb (= legtöbb csúcsbó álló) út szerinti sorrendben
+    + \thm Hu algoritmusa optimális megoldást ad $P|\textrm{in-tree},
+      p_i = 1|C_{\max}$-ra
+      + \noproof
 
 \section{Megbízható hálózatok tervezése}
 
