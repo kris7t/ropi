@@ -1,0 +1,744 @@
+\section{Közelítő és ütemezési algoritmusok} 
+
+\tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP,
+  co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója,
+  viszonyaik, példák problémákra valamennyi osztályból. NP-nehéz
+  feladatok polinomiális speciális esetei: algoritmus a maximális
+  független ponthalmaz problémára és az élszínezési problémára páros
+  gráfokon. Additív hibával közelítő algoritmusok speciális pont-,
+  illetve élszínezési problémákra.}
+
++ algoritmuselméleti alapfogalmak
+  + \dfn \emph{kiszámítási problémá}ról akkor beszélünk, ha egy $I$
+    bemenet $f(I)$ függvényét szeretnénk kimenetként megadni
+    + \emph{eldöntési probléma}: $f(I) \in \{\textsc{Igen},
+      \textsc{Nem}\}$
+  + \dfn \emph{optimalizálási probléma} olyan kiszámítási probléma, ahol
+    + az $I$ bemenethez $X_I$ a \emph{lehetséges kimenetek} halmaza,
+      $c\colon X_I \to \RR$ valós függvény
+    + $f(I) = x^* \in X_I$, hogy $c(x^*) = \max \{ c(x) : x \in X_I \}$
+      (illetve $c(x^*) = \min \{ c(x) : x \in X_I \}$)
+    + a kimenet nemcsak az optimum értéke, hanem maga az $x^*$ optimális
+      megoldás
+  + \dfn egy $f \colon \Nat \to \Nat$ függvény \emph{polinomális}, ha
+    $\exists c_1, c_2 \in \Nat^*: \forall n \in \Nat : f(n) \le c_1
+    n^{c_2}$
+    + egy algoritmus akkor \emph{polinomiális} ha $\forall$ $n$ méretű
+      bemenetre $f(n)$ időben kiszámítja a kimenetet, ahol $f$
+      polinomiális
+    + egy probléma \emph{polinom időben megoldható}, ha $\exists$ rá
+      polinomiális algoritmus
+  + \dfn az $A$ probléma \emph{polinom időben visszavezethető} $B$-re
+    ($A \cookprec B$), ha $A$ polinom időben megoldható a
+    $B$-t megoldó algoritmus szubrutinként hívásával
+    + $B$ hivása $O(1)$ lépésnek számit
+  + \dfn döntési problémák osztályai
+    + P $\coloneqq$ a polinom időben megoldható eldöntési
+      problémák osztálya
+      + pl.~teljes párosítás páros gráfban, $k$-matroid-partíció
+    + NP $\coloneqq$ azon eldöntési problémák osztálya, ahol az
+      \textsc{Igen} válaszra létezik polinomiális méretű, polinomiális
+      időben ellenőrizhető tanú
+      + pl.~Hamilton-kör, $k$-matroid-metszet ($k \ge 2$)
+    + co-NP $\coloneqq$ azon eldöntési problémák osztálya, ahol az
+      \textsc{Nem} válaszra létezik polinomiális méretű, polinomiális
+      időben ellenőrizhető tanú
+      + pl.~teljes párosítás páros gráfban (Kőnig tétele, Hall-tétel),
+        síkbarajzolhatóság (Kuratowski-tétel), teljes párosítás
+        tetszőleges gráfban (Tutte-tétel)
+    + egy $B$ probléma \emph{NP-nehéz}, ha $\forall A \in
+      \mathrm{NP}: A \cookprec B$
+      + pl.~az általános $k$-polimatroid matching NP-nehéz, de nem
+        NP-beli
+    + egy $B$ probléma \emph{NP-teljes}, ha NP-beli és NP-nehéz
+      + pl.~SAT (Cook`--Levin tétel), 3SZÍN, HAM, LÁDAPAKOLÁS
+  + P $\subseteq$ NP $\cap$ co-NP, NP-teljes $=$ NP $\cap$ NP-nehéz, P
+    $\overset{?}{=}$ NP
++ \prob maximális független ponthalmaz páros gráfban
+  + \DataIn $G = (A, B; E)$ páros gráf\qquad\DataOut $F$ maximális
+    független ponthalmaz
+  + a probléma általános gráfra NP-nehéz, de páros gráfra polinomiális
+  + futtasuk le a gráfra a javítóutas algoritmust (polinom idejű)
+  + \stmnt ekkor $F = A_1 \cup A_2 \cup B_1 \cup B_3$ maximális
+    független ponthalmaz
+    + $A_1, B_1 =$ az $A$-, illetve $B$-beli párosítatlan pontok
+      halmaza
+    + $B_2 =$ az $A_1$-ből alternáló úton elérhető pontok (nincs
+      javító út \RA mind van párjuk)
+    + $A_1 =$ a $B_2$-beli pontok párjai
+    + $A_3 = A - A_1 - A_2$, $B_3 = B - B_1 - B_2$
+    + \proof az algoritmus által megtalált $M$ párosítás maximális \RA%
+      $\lvert M \rvert = \nu(G)$
+      + $\nu(G) =$ maximális párosítás mérete, $\tau(G) =$ min.~lefogó
+        ponthalmaz mérete
+      + nincs él $A_1 \cup A_2$ és $B_1 \cup B_2$ között
+        (\ref{thm:linprog:egervary:magyar}.~tétel) \RA $F$ független
+      + $A \cup B - F = A_3 \cup B_2$ lefogó ponthalmaz \RA $\tau(G)
+        \le \lvert A_3 \cup B_2 \rvert = \lvert F \rvert = \nu(G)$
+      + egy lefogó ponthalmaz egy párosítás $\forall$ élét le kell
+        fogja \RA $\nu(G) \le \tau(G)$
+      + így $\tau(G) \le \lvert A_3 \cup B_2 \rvert = \lvert F \rvert
+        = \nu(G) \le \tau(G)$ \RA $\nu(G) = \tau(G)$
+    + indir.~tfh.~$\exists F' \subseteq A \cup B$ független
+      ponthalmaz, $\lvert F' \rvert > \lvert F \rvert$
+      + ekkor $A \cup B - F'$ lefogó ponthalmaz, de $\lvert A \cup B -
+        F' \rvert < \lvert A \cup B - F \rvert = \tau(G)$
+      + ez ellentmondás, $F$ maximális kell legyen \qed
++ \prob élszínezés páros gráfokon
+  + \DataIn $G = (A, B; E)$ egyszerű páros gráf\qquad\DataOut $G$ élszínezése
+    $\Delta(G)$ színnel
+  + a probléma általános gráfra NP-nehéz, de páros gráfra polinomiális
+  + \thm \label{thm:kozelito:additiv:vizing}(Vizing tétele) ha $G = (V, E)$ egyszerű gráf \RA $\Delta(G)
+    \le \chi_e(G) \le \Delta(G) + 1$
+    + \noproof
+  + \thm (Kőnig tétele) ha $G = (A, B; E)$ egyszerű páros gráf \RA%
+    $\chi_e(G) = \Delta(G)$
+    + \proof meg fogunk adni egy polinomiális algoritmust a színezésre
+  + vegyük a gráf $E = \{ e_1, e_2, \ldots, e_m \}$ éleit sorban, és
+    színezzük meg őket egy-egy szabad színnel
+    + legyen $e_i = \{u, v\}$, $ u \in A$, $v \in b$ a most
+      megszínezendő él
+    + $d(u), d(v) \le \Delta(G)$, és illeszkedik rájuk színezetlen él
+      ($e_i$)
+      + \RA mindkét csúcsnak $\exists$ szabad színe \RA ha $\exists$
+      közös szabad szín, $e_i$ kapja meg azt
+  + tfh.~az $u$ szabad színe a \emph{piros}, de a $v$-é a \emph{kék}
+    + legyen $P_u$ az $u$-ból induló, felváltva kék--piros út (kör nem
+      lehet)
+    + ekkor $v \notin P_u$, mert akkor a végpontja lenne ($v$-ben a
+      kék szabad)
+      + de $u \in A$, $v \in B$ \RA $P_u$ páratlan hosszú \RA $P_u$
+        utolsó éle kék
+    + cseréljük fel $P_u$ mentén a piros és a kék színeket
+      + ez a meglevő színezést nem ronthatja el
+      + $u$-ban most már a kék szabad, $v$-ben maradt szabad \RA%
+        $e_i$ színezhető kékre \qed
++ \dfn egy maximalizálási (minimalizálási) problémát egy algoritmus
+  \emph{$C$ additív hibától eltekintve helyesen old meg}, ha $\forall I:
+  c(x^*) \ge \max_{x \in X_i} c(x) - C$ ($c(x^*) \le \min_{x \in X_i}
+  c(x) + C$)
++ \dfn egy algoritmus \emph{$C$ additív hibával közelítő algoritmus},
+  ha adott optimalizálási problémát polinom időben, $C$ additív
+  hibától eltekintve helyesen old meg
++ \prob egyszerű gráfok élszínezése
+  + \DataIn $G = (V; E)$ egyszerű gráf\qquad\DataOut $G$
+    minimális élszínezése
+  + Vizing tétele (\ref{thm:kozelito:additiv:vizing}.~tétel) szerint
+    $\chi_e(G) \le \Delta(G) + 1$
+    + a tétel bizonyítása konstruktív, ad egy $\Delta(G) + 1$ polinom
+      időben
+    + így a tételben szereplő algoritmus $1$ additív hibával közelítő
++ \prob síkgráfok csúcsszínezése
+  + \DataIn $G = (V; E)$ síkgráf\qquad\DataOut $G$
+    minimális csúcsszínezése
+  + \thm (négyszíntétel) minden síkgráf színezhető $4$ színnel,
+    \noproof
+    + létezik algoritmikus bizonyítás, ami polinomidőben előállít egy
+      $4$-színezést
+    + ez egy $2$ additív hibával közelítő algoritmus
+  + ha a $4$-színező algoritmus előtt ellenőrizzük, hogy $G$ páros-e
+    \RA $2$-színezhető
+    + ez szélességi kereséssel polinomidőben megtehető
+
+\tetel{A Hamilton-kör probléma visszavezetése a leghosszabb kör
+  probléma additív közelítésére. $k$-approximációs algoritmus fogalma,
+  példák: két-két algoritmus a minimális lefogó ponthalmaz keresésére
+  és a maximális páros részgráf keresésére. Minimális levelű, illetve
+  maximális belső csúcsú feszítőfa keresése. Approximációs algoritmus
+  az utóbbi feladatra (biz.~nélkül).}
+
++ \prob leghosszabb kör (LHK)
+  + \DataIn $G = (V, E)$ gráf\qquad\DataOut $G$ egy leghosszabb köre
+  + \thm ha P $\ne$ NP \RA LHK-re nincs $C$ additív hibával
+    közelítő algoritmus
+    + \proof megmutatjuk, hogy HAM $\prec$ LHK $C$-additív közelítése
+    + indir.~tfh.~$\exists$ $C$-additív hibájú közelítés LHK-ra
+    + $G' \coloneqq$ osszuk fel a $G$ gráf $\forall$ élét $C$ új
+      ponttal \RA egy él helyett $C + 1$ új él
+    + $G'$ $k (C + 1)$ hosszú körei $G$ $k$ hosszú köreinek felelnek meg
+    + $G'$-ben van $n (C + 1)$ hosszú kör \LRA $G$-ben van $n$ hosszú
+      kör \LRA $G$ hamiltoni
+    + $G$ hamiltoni \RA a közelítő algoritmus $\ge n (C + 1) - C$
+      hosszú $x^*$ kört talál $G'$-ben
+      + de $G'$ köreinek hossza osztható $(C + 1)$-gyel \RA $x^*$
+        csak a Hamilton-kör lehet \qed
++ \dfn egy maximalizálás (minimalizálási) problémát egy algoritmus
+  \emph{$k$ multiplikatív hibától eltekintve helyesen old meg}, ha
+  $\forall I : c(x^*) \ge \frac{1}{k} \max_{x \in X_I} c(x)$
+  ($c(x^*) \le k \min_{x \in X_I} c(x)$)
++ \dfn egy algoritmus \emph{$k$-approximációs algoritmus}, ha
+  polinomiális és $k$ multiplikatív hibától eltekintve helyesen oldja
+  meg az adott problémát
++ \prob minimális lefogó ponthalmaz (MLP)
+  + \DataIn $G = (V, E)$\qquad\DataOut egy $X$ minimális lefogó ponthalmaz
+    $G$-ben
+  + MLP NP-nehéz, mert a maximális független halmaz (MFP) is az, és
+    MFP $\prec$ MFP
+    + $X$ minimális független ponthalmaz \LRA $V - X$ maximális lefogó
+      ponthalmaz
+    + az MFP nem $k$-approximálható (\noproof)
+  + \alg $2$-közelítő algoritmus maximális párosítással
+    + 1.~lépés: keressük meg $G$ egy $M$ maximális párosítását
+      + páros gráfban: magyar modszer, általános gráfban: Edmonds
+        algoritmusa
+    + 2.~lépés $X \coloneqq$ az $M$-beli élek végpontjai
+    + \thm \label{thm:kozelito:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
+      + \proof egy lefogó ponthalmaz $M$ $\forall$ élét le kell fogja
+        \RA $\lvert M \rvert = \nu(G) \le \tau(G)$
+      + $\lvert F \rvert = 2 \lvert M \rvert = 2 \nu(G) \le 2 \tau(G)$
+        \qed
+  + \alg $2$-közelítő algoritmus tovább nem bővíthető párosítással
+    + 0.~lépés: $M \coloneqq \emptyset$
+    + 1.~lépés: ha van olyan $e \in E$, hogy $M \cup \{e\}$ párosítás
+      \RA $M \gets M \cup \{e\}$, GOTO 1.
+      + egyébként $M$ egy tovább nem bővíthető párosítás
+    + 2.~lépés: $X \coloneqq$ az $M$-beli élek végpontjai
+    + \thm az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
+      + \proof \aref{thm:kozelito:multi:lefogo1}.~tételben nem
+        használtuk ki, hogy $M$ maximális
+      + így továbbra is $\lvert F \rvert = 2 \lvert M \rvert \le 2
+        \nu(G) \le 2 \tau(G)$ \qed
+  + éles példa: $m$ darab diszjunkt $1$ hosszú út
+    + optimális megoldás: mindegyik élnek csak az egyik végét vesszük
+      bele \RA $m$ csúcs
+    + közelítő megoldás: mindegyik él mindkét vége \RA $2m$ csúcs
++ \prob maximális páros részgráf (MPR) \RA NP-nehéz (\noproof)
+    + \DataIn $G = (V, E)$ gráf
+    + $A, B: A \cup B = G, A \cap B = \emptyset$, az $A$ és $B$ között
+      menő élek száma maximális
+    + \alg \label{alg:kozelito:multi:paros1}$2$-approximációs algoritmus 1.
+      + 1.~lépés: osszuk ketté a csúcshalmazat $A$-ra és $B$-re
+        tetszőlegesen
+      + $d_{\mathrlap{s}\phantom{m}}(v) \coloneqq$ $v$-ből a saját
+        csoportjába menő élek száma
+      + $d_m(v) \coloneqq$ $v$-ből a másik csoportba menő élek száma
+      + 2.~lépés: keressünk egy olyan $v$ csúcsot, amire $d_s(v) >
+        d_m(v)$
+        + ha van ilyen $v$, helyezzük át a másik csoportba; GOTO 2.
+      + 3.~lépés: $(A, B)$ egy $2$-approximáció az MPR problémára
+      + \thm \label{thm:kozelito:multi:paros1}az így meghatározott $(A, B)$ valóban $2$-approximáció
+        + \proof $\forall$ lépésben az $A$ és $B$ között haladó élek
+          száma nő \RA $\le \lvert E \rvert$ lépés
+        + $\forall v \in V : d_m(v) \ge d_s(v)$ \RA $\frac{1}{2}
+          \sum_{v \in V} d_m(v) \ge \frac{1}{2} \sum_{v \in V} d_s(v)$
+        + $\frac{1}{2} \sum_{v \in V} d_m(v)$ az $A$ és $B$ között
+          menő élek száma
+        + $\frac{1}{2} \sum_{v \in V} d_m(v) = \frac{1}{4} \sum_{v
+          \in V} d_m(v) + d_m(v) \ge \frac{1}{4} \sum_{v \in V}
+          d_m(v) + d_s(v) = \frac{1}{2} \lvert E \rvert \ge
+          \frac{1}{2} \lvert E_{\max} \rvert$,
+          ahol $E_{\max} \subseteq E$ a maximális páros részgráf
+          éleinek halmaza \qed
+    + \alg $2$-approximációs algoritmus 2.
+      + 1.~lépés $A \coloneqq \emptyset$, $B \coloneqq \emptyset$
+      + 2.~lépés $G$ pontjait valamilyen sorrendben véve helyezzük el
+        azoka a halmazokba, ahol \emph{kevesebb} szomszédjuk van
+      + \thm az így meghatározott $(A, B)$ valóban $2$-approximáció
+        + továbbra is igaz az, hogy $\forall v \in V : d_m(v) \ge
+        d_s(v)$ \RA lásd \aref{thm:kozelito:multi:paros1}.~tételt \qed
+      + jobb közelítéshez (ha szerencsénk van) még futtathatjuk
+        \aref{alg:kozelito:multi:paros1}.~algoritmust
++ \prob minimális levelű feszítőfa (MLF)
+  + \DataIn $G = (V, E)$ összefüggő gráf
+  + \DataOut $F$ minimális számú $1$ fokú csúcsot tartalmazó feszítőfa
+    $G$-ben
+  + \thm MLF NP-nehéz
+    + \proof HAMÚT $\prec$ MLF
+      + a Hamilton-út $2$ levelű feszítőfa, ennél kevesebb levelű
+        pedig nem létezhet \qed
+    + MLF-re nem létezik $k$-approximációs algoritmus (\noproof)
++ \prob maximális belső csúcsú feszítőfa (MBF)
+  + \DataIn $G = (V, E)$ összefüggő gráf
+  + \DataOut $F$ maximális számú \emph{nem} $1$ fokú csúcsot
+    tartalmazó feszítőfa $G$-ben
+  + MBF ekvivalens MLF-fel, ezért szintén NP-nehéz, de már
+    $k$-approximálható
+  + \alg $2$-appriximációs algorimus MBF-re
+    + ILST = Independent Leaves Spanning Tree
+    + 0.~lépés: legyen $F$ egy tetszőleges feszítőfa $G$-ben
+    + 1.~lépés: ha $F$ Hamilton-út, vagy a levelei független halmazt
+      alkotnak \RA STOP
+    + 2.~lépés: legyen $a$ és $b$ $F$ két levele, ahol $\{a, b\} \in E$
+      (szomszédosak $G$-ben)
+      + keressük meg a $P = a \leadsto b$ (egyértelmű) utat $F$-ben
+      + $F$ nem Hamilton-út \RA $P$-nek van $F$-ben $\ge 3$.~fokú
+        csúcsa \RA az egyik legyen $v$
+    + 3.~lépés: legyen $w : \{v, w\} \in B$, $F \gets F - \{\{v, w\}\}
+      \cup \{\{a, b\}\}$, GOTO 1.
+      + az így kapott $F$ továbbra is feszítőfa, a levelek száma
+      csökkent
+    + \thm a fenti algoritmus polinomiális, $F$ egy $2$-approximáció
+      MBF-re
+      + \noproof
+  + \alg $2$-appriximációs algorimus MBF-re mélységi kereséssel
+    + 1.~lépés: legyen $F$ a $G$ mélységi feszítőfája $r \in E$-ből
+      indítva
+    + 2.~lépés: ha $F$ Hamilton-út, vagy $d(r) > 1$ \RA STOP
+      + ha $d(r) = 1$, de $r$ nem szomszédos $F$ másik levelével \RA
+      STOP
+    + 3.~lépés: legyen $a$ olyan levele $F$-nek, mellyel $r$
+    szomszédos
+      + keressük meg a $P = r \leadsto a$ utat $F$-ben (egyértelmű)
+      + $v$ az $a$-hoz legközelebbi $\ge 3$.~fokú csúcs $P$-ben
+      + $w$ a $v$-vel szomszédos csúcs a $v \leadsto a$ úton $P$-ben
+        (lehet, hogy $w = a$)
+    + 4.~lépés: $F \gets F - \{\{v, w\}\} \cup \{\{r, a\}\}$
+    + \thm a fenti algoritmus $O(\lvert E \rvert)$ idejű, $F$ egy $2$-approximáció
+      MBF-re
+      + \noproof   
+
+\tetel{A minimális lefogó ponthalmaz probléma visszavezetése a
+  halmazfedési feladatra, a halmazfedési feladat közelítése, éles
+  példa. Közelítő algoritmus a Steiner-fa problémára, éles példa.}
+
++ \prob súlyozott halmazfedés (SHF)
+  + \DataIn $n$ elemű $U$ alaphalmaz, $\CR \subseteq 2^U : \bigcup_{S
+    \in \CR} S = U$, $c\colon \CR \to \QQ^+$ költségfüggvény
+  + \DataOut $\CR' \subseteq \CR$, ahol $\bigcup_{S \in \CR'} S = U$
+    és $\sum_{S \in \CR'} c(S)$ minimális
+  + \thm a súlyozott halmazfedés probléma NP-nehéz
+    + \proof megmutatjuk, hogy MLP $\prec$ SHF
+    + keressük a $G = (V, E)$ gráf minimális lefogó ponthalmazát
+    + $U \coloneqq E$, $\CR \coloneqq \{E_v = \{e : u \in V, e = \{v,
+      u\} \in E\} : v \in V\}$, $c(E_v) \coloneqq 1$
+    + $\CR'$ minimális fedés \LRA $F \subseteq V$ min.~lefogó
+      ponthalmaz, ahol $\CR' = \{ E_v : v \in \CR'\}$ \qed
+  + \thm ha P $\ne$ NP \RA $\nexists$ konstants $k$-faktorú
+    approximáció SHF-re (\noproof)
+  + \alg Chvátal mohó algoritmusa
+    + 0.~lépés: $\CR' \coloneqq \emptyset$, $C \coloneqq \emptyset$ a már
+      lefedett elemek halmaza
+    + 1.~lépés: ha $C = U$ \RA STOP, egyébként $S = \argmin_{S \in
+      \CR} \frac{c(S)}{\lvert S - C \rvert}$
+    + 2.~lépés: $\CR' \gets \CR' \cup \{S\}$, $C \gets C \cup S$, GOTO
+      1.
+  + \thm Chavátal mohó algoritmusa $H_k$-approximáció, ahol $k =
+    \max_{S \in \RR} \lvert S \rvert$
+    + $\ln n \le H_n = 1 + \frac{1}{2} + \frac{1}{3} + \ldots +
+      \frac{1}{n} \le \ln n + 1$
+    + \proof az algoritmus polinomiális
+    + az $x$ elem $p(x)$ \emph{ára} az őt elsőkét fedő $S \in \CR'$
+      halmazra jutó $\frac{c(S)}{\lvert S - C \rvert}$ költség
+      + $c(S) = \sum_{x \in S - C} \frac{c(S)}{\lvert S - C \rvert} =
+        \sum_{x \in S - C} p(x)$ \RA $c(\CR') = \sum_{S \in \CR'} c(S)
+         = \sum_{x \in U} p(x)$
+    + legyen $\CR^*$ egy min.~összsúlyú fedés, $S = \{x_1, x_2,
+      \ldots, x_r\} \in \CR^*$ ($r \le k$)
+      + ált.~megsz.~tfh.~az algoritmus $S$ elemeit $x_r, x_{r - 1},
+        \ldots, x_1$ sorrendben fedte le
+      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i - 1}
+        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \ge
+        \frac{c(S)}{i}$
+      + $\forall x_i \in S$-t fedő $S_i'$-re $\frac{c(S_i')}{\lvert
+        S_i' - C \rvert} \le \frac{c(S)}{i}$ \RA $\sum_{x_i \in S}
+        p(x_i) \le \sum_{x_i \in S} \frac{c(S)}{i} = H_r c(S)$
+      + $c(\CR') = \sum_{x \in U} p(x) \le \sum_{S^* \in \CR^*}
+        \sum_{x_i \in S^*} p(x_i) \le \sum_{S^* \in \CR^*} H_{\lvert
+          S^* \rvert} c(S^*) \le\\
+        \phantom{c(\CR')}\le \sum_{S^* \in \CR^*} H_k c(S^*) = H_k
+          \sum_{S^* \in \CR^*} c(S^*) = H_k  c(\CR^*)$ \qed
+  + éles példa: $U \coloneqq \{1, 2, \ldots, n \}$, $\CR \coloneqq \{\{1\},
+    \{2\}, \ldots, \{n\}, U\}$, $c(\{i\}) \coloneqq \frac{1}{i}$, $c(U)
+    \coloneqq 1 + \epsilon$ ($\epsilon > 0$)
+    + $\CR' = \{\{n\}, \{n - 1\}, \ldots, \{1\}\}$ ebben a sorrendben
+      + a $j$. halmaz bevétele után $\{n - j\}$ költsége $= \frac{c(\{n
+        - j\})}{1} = \frac{1}{n - 1} <$ $U$ költsége $= \frac{c(U)}{n
+        - j} = \frac{1 + \epsilon}{n - j}$
+    + $\CR^* = \{U\}$, $c(\CR^*) = 1 + \epsilon$, de $c(\CR') =
+      \sum_{i = 1}^n \frac{1}{i} = H_n$ \RA $\frac{c(\CR')}{c(\CR^*)}
+      = \frac{H_k}{1 + \epsilon} \xrightarrow{\epsilon \to 0} H_n = H_k$
++ \prob Steiner-fa
+  + \DataIn $G = (V, E)$ egyszerű, összefüggő gráf; $S \subset V$
+    Steiner-pontok; $T = V - S$ terminálok; $c\coloneqq E \to \QQ^*$
+    költségfűggvény
+  + \DataOut $F \subseteq G$ a $T$ minden csúcsát tartalmazó
+    \emph{Steiner-fa}, ahol $\sum_{e \in F} c(e)$ minimális
+  + \thm a Steiner-fa probléma NP-nehéz (\noproof)
+  + \prob metrikus Steiner-fa
+    + \DataIn mint a Steiner-fa problémánál, de $G$ teljes gráf és
+      $c$ teljesíti a háromszög-egyenlőtlenséget
+    + \alg $2$-approximáció a metrikus Steiner-fa problémára
+      + legyen az $X \subseteq V$ által feszített részgráf $G$-ben
+        $G[X]$
+      + (pl.~Kruskal algoritmusával) keressük $G[T]$
+        min.~feszítőfáját \RA ez a Steiner-fa
+    + \lemma \label{lem:kozelito:steiner:metrikus}ha $c$ a $G$ teljes
+      gráf metrikus élsúlyozása és $R = x
+      \leadsto y$ élsorozat \RA $c(x, y) \le c(R)$
+      + \proof teljes indukcióval $R$ éleinek $r$ száma szerint
+      + ha $r = 1$, az állítás triviális
+      + legyen $R = ((x, z), R')$ \RA az ind.~feltevés szerint $c(z,
+        y) \le c(R')$
+      + $c(R) = c(x, z) + c(R') \ge c(x, z) + c(z, y)
+        \overset{\text{$\triangle$-egyenlőtlenség}}{\ge} c(x, y)$ \qed
+    + \thm $F = G[T]$ min.~feszítőfája $2$-approximáció a metrikus
+      Steiner-fa problémára
+      + \proof az eljárás polinomiális, $F$ tényleg Steiner-fa
+      + legyen $D$ az optimális Steiner-fa
+      + $D' \coloneqq$ duplázzuk meg $D$ éleit \RA $D'$-ben minden
+        fokszám páros
+      + $D'$ euleri \RA legyen $D'$ Euler-körsétája $U = (u_0, f_1,
+        u_1, f_2, u_2, \ldots, f_m, u_m = u_0)$
+      + legyenek $u_{i_1}, u_{i_2}, \ldots, u_{i_{\lvert R \rvert}}$
+        $G[T]$ csúcsai az $U$ szerinti sorrendben
+      + ekkor $H = ((u_{i_1}, u_{i_2}), (u_{i_2}, u_{i_3}), \ldots,
+        (u_{i_{\lvert T \rvert}}, u_{i_1}))$ a $G[T]$ Hamilon-köre
+        (``levágás'')
+      + $H' = H - \{\text{tetszőleges $H$-beli él}\}$ Hamilton-út \RA%
+        $H'$ egy feszítőfa $G[T]$-ben 
+      + $2 c(D) = c(D')
+        \overset{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}{\ge}
+        c(H) \ge c(H') \overset{\text{$F$ minimális}}{\ge} c(F)$ \qed
+  + \alg $2$-approximáció a Steiner-fa problémára
+    + legyen $G' \coloneqq$ teljes gráf $V(G)$-n, $c'(x, y) \coloneqq$ a
+      legrövidebb $x \leadsto y$ út súlya $G$-ben
+      + $c'$ metrikus, mert $c'(x, z) = c_{\min}(x \leadsto z) \le c_{\min}(x
+        \leadsto y \leadsto z) = c'(x, y) + c'(y, z)$
+    + legyen $F'$ az $(G', S, T, c')$ metrikus Steiner-fa
+      approximációja
+    + legyen $K = \bigcup_{e = \{x, y\} \in F'} \{\text{a legrövidebb
+        $x \leadsto y$ út élei}\}$
+    + $F'' =$ egy min.~feszítőfa $K$-ban lesz a Steiner-fa
+  + \thm $F''$ $2$-aproximáció a Steiner-fa problémára
+    + \proof az eljárás polinomiális, és
+      $F''$ tényleg Steiner-fa, mert $K$ lefedi $T$-t
+    + legyen $D$ az optimális $(G', S, T, c')$ metrikus Steiner-fa,
+      $F^*$ az optimális Steiner-fa
+    + $F^*$ Steiner-fa $G'$-ben \RA $c'(D) \le c'(F^*)$
+    + $e = \{x, y\}$ $1$ hosszú $x \leadsto y$ út \RA $\forall e \in E
+      : c'(e) \le c(e)$ \RA $c'(F^*) \le c(F^*)$
+    + $c(F'') \le c(K) \le c'(F') \le 2 c'(D) \le 2 c'(F^*) \le 2
+      c(F^*)$ \qed
+  + éles példa: legyen $G = (V, E)$ teljes gráf, $V \coloneqq \{1, 2,
+    \ldots, n\}$, $S = \{1\}$, $c(\{i, j\}) = \text{\footnotesize$
+      \begin{cases}
+        1, &\text{ha $i = 1$,} \\
+        2, &\text{ha $i, j \ne 1$}
+      \end{cases}
+      $}$
+    + ez metrikus \RA nincs szükség metrizálásra, $F'' = F' = G[T]$
+      feszítőfája
+    + $c(F'') = 2(n - 2)$, de az optimális Steiner-fa $F^* =$ $1$
+      középpontú csillag, $c(F^*) = n - 1$
+    + $\frac{c(F'')}{c(F^*)} = \frac{2 (n - 2)}{n - 1} \xrightarrow{n
+      \to \infty} 2$ \RA $\forall k < 2$ approximációs faktorra $\exists$
+      ellenpélda elég nagy $n$-nel
+
+\tetel{A Hamilton-kör probléma visszavezetése az általános utazóügynök
+  probléma $k$-app\-ro\-xi\-má\-ci\-ós megoldására. Közelítő
+  algoritmusok a metrikus utazóügynök problémára, Christofides
+  algoritmusa.}
+
++ \prob általános utazóügynök probléma
+  + \DataIn $G = (V, E)$ gráf, $c\colon E \to \QQ^+$ súlyfüggvény
+  + \DataOut $G$ egy $H$ minimális súlyú Hamilton-köre
+  + \thm P $\ne$ NP \RA az általános utazóügynök problémára $\nexists$
+    $k$-approximáció
+    + \proof indir.~tfh.~létezik $k$-approximáció \RA ekkor HAM
+      $\prec$ $k$-approx.~utazóügynök
+    + keressünk $G = (V, E)$-ben Hamilton-kört
+      + $n = \lvert V \rvert$, $G' \coloneqq$ teljes gráf $V$-n, $c(e)
+        \coloneqq \text{\footnotesize$
+          \begin{cases}
+            1, & \text{ha $e \in E$,} \\
+            kn, & \text{ha $e \notin E$}
+          \end{cases}
+          $}$
+      + $G'$ mérete $G$ méretében polinomiális
+      + ha $G$ hamiltoni \RA $G'$-ben van $n$ súlyú Hamilton-kör
+      + minden más Hamilton-köre $G'$-nek $\ge kn + n - 1$ súlyú
+    + ha a $k$-approx.~talál $n$ súlyú kört \RA ez $G$ Hamilton-köre
+    + egyébként a talált kör $\ge kn + n - 1$ súlyú 
+      + $n \le \frac{kn + n - 1}{k}$ \RA az optimális kör nem lehet
+        $G$ Hamilton-köre, $G$ nem hamiltoni \qed
++ \prob metrikus utazóügynök probléma
+  + \DataIn mint az általános utazóügynöknél, de $G$ teljes gráf és
+    $c$ teljesíti a $\triangle$-egyenlőtlenséget
+  + \thm a matrikus utazóügynök probléma NP-nehéz (\noproof)
++ \alg $2$-approximáció a metrikus utazóügynök problémára
+  + legyen $G$ min.~feszítőfája $F$, $F' =$ kettőzzük meg $F$
+    éleit, $S =$ $F'$ Euler-köre
+    + az Euler-kör pl. zárt élsorozatok eltávolításával $F'$-ből és
+      $S$-hez vételével polinom időben meghatározható
+  + ``vágjuk le'' $S$-t egy $H$ Hamilton-körré \RA ez lesz az
+    utazóügynök Hamilton-köre
+    + $\forall v \in V$-nek csak az első előfordulását tartjuk meg
+    + az egymást követő $v_{i_j}, v_{i_{j + 1}}$ csúcsokhoz bevesszük
+      a $\{v_{i_j}, v_{i_{j + 1}}\}$ élt
+  + \thm $H$ valóban $2$-approximáció
+    + \proof az algoritmus polinomiális
+    + legyen $H^*$ az optimális Hamilton-kör
+      + $H^{*\prime} = $ $H^*$ egyik élének elhagyásával kapott
+        Hamilton-út \RA $H^*$ feszítőfa
+      + $c(H) \overset{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}{\le}
+        c(F') = 2 c(F) \overset{\text{$F$ min.~feszítőfa}}{\le} 2
+        c(H^{*\prime}) \le 2 c(H^*)$ \qed
++ \alg Christofides algoritmusa
+  + $F'$ előállításánál feleslgesen sok élt adtuk $F$-hez
+    + elég csak a (páros sok) páratlan fokú csúcs fokszámát $1$-gyel
+      megnövelni
+  + legyen $V_p$ az $F$-ben páratlan fokú csúcsok halmaza
+    + $\lvert V_p \rvert$ páros, mert egy gráfban a fokszámok összege
+      mindig páros
+  + $M = $ $G[V_p]$ egy minimális költségű teljes párosítása, $F'
+    \gets F \uplus M$
+    + ez Edmonds algoritmusával polinom időben meghatározható
+  + az algoritmus többi része ugyanaz, mint a $2$-approximáció
+  + \thm Christofides algoritmusa $\frac{3}{2}$-approximáció
+    + \proof elég belátni, hogy $c(M) \le
+      \frac{1}{2} c(H^*)$
+      + \RA $c(F') = c(F) + c(M) \le c(H^{*\prime}) + \frac{1}{2} c(H^*)
+        \le \frac{3}{2} c(H^*)$
+    + legyen $V_p = \{ a_1, a_2, \ldots, a_{2k} \}$ a csúcsok $H^*$
+      menti sorrendje szerint
+    + legyen $\widehat{H^*} = ((a_1, a_2), (a_2, a_3), \ldots,
+      (a_{2k}, a_1))$ Hamilton-kör $G[V_p]$-ben
+      + $H^*$ $a_i \leadsto a_{i + 1}$ szakaszát $(a_i, a_{i + 1})$-re
+        cseréltük
+        $\xRightarrow{\text{\ref{lem:kozelito:steiner:metrikus}.~lemma}}$
+        $c(\widehat{H^*}) \le c(H^*)$
+    + $\widehat{H^*} = P_1 \cup P_2$, ahol $P_1$ $H$ páratlan, $P_2$
+      $H$ páros indexű éleiből áll
+    + $P_{1,2}$ párosítás $G[V_p]$-ben \RA $c(M) \le \min \{ c(P_1),
+      c(P_2) \} \le \frac{1}{2} c(\widehat{H^*}) \le \frac{1}{2}
+      c(H^*)$ \qed
+
+\tetel{Teljesen polinomiális approximációs séma fogalma. A részösszeg
+  probléma, bonyolultsága. Teljesen polinomiális approximációs séma a
+  részösszeg problémára.}
+
++ \dfn \emph{approximációs séma} az az algoritmust, aminek adott
+  maximalizálási (minimalizálási) problémára a bemenete $I$ és
+  $\epsilon > 0$, kimenete $x^* \in X_i : c(x^*) \ge \frac{1}{1 +
+    \epsilon} \max_{x \in X_I} c(x)$ ($c(x^*) \le (1 +
+    \epsilon) \min_{x \in X_I} c(x)$)
++ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma
+  rögzített $\epsilon$ esetén $I$ méretében polinomiális
++ \dfn egy approximációs séma \emph{teljesen polinomiális} (FPTAS), ha a
+  lépésszáma $I$ méretében és $\bigl\lfloor \frac{1}{\epsilon}
+  \bigr\rfloor$-ban is polinomiális
+  + elég valamely rögzített $\delta > \epsilon$-ra megadni a sémát
++ \prob részösszeg
+  + \DataIn $a_1, a_1, \ldots, a_n, t \in \ZZ^+$\qquad
+    \DataOut $I \subseteq \{1, 2, \ldots, n\} : \sum_{i \in I} a_i \le
+    t$, $\sum_{i \in I} a_i$ maximális
+    + döntési változat: elérhető-e összegként pontosan $t$?
+  + \thm a részösszeg probléma döntési verziója NP-teljes,
+    optimalizálási verziója NP-nehéz (\noproof)
++ \alg \label{alg:koztelito:fptas:nempol}nem polinomiális algoritmus a részösszeg problémára
+  + az $L_i$ lista (növekvő sorrendben) tartalmazza az $a_1, a_2,
+    \ldots a_i$-ből előállítható réssöszegeket
+    + $L_0 \coloneqq \{0\}$, $L_i \gets L_{i - 1}$ és $L_{i - 1}' = \{l +
+      a \le t : l \in L_{i - 1}\}$ összefésülése (egy elem akár
+      többször)
+    + jegyezzük fel minden $l$ részösszeghez, hogy mely számok
+      összegeként kaptuk
+    + az optimum az $L_n$ lista maximális eleméhez tartozó feljegyzés
++ \alg \label{alg:koztelito:fptas:fptas}FPTAS a részösszeg problémára
+  + \aref{alg:koztelito:fptas:nempol}.~algoritmus $L_i$ listáit
+    ``ritkítjuk''
+  + \dfn adott $0 < \delta < 1$ esetén $x > 0$ \emph{képviseli} $0 < y <
+    x$-et, ha $(1 + \delta) x \ge y$
+  + módosítás: az $L_i$ ($1 \le i \le n - 1$) növekvő lista ritkítása
+    \RA végigmegyünk $L$ elemein
+    + ha $y \in L$-t $\delta = \dfrac{\epsilon}{2n}$ képviseli a
+      közvetlenül alatta levő $x$ eleme, akkor töröljük $L$-ből
+    + a törölt elemeket figyelmen kívül hagyjuk a képvéselők
+      vizsgálatánál
++ \lemma \label{lem:koztelito:fptas:epszilon1}$\displaystyle \mleft(
+  1 + \frac{\epsilon}{2n} \mright)^n \le 1 + \epsilon$
+  + \proof $\displaystyle \mleft(1 + \frac{\epsilon}{2n} \mright)^n = \sum_{i = 0}^n
+    \mleft(\frac{\epsilon}{2}\mright)^i \binom{n}{i} \le \sum_{i = 0}^n
+    \frac{\epsilon^i}{2^i n^i} n^i = \sum_{i = 0}^n
+    \frac{\epsilon^i}{2^i} \le 1 + \epsilon \sum_{i = 1}^n
+    \frac{1}{2^i} \le 1 + \epsilon$ \qed
++ \lemma \label{lem:koztelito:fptas:epszilon2}ha $x \ge 0$ \RA $\ln (1 + x) \ge \dfrac{x}{1 + x}$
+  + ha $x = 0$ \RA $\ln (1 + x) - \dfrac{x}{1 + x} = 0$\qquad
+    ha $x > 0$ \RA $\mleft[\ln (1 + x) - \dfrac{x}{1 + x} \mright]' =
+    \frac{1}{1 + x} - \frac{1}{(1 + x)^2} > 0$
+  + a különbség kezdetben $0$ és monoton nö \RA a bal oldal $\ge$ \qed
++ \thm \aref{alg:koztelito:fptas:fptas}.~algoritmus FPTAS a részösszeg
+  problémára
+  + \proof előlállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
+    \in L_n : s' \ge \dfrac{s}{\bigl(1 + \frac{\epsilon}{2n}\bigr)^n}
+    \overset{\text{\ref{lem:koztelito:fptas:epszilon1}.~lemma}}{\ge}
+    \dfrac{s}{1 + \epsilon}$
+    + az $L_i$ ritkítása legfeljebb $\delta = 1 + \frac{\epsilon}{2n}$
+      hibát hoz be
+    + az $s = s^*$ optimális részösszeget választva látszik, hogy
+      ez egy approximációs séma
+  + polinomiális futásiő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
+    bemenet méretében polinomiális
+    + $\min L_j = 0$, $\max L_j = m \le t$, $L_j = \{ l_1 = 0, l_2, l_3,
+      \ldots, m \}$
+    + két szomszédos elem aránya $\ge 1 + \dfrac{\epsilon}{2n}$ \RA az
+      $i$. elem $\ge l_2 \mleft(1 + \dfrac{\epsilon}{2n}\mright)^{i - 2}
+      \underset{l_2 \in \ZZ^+}{\ge} \mleft(1 +
+      \dfrac{\epsilon}{2n}\mright)^{i - 2}$
+    + $\mleft(1 + \dfrac{\epsilon}{2n}\mright)^{i - 2} \le m \le t$
+      \RA $i \le \dfrac{\ln t}{1 + \frac{\epsilon}{2n}} + 2
+      \overset{\text{\ref{lem:koztelito:fptas:epszilon2}.~lemma}}{\le}
+      \dfrac{\ln t}{\dfrac{\frac{\epsilon}{2n}}{1 +
+          \frac{\epsilon}{2n}}} + 2 = \mleft(1 +
+      \dfrac{2n}{\epsilon}\mright) \ln t + 2$
+      + $\ln t$ épp arányos $t$ bináris kódolásának hosszával ($\log_2
+        t$)
+      + $L_j$ legnagyobb indexét ($= L_j$ hosszát) felülről becsültük
+        $n$, $\frac{1}{\epsilon}$ és $\ln t$ polinomjával \qed
+
+\tetel{Ütemezési feladatok típusai. Az
+  $1 | \textrm{prec} | C_{\textrm{max}}$ és az $1 \| \Sigma C_j$
+  feladat. Approximációs algoritmusok a $P \| C_{\textrm{max}}$
+  feladatra: listás ütemezés tetszőleges sorrendben, éles példa
+  tetszőleges számú gép esetére; listás ütemezés LPT sorrendben
+  (biz.~nélkül), éles példa tetszőleges számú gép
+  esetére. Approximációs algoritmus a
+  $P | \textrm{prec} |C_{\textrm{max}}$ feladatra (biz.~nélkül),
+  példák: az LPT sorrend, illetve a leghosszabb út szerinti ütemezés
+  sem jobb, mint $\bigl(2 - \frac{1}{m}\bigr)$-approximáció. A
+  $P | \textrm{prec}, p_i = 1 | C_{\textrm{max}}$ feladat, Hu
+  algoritmusa (biz.~nélkül).}
+
++ ütemezési feladatok bemenetei
+  + $\JJ = \{J_1, J_2, \ldots, J_n\}$ munkák
+  + minden munkához $p_i =$ megmunkálási idő
+  + esetleg $w_i =$ súly (célfüggvényhez), $d_i =$ határidő, $r_i =$
+    rendelkezés reállási idő (release time, előbb nem lehet kezdeni)
+  + több gép esetén a gépek teljesen egyformák (parallel machines)
++ ütemezési feladat kimenete: munkák egy ütemezése (valamilyen
+  célfüggvény szerint optimálisan)
+  + ahol adott időben egy gépen $\le 1$ munka, egy munka $\le 1$ gépen
+  + munka nem szakítható meg
+  + $C_i^S =$ a $J_i$ munka befejezési ideje az $S$ ütemezésben
++ ütemezési algoritmusok elnevezése: $\alpha | \beta | \gamma$
+  + $\alpha =$ rendelkezése álló gépek ($1$, $P$ = több gép, $P_m$ =
+    rögzített $m$ db gép)
+  + $\beta =$ betartandó korlátok
+    + prec = a $\vec{D} = (\JJ, \vec{A})$ irányított aciklikus gráf
+      (DAG) adja meg a munkák függőségeit
+      + $(J_i, J_k) \in \vec{A}$ \RA $J_i$ meg kell előzze $J_k$-t
+      + in-tree = a $\vec{D}$ dependencia gráf egy fenyő (gyökér felé
+        irányított fa)
+    + $p_j = 1$ \RA $\forall$ átfutási idő $1$\qquad$r_j$ \RA eltérő
+      rendelkezésre állási idők
+  + $\gamma =$ célfüggvény ($C_{\max} = \max C_i$ teljes átfutási idő,
+    $\Sigma C_i$ \ra $\sum_{i} \frac{C_i}{n}$ átlagos átfutási idő)
++ \prob $1\|C_{\max}$
+  + triviális, tetszőleges folyamatos ütemezésre $C_{\max} = \sum_{i}
+    p_i$ optimális
++ \prob $1|\textrm{prec}|C_{\max}$
+  + olyan folyamatos ütemezést keresünk, ami kielégíti a megelőzési
+    feltételeket
+  + ez épp $\vec{D}$ bármely topologikus sorrendje \RA mélységi
+    kereséssel meghatározható
++ \prob $1\|\Sigma C_j$
+  + SPT (shortest processing time): a munkák $p_j$ szerint nemcsökkenő
+    sorrendben
+  + \thm az SPT sorrend optimális ütemezés a $1\|\Sigma C_j$
+    problémára
+    + \proof indir.~tfh.~$\exists$ $S$ optimális, de nem SPT ütemezés
+    + ekkor $\exists J_i, J_k \in \JJ :$ $J_i$ után közvetlenül $J_k$
+      van ütemezve, de $p_i > p_k$
+    + cseréljük fel $J_i$-t és $J_k$-t \RA $S'$
+      + $\sum_{j = 1}^n C_j - \sum_{j = 1}^n C_j' = [(t + p_i) + (t +
+        p_i + p_k)] - [(t + p_k) + (t + p_k + p_i)] = p_i - p_k > 0$
+      + $S$ nem lehet optimális, mert $S'$-nél nagyobb a hozzá tartozó
+        célfüggvény érték \qed
++ \prob $P\|C_{\max}$
+  + \thm a $P_2\|C_{\max}$ feladat NP-nehéz
+    + \proof adunk egy PARTÍCIÓ $\prec$ $P_2\|C_{\max}$ Karp-redukciót
+    + PARTÍCIÓ: két részre lehet-e osztani az $a_1, a_2, \ldots, a_n
+      \in \ZZ^+$ számokat úgy, hogy mindkét részben az elemek összege $b
+      = \frac{1}{2} \sum_{i = 1}^n a_i$, NP-teljes
+    + legyen a $J_j$ munka végrehatjási ideje $p_j = a_j$ \RA%
+      ütemezzük $\JJ$-t $2$ gépen
+      + az optimális ütemezésre $C_{max}^* \le b$ \LRA $(a_j)_{j = 1}^n$
+        partícionálható \qed
+  + kézenfekvő alsó korlátok: ($*$) $C_{\max}^* \ge \frac{1}{n} \sum_{n =
+    1}^n p_j$, ($**$) $C_{\max}^* \ge \max_{j} p_j$
+  + \alg listás ütemezés (LS)
+    + 1.~lépés: rögzítsük a munkák egy sorrendjét
+    + 2.~lépés: amit egy gép felszabadul, az rögtön kezdje meg a
+      listában legelső még nem ütemezett feladatot
+      + ha több gép szabadul fel, akkor az indexük szerinti sorrendben
+        vizsgáljuk őket
+    + nincs olyan pillanat, hogy van még munka a listában, de valamelyik gép
+      nem dolgozik
+  + \thm $m$ gép esetén LS $2 - \frac{1}{m}$-approximáció
+    $P\|C_{\max}$-ra
+    + \proof a listás ütemezés polinomidőben előállítható
+    + legyen $J_k$ az utolsó munka, $C_{\max} = C_k = t + p_k$ \RA%
+      legalább $t$ ideig még $\forall$ gép dolgozik
+    + $\displaystyle C_{\max} = t + p_k \le \frac{1}{m} \sum_{j \ne k}
+      p_j + p_k = \frac{1}{m} \sum_{i = 1}^n p_j + \mleft(1 -
+      \frac{1}{m}\mright) p_k \overset{(*), (**)}{\le} C^*_{\max} +
+      \mleft(1 - \frac{1}{m}\mright) C^*_{\max}$ \qed
+  + éles példa: $m$ gép, $m (m - 1)$ db munkára $p_i = 1$, $1$
+    munkára $p_i = m$ ebben a sorrendben
+    + LS ütemezés: a gépek először egyenként $(m - 1) \cdot 1$ egység
+      munkát végeznek, majd az 1.~gép az $m$ hosszút \RA $C_{max} = 2m
+      - 1$
+    + OPT ütemezés: az 1.~gép az $m$ hosszú munkát, a többi egyenként
+      $m \cdot 1$-et \RA $C_{\max}^* = m$
+  + LPT (longest processing time) sorrend: munkák $p_j$ szerint
+    nemnövekvő sorrendben
+  + \thm az LPT sorrend szerinti LS $\frac{4}{3}$ approximációs
+    alg.~$P\|C_{\max}$-ra (\noproof)
+  + éles példa: $m$ gép; $2$ db $p_i = 2m - 1$ munka, $2$ db $2m - 2$,
+    \ldots, $2$ db $m + 1$, $3$ db $m$ munka
+    + LPT ütemezés: $\forall$ gép végrehajt egy összesen $3m - 1$
+      hosszú párt ($2m - 1 - u$, $m + u$), majd az 1.~gép az utolsó $m$
+      hosszú feladatot \RA $C_{\max} = 4m - 1$
+    + OPT ütemezés: az első $m - 1$ gép végrehajt egy összesen $3m$
+      hosszú párt ($2m - 1 - u$, $m + 1 + u$), az $m$. gép a 3 $m$
+      hosszút \RA $C_{\max}^* = 3m$, $\frac{C_{\max}}{C_{\max}^*}
+      \xrightarrow{m \to \infty} \frac{4}{3}$
++ \prob $P|\textrm{prec}|C_{\max}$
+  + \alg LS ütemezés megelőzési kényszerekkel
+    + módosítás: nem az összes, hanem csak a már elkezdhető munkák
+      közül választunk a szabad gépnek feladatot
+  + \thm $m$ gép esetén LS $2 - \frac{1}{m}$-approximáció
+    $P|\textrm{prec}|C_{\max}$-ra (\noproof)
+  + éles példa: $m (m - 1)$ db $p_i = 1$, $1$ db $p_i = \frac{1}{2}$,
+    $1$ db $p_i = m - \frac{1}{2}$, amit az $\frac{1}{2}$-es után
+    kell végrehajtani
+    + LS / LPT sorrend: $m$ gépen egyenként $m - 1$ db $1$-es, majd az
+      $1$. gépen az $\frac{1}{2}$ és az $m - \frac{1}{2}$ egymás után \RA%
+      $C_{\max} = 2m - 1$
+    + OPT sorrend: $1$. gépen az $\frac{1}{2}$ és az $m -
+      \frac{1}{2}$, a többin egyenként $m$ db $1$-es \RA $C_{\max}^* =
+      m$
+    + az LPT sorrend nem javítja az ütemezést
+  + \dfn a $J_i$ munka $\ell_i$ \emph{szint}je a $\vec{D}$-beli
+    leghosszabb, $J_i$-ből induló út hossza
+    + $C_{\max}^* \ge \max_i \ell_i$ \RA ötlet: ütemezzük korábban a
+      nagyobb szinű feladatokat
+    + $\ell_i$ meghatározható polinom időben $J_i$ fordított
+      topologikus sorrendjében
+  + leghosszabb út szerinti sorrend: munkák $\ell_j$ szerint
+    nemnövekvő sorrendben
+  + éles példa: $1$ db $p_i = \epsilon$ ``forrás''; $m$ db $p_i = 1$,
+    csak $\epsilon$ után kezdhető; $1$ db $p_i = m - 1$ ``nyelő'', csak
+    az összes $1$ után kezdhető; $m - 1$ db $p_i = m - 1$ izolált pont
+    + leghosszabb út sorrend: 1.~gépen $\epsilon$, majd $m - 1$ db
+      $1$-es; 2.~gépen $m - 1$, $1$, $m - 1$; többi gépen csak $m - 1$
+      \RA $C_{\max} = 2m - 1$
+    + OPT sorrend: 1.~gépen $\epsilon$, $1$, $m - 1$, többi gépen:
+      $1$, $m - 1$ \RA $C_{\max}^* = m + \epsilon$
+    + $\frac{C_{\max}}{C_{\max}^*} = \frac{2m - 1}{m + \epsilon}
+      \xrightarrow{\epsilon \to 0} 2 - \frac{1}{m}$ \RA a leghosszabb
+      út szerinti sorrend sem segít
++ \prob $P|\textrm{prec}, p_i = 1|C_{\max}$
+  ($P|\textrm{prec}|C_{\max}$ speciális esete)
+  + \thm $P|\textrm{prec}, p_i = 1|C_{\max}$ NP-nehéz, ha $m$ része a
+    bemenetnek (\noproof)
+  + rögzített $m$ esetén a feladat bonyolultsága nem ismert
++ \prob $P|\textrm{in-tree}, p_i = 1|C_{\max}$
+  ($P|\textrm{prec}, p_i|C_{\max}$ speciális esete)
+  + a feladatok egy gyökere felé irányított fát alkotnak \RA a gyökér
+    minden más feladattól függ
+  + \alg Hu algoritmus
+    + LS a leghosszabb (= legtöbb csúcsbó álló) út szerinti sorrendben
+    + \thm Hu algoritmusa optimális megoldást ad $P|\textrm{in-tree},
+      p_i = 1|C_{\max}$-ra
+      + \noproof
