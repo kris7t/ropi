@@ -38,11 +38,163 @@
   két tétele (biz.~nélkül). $\lambda(G)$ meghatározása folyamok
   segítségével négyzetes és lineáris számú folyamkereséssel.}
 
++ \dfn a $G = (V, E)$ gráf \emph{$k$-szorosan élösszefüggő
+  (pontösszefüggő)}, ha legalább $k$ élt (pontot) tartalmaz és bármely
+  $k - 1$ él (pont) eltávolítása után is összefüggő marad
++ \dfn a $G = (V, E)$ gráfban $u, v \in V$ $\lambda(u, v)$ ($\kappa(u,
+  v)$) \emph{lokális élösszefüggőségi (pontösszefüggőségi) szám}a az
+  éldiszjunkt (belsőleg pontdiszkjunk) $u \leadsto v$
+  utak maximális száma
++ \dfn a $G = (V, E)$ gráf $\lambda(G)$ ($\kappa(G)$)
+  \emph{élösszefüggőségi (pontösszefüggőségi)
+  szám}a az $k$, melyre $G$ $k$-szorosan élösszefüggő
+  (pontösszefüggő), de nem $k + 1$-szeresen élösszefüggő
+  (pontösszefüggő)
++ \thm \label{thm:halozat:menger:folyam}a $G$ gráfhoz készítsük el a
+  $(G', 1)$ hálózatot, ahol $\forall$ élt
+  oda-vissza irányítuk, és $\forall$ él kapacitása egységnyi \RA ekkor
+  $\lambda(u, v) =$ az $u$ forrású, $v$ nyelőjű folyam maximális
+  értéke
+  + \noproof
++ \thm (Menger tétele) a $G$ irányítatlan gráfban $\lambda(u, v) =$ az
+  összes $uv$-utat lefogó élek minimális $\lambda'(u, v)$ számával
+  (\noproof)
++ \thm $\lambda(G) = \min \{ \lambda(u, v) : u, v \in V, e \ne v \}$
+  + \proof ($\ge$) ha $\lambda(u, v)$ darab él lefogja az összes $u
+  \leadsto v$ utat \RA töröljük őket $G$-ből
+    + ekkor $u$ és $v$ különböző öf.~komponensbe
+      kerül \RA $\forall u, v \in V : \lambda(u, v) \ge \lambda(G)$
+  + ($\le$) tfh.~$\lambda(G)$ darab él eltávolítása után $G$ két
+    komponensre esik
+    + legyen $u$ és $v \in V$ különböző komponensben
+    + az eltávolított élek lefogták az összes $u \leadsto v$ utat \RA%
+      $\exists u, v \in E : \lambda(u, v) \le \lambda(G)$
++ \alg $\lambda(G)$ meghatározása $O(n^2)$ folyamkereséssel $O(n^5)$
+  időben
+  + $\forall s, t \in V$ párra futtatunk egy folyamkeresést
+    \aref{thm:halozat:menger:folyam}.~tétel szerint \RA $\lambda(t,
+    t)$
+  + $\lambda(G)$ az így kapott $\lambda(u, v)$ értékek minimuma
++ \thm \label{thm:halozat:menger:linearis}$\forall a \in V :
+\lambda(G) = \min \{ \lambda(a, v) : v \in V - \{a\}\}$
+  + \proof ha $k = \lambda(G)$ élet elhagyva a gráf két komponensre esik szét
+    + $a$ ekkor benne van valamelyik komponensben
+    + legyen $v$ egy tetszőleges csúcs a másik komponensben \RA
+      $\lambda(a, v) \le k$
+    + de $k - 1$ él eltávolításával még nem esik szét \RA $k -
+    1 < \lambda(G) \le \lambda(a, v)$ \qed
++ \alg $\lambda(G)$ meghatározása $n - 1$ folyamkereséssel $O(n^4)$
+  időben
+  + \aref{thm:halozat:menger:linearis}.~tétel szerint elég választani
+    egy $a \in V$ csúcsot
+  + $n - 1$ folyamkereséssel meg lehet határozni $\forall v \in V - \{a\} :
+    \lambda(a, v)$ értékét
+
 \tetel{$\lambda(G)$ meghatározása összehúzások segítségével,\\Mader
   tétele, Nagamochi és Ibaraki algoritmusa.}
 
++ \dfn a $G = (V, E)$ gráfban az $u, v \in V$
+  \emph{összehúzásával} kapott $G_{uv} = (V_{uv}, E_{uv})$ gráfban
+  + $V_{uv} = V - \{u, v\} \cup \{uv\}$
+  + $E_{uv} = \{ \{x, y\} \in E :
+    x, y \notin \{ u, v \} \} \cup \{ \{ uv, y\} : \{u, y\} \in E \land
+    \{v, y\} \in E; x, y \notin \{ u, v \}\}$
+  + az $u$ és $v$ csúcsokat azonosítjuk egymással, majd töröljük a
+    hurokéleket
+  + de a párhuzamos éleket meghagyjuk!
++ \lemma $\forall u, v \in V$, $u \ne v$ \RA $\lambda(G) = \min \{
+  \lambda(u, v), \lambda(G_{uv}) \}$
+  + \proof tfh.~ ha $G_{uv}$-ből elhagyunk $k$ élet, két
+    komponensre esik
+    + ezeket $G$-ből elhagyva az is két komponensre esik \RA%
+      $\lambda(G) \le \lambda(G_{uv})$
+  + $\lambda(G) = \min \{ \lambda(u, v) : u, v \in V, u \ne v \} \le
+    \lambda(u, v)$
+  + a két fenti egyenlőtlenség közül az egyik egyenlőség
+    + hagyjunk el $\lambda(G)$ élt $G$-ből úgy, hogy két komponensre
+      essen
+    + ha $u$ és $v$ azonos komponensben van
+      + ezek az élek $G_{uv}$-ből is elhagyhatóak \RA $\lambda(G) \ge
+        \lambda(G_{uv})$
+    + ha $u$ és $v$ eltérő komponensben vannak
+      + az elhagyott élek fedik az $u \leadsto v$ utakat \RA%
+        $\lambda(G) \ge \lambda(u, v)$ \qed
++ \thm (Mader tétele) $\exists u, v \in V: \lambda(u, v) = d(v)$
+  + \proof lásd \aref{lem:halozat:mader:maxvissza}.~lemmát \qed
++ \dfn $G = (V, E)$ pontjainak egy $(v_1, v_2, \ldots, v_n)$ sorrendje
+  \emph{max-vissza sorrend}, ha $\forall 2 \le i < j \le n : d(v_i,
+    V_{i - 1}) \ge d(v_j, V_{i - 1})$, ahol $V_{i - 1} = \{ v_1, v_2,
+    \ldots, v_{i - 1} \}$
+  + $d(A, B) =$ az $A$ és $B$ csúcshalmazok között húzódó élek száma
++ \lemma \label{lem:halozat:mader:maxvissza}ha $u = v_{n - 1}$ és $v =
+  v_n$ egy max-vissza sorrendben \RA $\lambda(u, v) = d(v)$
+  + \proof\footnote{Adrás Frank (1994). On the Edge-Connectivity
+    Algorithm of Nagamochi and Ibaraki. In: \emph{EGRES Quick-Proof
+      No.~2009-01.}}
+    $d(v) = d(v, V_{n - 1}) \le \lambda(u, v)$, mert $V_{n - 1} = V - \{ v \}$
+  + $\ge$ irány \RA indir.~tfh.~$\exists$ $G = (V, E)$, amire az
+    állítás nem igaz, és $n = \lvert V \rvert \ge 3$ minimális
+  + a minimális ellenpéldában $\{ v_{n - 1}, v_n \} \notin E$
+    + ha $\{ v_{n - 1}, v_n \} \notin E$ \RA ennek az élnek a
+      törlésével még kisebb ellenpéldát kapunk
+    + a törléskor $\lambda(u, v)$ és $d(v)$ is $1$-gyel csökken
+  + $\lvert G - \{ v_n \} \rvert < n$ \RA $\lambda(v_{n - 1}, v_{n -
+    2}) \ge \lambda_{G - \{ v_n \}}(v_{n - 1}, v_{n - 2}) 
+    \overset{\substack{\text{az áll.~igaz}\\\text{$G - \{ v_n \}$-re}}}{=}
+    d(v_{n - 1}, V_{n - 2})
+    \overset{\substack{\text{max-}\\\text{vissza}}}{=}\\
+    \phantom{\text{$\lvert G - \{ v_n \} \rvert < n$ \RA $\lambda(v_{n - 1}, v_{n -
+    2})$}}= d(v_{n}, V_{n - 2}) = d(v_{n})$
+  + hasonlóan $\lvert G - \{ v_{n - 1} \} \rvert < n$ \RA $\lambda(v_{n}, v_{n -
+    2}) \ge \lambda_{G - \{v_{n - 1}\}}(v_n, v_{n - 2}) = d(v_n, V_{n -
+    2}) = d(v_n)$
+  + $\lambda(v_n, v_{n - 1}) \ge \min\{\lambda(v_n, v_{n - 2}),
+     \lambda(v_{n - 1}, v_{n - 2}) \} \ge d(v_n)$
+    + a $v_n \leadsto v_{n - 1}$ utak lefogásához legalább a $v_n
+      \leadsto v_{n - 2} \leadsto v_{n - 1}$ utakat le kell fogni
+    + azt kaptuk, hogy $G$ nem lehet ellenpélda \RA ellentmondás \qed
++ \alg Nagamochi és Ibaraki algoritmusa
+  + \DataIn $G = (V, E)$ irányítatlan gráf\qquad\DataOut $\lambda(G)$
+  + 0.~lépés: $\lambda \coloneqq \infty$, $n \coloneqq \lvert V
+    \rvert$
+  + 1.~lépés: ha $n = 1$ \RA STOP, $\lambda(G) = \lambda$
+  + 2.~lépés: készítsük el $G$ pontjainak egy $(v_1, v_2, \ldots,
+    v_n)$ max-vissza sorrendjét
+    + legyen $u = v_{n - 1}, v = v_{n}$
+  + 3.~lépés: $\lambda \gets \min \{ \lambda, d(v) \}$, $G \gets
+    G_{uv}$, $n \gets n - 1$, GOTO 1.
+
 \tetel{Minimális méretű $2$-élösszefüggő részgráfok keresése.\\A probléma
   NP-nehézsége, Khuller`--Vishkin algoritmus (biz.~nélkül).}
+
++ \prob minimális méretű $2$-élösszefüggő részgráf
+  + \DataIn $G = (V, E)$ $2$-élösszefüggő irányítatlan gráf
+  + \DataOut $E' \subseteq E$ $2$-élösszefüggő, $G$-t feszítő
+    élhalmaz, $\lvert E' \rvert$ minimális
++ \thm a minimális méretű $2$-élösszefüggő részgráf probléma NP-nehéz
+  + \proof $\lvert E' \rvert = \lvert V \rvert$ \LRA $E'$ egy
+    Hamilton-kör \qed
++ \alg Khuller`--Vishkin algoritmus
+  + kezdetben $E' \coloneqq \emptyset$
+  + futtasunk mélységi kereséset (DFS) a $G$ gráfon \RA $T$ mélységi
+    van
+    + jelölje $T$ $v$ gyökerű részfáját $T(v)$
+    + amikor $T$-t felépítjük \RA az éleit tegyük be $E'$-be is
+    + amikor az $uv$ él mentén visszalépünk \LA $T(v)$-t már teljesen
+      bejártuk
+      + vizsgáljuk meg, hogy $uv$ elvágó él-e az $E'$ által feszített
+        részgráfban
+      + ha elvágó \RA az $\{e = \{a, b\} \in E : a \in T(v), b \notin
+        T(v), e \notin T\}$ élek közül a min.~mélységi számú $b$-hez
+        tartozót adjuk hozzá $E'$-höz
+      + ezután $G[E']$ már $2$-élösszefüggő lesz
++ \thm a Khuller`--Vishkin algoritmus $\frac{3}{2}$-approximáció a
+  minimális méretű $2$-élösszefüggő részgráf problémára
+  + \emph{bizonyítás vázlat:} belátható, hogy $\lvert E' - E(T) \rvert
+    \le \frac{\lvert E^*}{2}$, ahol $E^*$ az optimális élhalmaz
+  + innen $\lvert E' \rvert = \lvert E' - E(T) \rvert + \lvert E(T)
+    \rvert \le \frac{\lvert E^* \rvert}{2} + \lvert V \rvert - 1 \le
+    \frac{3}{2} \lvert E^* \rvert$
 
 \section{Hálózatelméleti alkalmazások}
 
