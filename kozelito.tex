@@ -173,13 +173,13 @@
   + \DataIn $G = (V, E)$\qquad\DataOut egy $X$ minimális lefogó ponthalmaz
     $G$-ben
   + MLP NP-nehéz, mert a maximális független halmaz (MFP) is az, és
-    MFP $\prec$ MFP
+    MLP $\prec$ MFP
     + $X$ minimális független ponthalmaz \LRA $V - X$ maximális lefogó
       ponthalmaz
     + az MFP nem $k$-approximálható (\noproof)
   + \alg $2$-közelítő algoritmus maximális párosítással
     + 1.~lépés: keressük meg $G$ egy $M$ maximális párosítását
-      + páros gráfban: magyar modszer, általános gráfban: Edmonds
+      + páros gráfban: magyar módszer, általános gráfban: Edmonds
         algoritmusa
     + 2.~lépés $X \coloneqq$ az $M$-beli élek végpontjai
     + \thm \label{thm:kozelito:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
