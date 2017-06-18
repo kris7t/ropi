@@ -138,10 +138,10 @@
 
 + legyen $A \in \RR^{m \times n}$, $x \in \RR^n$, $b \in \RR^m$, $c \in
   \RR^n$ \RA \emph{lineáris program}
-+ \dfn \emph{linerási programozás alapfeladata}: $\min_{x} \{ cx : Ax
++ \dfn \emph{linerási programozás alapfeladata}: $\max_{x} \{ cx : Ax
   \le b \}$
 + kétdimenziós feladat megoldása
-  + az $p_1 x_1 + p_2 x_2 \ge k$ alakú feltétel $p_1 x_1 + p_2
+  + az $p_1 x_1 + p_2 x_2 \le k$ alakú feltétel $p_1 x_1 + p_2
   x_2 = k$ egyenese két félsíkra bontja a síkot
     + a $\ge$ jelnek megfelelő félsíkok metszete adja megengedett
       megoldások tartományát
@@ -339,7 +339,7 @@
 + \dfn \emph{egészértékű programozás alapfeladata:} $\max_{x} \{ cx : Ax \le b, x
   \text{ egész} \}$ (IP)
   + duálisa $\min_{y} \{ yb : yA = c, y \ge 0, y \text{ egész} \}$ (DIP)
-  + $\max_{\IP} \le \max_{\LP} = \min_{\DLP} \le \max_{\DIP}$ \RA állhat
+  + $\max_{\IP} \le \max_{\LP} = \min_{\DLP} \le \min_{\DIP}$ \RA állhat
     $<$ is, nincs általános dualitástétel
 + egészértékű programozás bonyolultsága
   + döntési probléma
