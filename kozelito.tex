@@ -123,7 +123,7 @@ problémára páros gráfokon.}
 + \prob Intervallumgráfok színezése
   + \DataIn $G= (I, E)$ intervallumgráf, $I = \{I_1,I_2 \dots I_n\}$ intervallumok,
   $E = \{e(I_i,I_j): I_i \cap I_j\ne \emptyset, i\ne j \}$
-  + \DataOut Gráf színezés
+  + \DataOut G színezése
   + Intervallumgráfok színezése lehetséges $\omega(G)$ színnel (perfekt gráf),
   de ennél kevesebbel nem
   + Intervallumok kezdőpontok szerinti rendezése után vett mohó színezés 
@@ -328,8 +328,8 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
       \CR} \frac{c(S)}{\lvert S - C \rvert}$
     + 2.~lépés: $\CR' \gets \CR' \cup \{S\}$, $C \gets C \cup S$, GOTO
       1.
-  + \thm Chavátal mohó algoritmusa $H_k$-approximáció, ahol $k =
-    \max_{S \in \RR} \lvert S \rvert$
+  + \thm Chvátal mohó algoritmusa $H_k$-approximáció, ahol $k =
+    \max_{S \in \CR} \lvert S \rvert$
     + $\ln n \le H_n = 1 + \frac{1}{2} + \frac{1}{3} + \ldots +
       \frac{1}{n} \le \ln n + 1$
     + \proof az algoritmus polinomiális
@@ -342,8 +342,8 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
       \ldots, x_r\} \in \CR^*$ ($r \le k$)
       + ált.~megsz.~tfh.~az algoritmus $S$ elemeit $x_r, x_{r - 1},
         \ldots, x_1$ sorrendben fedte le
-      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i - 1}
-        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \ge
+      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i + 1}
+        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \le
         \frac{c(S)}{i}$
       + $\forall x_i \in S$-t fedő $S_i'$-re $\frac{c(S_i')}{\lvert
         S_i' - C \rvert} \le \frac{c(S)}{i}$ \RA $\sum_{x_i \in S}
@@ -415,7 +415,7 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
     + legyen $K = \bigcup_{e = \{x, y\} \in F'} \{\text{a legrövidebb
         $x \leadsto y$ út élei}\}$
     + $F'' =$ egy min.~feszítőfa $K$-ban lesz a Steiner-fa
-  + \thm $F''$ $2$-aproximáció a Steiner-fa problémára
+  + \thm $F''$ $2$-approximáció a Steiner-fa problémára
     + \proof az eljárás polinomiális, és
       $F''$ tényleg Steiner-fa, mert $K$ lefedi $T$-t
     + legyen $D$ az optimális $(G', S, T, c')$ metrikus Steiner-fa,
@@ -525,10 +525,10 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
 
 + \dfn \emph{approximációs séma} az az algoritmust, aminek adott
   maximalizálási (minimalizálási) problémára a bemenete $I$ és
-  $\epsilon > 0$, kimenete $x^* \in X_i : c(x^*) \ge \frac{1}{1 +
+  $\epsilon > 0$, kimenete $x^* \in X_I : c(x^*) \ge \frac{1}{1 +
     \epsilon} \max_{x \in X_I} c(x)$ ($c(x^*) \le (1 +
     \epsilon) \min_{x \in X_I} c(x)$)
-+ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma
++ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma minden
   rögzített $\epsilon$ esetén $I$ méretében polinomiális
 + \dfn egy approximációs séma \emph{teljesen polinomiális} (FPTAS), ha a
   lépésszáma $I$ méretében és $\bigl\lfloor \frac{1}{\epsilon}
@@ -543,7 +543,7 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
     optimalizálási verziója NP-nehéz (\noproof)
 + \alg \label{alg:koztelito:fptas:nempol}nem polinomiális algoritmus a részösszeg problémára
   + az $L_i$ lista (növekvő sorrendben) tartalmazza az $a_1, a_2,
-    \ldots a_i$-ből előállítható réssöszegeket
+    \ldots a_i$-ből előállítható részösszegeket
     + $L_0 \coloneqq \{0\}$, $L_i \gets L_{i - 1}$ és $L_{i - 1}' = \{l +
       a \le t : l \in L_{i - 1}\}$ összefésülése (egy elem akár
       többször)
@@ -575,7 +575,7 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
   + a különbség kezdetben $0$ és monoton nö \RA a bal oldal $\ge$ \qed
 + \thm \aref{alg:koztelito:fptas:fptas}.~algoritmus FPTAS a részösszeg
   problémára
-  + \proof előlállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
+  + \proof előállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
     \in L_n : s' \ge \dfrac{s}{\bigl(1 + \frac{\epsilon}{2n}\bigr)^n}
     \overset{\text{\ref{lem:koztelito:fptas:epszilon1}.~lemma}}{\ge}
     \dfrac{s}{1 + \epsilon}$
@@ -583,7 +583,7 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
       hibát hoz be
     + az $s = s^*$ optimális részösszeget választva látszik, hogy
       ez egy approximációs séma
-  + polinomiális futásiő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
+  + polinomiális futásidő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
     bemenet méretében polinomiális
     + $\min L_j = 0$, $\max L_j = m \le t$, $L_j = \{ l_1 = 0, l_2, l_3,
       \ldots, m \}$
@@ -619,7 +619,7 @@ fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresés
   + $\JJ = \{J_1, J_2, \ldots, J_n\}$ munkák
   + minden munkához $p_i =$ megmunkálási idő
   + esetleg $w_i =$ súly (célfüggvényhez), $d_i =$ határidő, $r_i =$
-    rendelkezés reállási idő (release time, előbb nem lehet kezdeni)
+    rendelkezésre állási idő (release time, előbb nem lehet kezdeni)
   + több gép esetén a gépek teljesen egyformák (parallel machines)
 + ütemezési feladat kimenete: munkák egy ütemezése (valamilyen
   célfüggvény szerint optimálisan)
