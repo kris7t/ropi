@@ -1,12 +1,19 @@
 \section{Közelítő és ütemezési algoritmusok} 
 
-\tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP,
-  co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója,
-  viszonyaik, példák problémákra valamennyi osztályból. NP-nehéz
-  feladatok polinomiális speciális esetei: algoritmus a maximális
-  független ponthalmaz problémára és az élszínezési problémára páros
-  gráfokon. Additív hibával közelítő algoritmusok speciális pont-,
-  illetve élszínezési problémákra.}
+%\tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP,
+%  co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója,
+%  viszonyaik, példák problémákra valamennyi osztályból. NP-nehéz
+%  feladatok polinomiális speciális esetei: algoritmus a maximális
+%  független ponthalmaz problémára és az élszínezési problémára páros
+%  gráfokon. Additív hibával közelítő algoritmusok speciális pont-,
+%  illetve élszínezési problémákra.}
+  
+\tetel{Polinomiális időben megoldható feladat fogalma, példák. Az NP, 
+co-NP, NP-nehéz és NP-teljes problémaosztályok definíciója, 
+viszonyaik, példák problémákra valamennyi osztályból. NP-nehéz 
+feladatok polinomiális speciális esetei: intervallumgráfok színezése, 
+algoritmus maximális független ponthalmaz problémára és az élszínezési 
+problémára páros gráfokon.}
 
 + algoritmuselméleti alapfogalmak
   + \dfn \emph{kiszámítási problémá}ról akkor beszélünk, ha egy $I$
@@ -113,6 +120,22 @@
       + ez a meglevő színezést nem ronthatja el
       + $u$-ban most már a kék szabad, $v$-ben maradt szabad \RA%
         $e_i$ színezhető kékre \qed
++ \prob Intervallumgráfok színezése
+  + \DataIn $G= (I, E)$ intervallumgráf, $I = \{I_1,I_2 \dots I_n\}$ intervallumok,
+  $E = \{e(I_i,I_j): I_i \cap I_j\ne \emptyset, i\ne j \}$
+  + \DataOut G színezése
+  + Intervallumgráfok színezése lehetséges $\omega(G)$ színnel (perfekt gráf),
+  de ennél kevesebbel nem
+  + Intervallumok kezdőpontok szerinti rendezése után vett mohó színezés 
+  optimális (csak $\omega(G)$ színt fog használni)
+        
+
+\tetel{Additív hibával közelítő algoritmus fogalma, példa pont-, illetve 
+élszínezési problémákra. A Hamilton-kör probléma visszavezetése a 
+leghosszabb kör probléma additív közelítésére. $k$-approximációs algoritmus 
+fogalma, példák: két-két algoritmus a minimális lefogó ponthalmaz keresésére
+  és a maximális páros részgráf keresésére.}
+  
 + \dfn egy maximalizálási (minimalizálási) problémát egy algoritmus
   \emph{$C$ additív hibától eltekintve helyesen old meg}, ha $\forall I:
   c(x^*) \ge \max_{x \in X_i} c(x) - C$ ($c(x^*) \le \min_{x \in X_i}
@@ -139,14 +162,7 @@
   + ha a $4$-színező algoritmus előtt ellenőrizzük, hogy $G$ páros-e
     \RA $2$-színezhető
     + ez szélességi kereséssel polinomidőben megtehető
-
-\tetel{A Hamilton-kör probléma visszavezetése a leghosszabb kör
-  probléma additív közelítésére. $k$-approximációs algoritmus fogalma,
-  példák: két-két algoritmus a minimális lefogó ponthalmaz keresésére
-  és a maximális páros részgráf keresésére. Minimális levelű, illetve
-  maximális belső csúcsú feszítőfa keresése. Approximációs algoritmus
-  az utóbbi feladatra (biz.~nélkül).}
-
+    
 + \prob leghosszabb kör (LHK)
   + \DataIn $G = (V, E)$ gráf\qquad\DataOut $G$ egy leghosszabb köre
   + \thm ha P $\ne$ NP \RA LHK-re nincs $C$ additív hibával
@@ -173,13 +189,13 @@
   + \DataIn $G = (V, E)$\qquad\DataOut egy $X$ minimális lefogó ponthalmaz
     $G$-ben
   + MLP NP-nehéz, mert a maximális független halmaz (MFP) is az, és
-    MFP $\prec$ MFP
+    MLP $\prec$ MFP
     + $X$ minimális független ponthalmaz \LRA $V - X$ maximális lefogó
       ponthalmaz
     + az MFP nem $k$-approximálható (\noproof)
   + \alg $2$-közelítő algoritmus maximális párosítással
     + 1.~lépés: keressük meg $G$ egy $M$ maximális párosítását
-      + páros gráfban: magyar modszer, általános gráfban: Edmonds
+      + páros gráfban: magyar módszer, általános gráfban: Edmonds
         algoritmusa
     + 2.~lépés $X \coloneqq$ az $M$-beli élek végpontjai
     + \thm \label{thm:kozelito:multi:lefogo1}az így meghatározott $X$-re $\lvert X \rvert \le 2 \tau(G)$
@@ -204,7 +220,7 @@
     + közelítő megoldás: mindegyik él mindkét vége \RA $2m$ csúcs
 + \prob maximális páros részgráf (MPR) \RA NP-nehéz (\noproof)
     + \DataIn $G = (V, E)$ gráf
-    + $A, B: A \cup B = G, A \cap B = \emptyset$, az $A$ és $B$ között
+    + \DataOut $A, B: A \cup B = V, A \cap B = \emptyset$, az $A$ és $B$ között
       menő élek száma maximális
     + \alg \label{alg:kozelito:multi:paros1}$2$-approximációs algoritmus 1.
       + 1.~lépés: osszuk ketté a csúcshalmazat $A$-ra és $B$-re
@@ -238,54 +254,54 @@
         d_s(v)$ \RA lásd \aref{thm:kozelito:multi:paros1}.~tételt \qed
       + jobb közelítéshez (ha szerencsénk van) még futtathatjuk
         \aref{alg:kozelito:multi:paros1}.~algoritmust
-+ \prob minimális levelű feszítőfa (MLF)
-  + \DataIn $G = (V, E)$ összefüggő gráf
-  + \DataOut $F$ minimális számú $1$ fokú csúcsot tartalmazó feszítőfa
-    $G$-ben
-  + \thm MLF NP-nehéz
-    + \proof HAMÚT $\prec$ MLF
-      + a Hamilton-út $2$ levelű feszítőfa, ennél kevesebb levelű
-        pedig nem létezhet \qed
-    + MLF-re nem létezik $k$-approximációs algoritmus (\noproof)
-+ \prob maximális belső csúcsú feszítőfa (MBF)
-  + \DataIn $G = (V, E)$ összefüggő gráf
-  + \DataOut $F$ maximális számú \emph{nem} $1$ fokú csúcsot
-    tartalmazó feszítőfa $G$-ben
-  + MBF ekvivalens MLF-fel, ezért szintén NP-nehéz, de már
-    $k$-approximálható
-  + \alg $2$-appriximációs algorimus MBF-re
-    + ILST = Independent Leaves Spanning Tree
-    + 0.~lépés: legyen $F$ egy tetszőleges feszítőfa $G$-ben
-    + 1.~lépés: ha $F$ Hamilton-út, vagy a levelei független halmazt
-      alkotnak \RA STOP
-    + 2.~lépés: legyen $a$ és $b$ $F$ két levele, ahol $\{a, b\} \in E$
-      (szomszédosak $G$-ben)
-      + keressük meg a $P = a \leadsto b$ (egyértelmű) utat $F$-ben
-      + $F$ nem Hamilton-út \RA $P$-nek van $F$-ben $\ge 3$.~fokú
-        csúcsa \RA az egyik legyen $v$
-    + 3.~lépés: legyen $w : \{v, w\} \in B$, $F \gets F - \{\{v, w\}\}
-      \cup \{\{a, b\}\}$, GOTO 1.
-      + az így kapott $F$ továbbra is feszítőfa, a levelek száma
-      csökkent
-    + \thm a fenti algoritmus polinomiális, $F$ egy $2$-approximáció
-      MBF-re
-      + \noproof
-  + \alg $2$-appriximációs algorimus MBF-re mélységi kereséssel
-    + 1.~lépés: legyen $F$ a $G$ mélységi feszítőfája $r \in E$-ből
-      indítva
-    + 2.~lépés: ha $F$ Hamilton-út, vagy $d(r) > 1$ \RA STOP
-      + ha $d(r) = 1$, de $r$ nem szomszédos $F$ másik levelével \RA
-      STOP
-    + 3.~lépés: legyen $a$ olyan levele $F$-nek, mellyel $r$
-    szomszédos
-      + keressük meg a $P = r \leadsto a$ utat $F$-ben (egyértelmű)
-      + $v$ az $a$-hoz legközelebbi $\ge 3$.~fokú csúcs $P$-ben
-      + $w$ a $v$-vel szomszédos csúcs a $v \leadsto a$ úton $P$-ben
-        (lehet, hogy $w = a$)
-    + 4.~lépés: $F \gets F - \{\{v, w\}\} \cup \{\{r, a\}\}$
-    + \thm a fenti algoritmus $O(\lvert E \rvert)$ idejű, $F$ egy $2$-approximáció
-      MBF-re
-      + \noproof   
+%+ \prob minimális levelű feszítőfa (MLF)
+%  + \DataIn $G = (V, E)$ összefüggő gráf
+%  + \DataOut $F$ minimális számú $1$ fokú csúcsot tartalmazó feszítőfa
+%    $G$-ben
+%  + \thm MLF NP-nehéz
+%    + \proof HAMÚT $\prec$ MLF
+%      + a Hamilton-út $2$ levelű feszítőfa, ennél kevesebb levelű
+%        pedig nem létezhet \qed
+%    + MLF-re nem létezik $k$-approximációs algoritmus (\noproof)
+%+ \prob maximális belső csúcsú feszítőfa (MBF)
+%  + \DataIn $G = (V, E)$ összefüggő gráf
+%  + \DataOut $F$ maximális számú \emph{nem} $1$ fokú csúcsot
+%    tartalmazó feszítőfa $G$-ben
+%  + MBF ekvivalens MLF-fel, ezért szintén NP-nehéz, de már
+%    $k$-approximálható
+%  + \alg $2$-appriximációs algorimus MBF-re
+%    + ILST = Independent Leaves Spanning Tree
+%    + 0.~lépés: legyen $F$ egy tetszőleges feszítőfa $G$-ben
+%    + 1.~lépés: ha $F$ Hamilton-út, vagy a levelei független halmazt
+%      alkotnak \RA STOP
+%    + 2.~lépés: legyen $a$ és $b$ $F$ két levele, ahol $\{a, b\} \in E$
+%      (szomszédosak $G$-ben)
+%      + keressük meg a $P = a \leadsto b$ (egyértelmű) utat $F$-ben
+%      + $F$ nem Hamilton-út \RA $P$-nek van $F$-ben $\ge 3$.~fokú
+%        csúcsa \RA az egyik legyen $v$
+%    + 3.~lépés: legyen $w : \{v, w\} \in B$, $F \gets F - \{\{v, w\}\}
+%      \cup \{\{a, b\}\}$, GOTO 1.
+%      + az így kapott $F$ továbbra is feszítőfa, a levelek száma
+%      csökkent
+%    + \thm a fenti algoritmus polinomiális, $F$ egy $2$-approximáció
+%      MBF-re
+%      + \noproof
+%  + \alg $2$-appriximációs algorimus MBF-re mélységi kereséssel
+%    + 1.~lépés: legyen $F$ a $G$ mélységi feszítőfája $r \in E$-ből
+%      indítva
+%    + 2.~lépés: ha $F$ Hamilton-út, vagy $d(r) > 1$ \RA STOP
+%      + ha $d(r) = 1$, de $r$ nem szomszédos $F$ másik levelével \RA
+%      STOP
+%    + 3.~lépés: legyen $a$ olyan levele $F$-nek, mellyel $r$
+%    szomszédos
+%      + keressük meg a $P = r \leadsto a$ utat $F$-ben (egyértelmű)
+%      + $v$ az $a$-hoz legközelebbi $\ge 3$.~fokú csúcs $P$-ben
+%      + $w$ a $v$-vel szomszédos csúcs a $v \leadsto a$ úton $P$-ben
+%        (lehet, hogy $w = a$)
+%    + 4.~lépés: $F \gets F - \{\{v, w\}\} \cup \{\{r, a\}\}$
+%    + \thm a fenti algoritmus $O(\lvert E \rvert)$ idejű, $F$ egy $2$-approximáció
+%      MBF-re
+%      + \noproof   
 
 \tetel{A minimális lefogó ponthalmaz probléma visszavezetése a
   halmazfedési feladatra, a halmazfedési feladat közelítése, éles
@@ -312,8 +328,8 @@
       \CR} \frac{c(S)}{\lvert S - C \rvert}$
     + 2.~lépés: $\CR' \gets \CR' \cup \{S\}$, $C \gets C \cup S$, GOTO
       1.
-  + \thm Chavátal mohó algoritmusa $H_k$-approximáció, ahol $k =
-    \max_{S \in \RR} \lvert S \rvert$
+  + \thm Chvátal mohó algoritmusa $H_k$-approximáció, ahol $k =
+    \max_{S \in \CR} \lvert S \rvert$
     + $\ln n \le H_n = 1 + \frac{1}{2} + \frac{1}{3} + \ldots +
       \frac{1}{n} \le \ln n + 1$
     + \proof az algoritmus polinomiális
@@ -326,8 +342,8 @@
       \ldots, x_r\} \in \CR^*$ ($r \le k$)
       + ált.~megsz.~tfh.~az algoritmus $S$ elemeit $x_r, x_{r - 1},
         \ldots, x_1$ sorrendben fedte le
-      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i - 1}
-        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \ge
+      + amikor $x_i$-t lefedtük, $x_r, x_{r - 1}, \ldots, x_{i + 1}
+        \in C$ \RA $\frac{c(S)}{\lvert S - C \rvert} \le
         \frac{c(S)}{i}$
       + $\forall x_i \in S$-t fedő $S_i'$-re $\frac{c(S_i')}{\lvert
         S_i' - C \rvert} \le \frac{c(S)}{i}$ \RA $\sum_{x_i \in S}
@@ -399,7 +415,7 @@
     + legyen $K = \bigcup_{e = \{x, y\} \in F'} \{\text{a legrövidebb
         $x \leadsto y$ út élei}\}$
     + $F'' =$ egy min.~feszítőfa $K$-ban lesz a Steiner-fa
-  + \thm $F''$ $2$-aproximáció a Steiner-fa problémára
+  + \thm $F''$ $2$-approximáció a Steiner-fa problémára
     + \proof az eljárás polinomiális, és
       $F''$ tényleg Steiner-fa, mert $K$ lefedi $T$-t
     + legyen $D$ az optimális $(G', S, T, c')$ metrikus Steiner-fa,
@@ -509,10 +525,10 @@
 
 + \dfn \emph{approximációs séma} az az algoritmust, aminek adott
   maximalizálási (minimalizálási) problémára a bemenete $I$ és
-  $\epsilon > 0$, kimenete $x^* \in X_i : c(x^*) \ge \frac{1}{1 +
+  $\epsilon > 0$, kimenete $x^* \in X_I : c(x^*) \ge \frac{1}{1 +
     \epsilon} \max_{x \in X_I} c(x)$ ($c(x^*) \le (1 +
     \epsilon) \min_{x \in X_I} c(x)$)
-+ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma
++ \dfn egy approximációs séma \emph{polinomiális} (PTAS), ha a lépésszáma minden
   rögzített $\epsilon$ esetén $I$ méretében polinomiális
 + \dfn egy approximációs séma \emph{teljesen polinomiális} (FPTAS), ha a
   lépésszáma $I$ méretében és $\bigl\lfloor \frac{1}{\epsilon}
@@ -527,7 +543,7 @@
     optimalizálási verziója NP-nehéz (\noproof)
 + \alg \label{alg:koztelito:fptas:nempol}nem polinomiális algoritmus a részösszeg problémára
   + az $L_i$ lista (növekvő sorrendben) tartalmazza az $a_1, a_2,
-    \ldots a_i$-ből előállítható réssöszegeket
+    \ldots a_i$-ből előállítható részösszegeket
     + $L_0 \coloneqq \{0\}$, $L_i \gets L_{i - 1}$ és $L_{i - 1}' = \{l +
       a \le t : l \in L_{i - 1}\}$ összefésülése (egy elem akár
       többször)
@@ -559,7 +575,7 @@
   + a különbség kezdetben $0$ és monoton nö \RA a bal oldal $\ge$ \qed
 + \thm \aref{alg:koztelito:fptas:fptas}.~algoritmus FPTAS a részösszeg
   problémára
-  + \proof előlállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
+  + \proof előállítható $(a_i)_{i = 1}^n$-ből az $s$ részösszeg \RA $s'
     \in L_n : s' \ge \dfrac{s}{\bigl(1 + \frac{\epsilon}{2n}\bigr)^n}
     \overset{\text{\ref{lem:koztelito:fptas:epszilon1}.~lemma}}{\ge}
     \dfrac{s}{1 + \epsilon}$
@@ -567,7 +583,7 @@
       hibát hoz be
     + az $s = s^*$ optimális részösszeget választva látszik, hogy
       ez egy approximációs séma
-  + polinomiális futásiő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
+  + polinomiális futásidő \LA elég belátni, hogy $\forall \lvert L_j \rvert$ a
     bemenet méretében polinomiális
     + $\min L_j = 0$, $\max L_j = m \le t$, $L_j = \{ l_1 = 0, l_2, l_3,
       \ldots, m \}$
@@ -603,7 +619,7 @@
   + $\JJ = \{J_1, J_2, \ldots, J_n\}$ munkák
   + minden munkához $p_i =$ megmunkálási idő
   + esetleg $w_i =$ súly (célfüggvényhez), $d_i =$ határidő, $r_i =$
-    rendelkezés reállási idő (release time, előbb nem lehet kezdeni)
+    rendelkezésre állási idő (release time, előbb nem lehet kezdeni)
   + több gép esetén a gépek teljesen egyformák (parallel machines)
 + ütemezési feladat kimenete: munkák egy ütemezése (valamilyen
   célfüggvény szerint optimálisan)

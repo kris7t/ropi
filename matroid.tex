@@ -10,7 +10,7 @@
     \FF$ \RA $Y \in \FF$
   + (F2)~ha $X, Y \in \FF$ és $\lvert X \rvert > \lvert Y \rvert$ \RA
     $\exists x \in X - Y : Y \cup \{ x \} \in \FF$
-+ \dfn az $\MM = (F, \FF)$ matroidban $X \subseteq E$
++ \dfn az $\MM = (E, \FF)$ matroidban $X \subseteq E$
   \emph{független}, ha $X \in \FF$
   + egyébként $X$ \emph{összefüggő}
 + \dfn az $\MM = (E, \FF)$ matroidban $X \in \FF$ független
@@ -68,7 +68,7 @@
   + 0.~lépés: legyen $X \coloneqq \emptyset \in \FF$
   + 1.~lépés: létezi-e $ e \in E - X: X \cup \{ e \} \in \FF$
     + $\exists$ \RA $e \coloneqq \argmax \{ w(e') : e' \in E - X, X
-    \cup \{ e \} \in \FF$ \}; $\nexists$ \RA STOP
+    \cup \{ e' \} \in \FF$ \}; $\nexists$ \RA STOP
   + 2.~lépés: $X \gets X \cup \{ e \}$, GOTO 1.
 + \thm a mohó algoritmus pontosan akkor ad helyes eredmény $\forall w$
   súlfüggvénnyel az $(E, \FF)$ halmazrendszeren, ha az (F1--2) mellett
@@ -109,7 +109,7 @@
         \lvert - \rvert Y \lvert}{\lvert X - Y \rvert}$
     + a mohó algoritmus nem adott optimális megoldást $w$-re! \qed
 + \thm ha $r$ az $\MM = (E, \FF)$ matroid rangfüggvénye, akkor
-  + (R1)~$r(\emptyset) = 0$\qquad(R2)~$\forall X \subseteq E: r(x) \le
+  + (R1)~$r(\emptyset) = 0$\qquad(R2)~$\forall X \subseteq E: r(X) \le
     \lvert X \rvert$\qquad(R3)~ha $Y \subseteq X$ \RA $r(Y) \le r(X)$
   + (R4)~ $\forall X, Y \subseteq E: r(X) + r(Y) \ge r(X \cap Y) + r(X
     \cup Y)$, azaz $r$ \emph{szubmoduláris}
@@ -141,7 +141,7 @@
 + \thm ha $\BB$ az $\MM = (E, \FF)$ matroid bázisainak halmaza, akkor
   + (B1)~$\BB \ne \emptyset$\qquad(B2)~$\forall X_1, X_2 \in \BB:
     \lvert X_1 \rvert = \lvert X_2 \rvert$
-  + (B3)~$X_1, X_2 \in \BB$, $e_1 \in X_1$ \RA $\exists e_2 \in X_2: X
+  + (B3)~$X_1, X_2 \in \BB$, $e_1 \in X_1$ \RA $\exists e_2 \in X_2: X_1
   - \{ e_1 \} \cup \{ e_2 \} \in \BB$
   + ha $\BB$ kielégíti a (B1--3) feltételeket \RA az
     $\FF = \{ X \subseteq E : X \subseteq B \in \BB \}$
@@ -225,7 +225,7 @@
 + \dfn az $\MM$ matroid \emph{összefüggő}, ha nem áll elő két matroid
   direkt összegeként
 + \dfn az $\MM$ matroid \emph{reprezentálható}
-  (\emph{kooridnátázható}) az $T$ test felett, ha izomorf egy $T$
+  (\emph{koordinátázható}) az $T$ test felett, ha izomorf egy $T$
   feletti mátrixmatroiddal
   + ha $\MM$-et $A$ koordinátázza, és $B \in \RR^{r \times r}$
     négyzetes nemszinguláris mátrix, akkor $BA$ is $\MM$-et
